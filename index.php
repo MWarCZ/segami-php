@@ -3,6 +3,9 @@
 require_once(__DIR__.'/define.config.php');
 require_once(__DIR__.'/debug.lib.php');
 
+require_once(__DIR__.'/class/ImageProps.class.php');
+require_once(__DIR__.'/class/Imager.class.php');
+
 #p_debug($_SERVER);
 #p_debug($GLOBALS);
 
@@ -18,74 +21,13 @@ p_debug([
 // Získání parametrů z názvu
 // image@200x100=80.png
 
-function checkRequestImageProps($props) {
-	$r_number = '[1-9][0-9]*';
-	$r_size_v1 = $r_number;
-	$r_size_v2 = $r_number.'x'.$r_number;
-	$r_extension = '\.[a-zA-Z0-9_-]+';
-	$r_compression = '='.$r_number;
-
-	// /(([1-9][0-9]*)|([1-9][0-9]*x[1-9][0-9]*))?(=[1-9][0-9]*)?(\.[a-z]+)/i
-	$r_full = "(($r_size_v1)|($r_size_v2))?($r_compression)?($r_extension)";
-
-	$is_ok = preg_match('/^'.$r_full.'$/i', $props);
-
-	# p_debug([$is_ok, $props]);
-	return $is_ok;
-}
-
-function parseImageName($req_name) {
-	// Získání názvu souboru
-	$a_tmp = explode('@', $req_name);
-	$tmp = array_pop($a_tmp);
-	$name = implode('@', $a_tmp);
-
-	// Kontrola přípony s vlastnostmi
-	if(!checkRequestImageProps($tmp)) { return false; }
-
-	// Získání typu (přípona souboru)
-	list($tmp, $extension) = explode('.', $tmp);
-
-	// Získání komprese
-	list($tmp, $compression) = explode('=', $tmp.'=100'); // '=100' přípona s výchozí hodnotou pro kompresi
-
-	// Získání rozměrů
-	list($width, $height) = explode('x', $tmp.'x'.$tmp); // 'x'.$tmp přípona s výchozí hodnotou pro výšku (čtverec)
-
-	return [
-    'name'=>$name,
-    'extension'=>$extension,
-    'compression'=>(int)$compression,
-    'width'=>(int)$width,
-    'height'=>(int)$height,
-	];
-}
-function createImageName($a_part) {
-  return ''
-    .$a_part['name'].'@'.(
-      $a_part['width'] == 0
-    ? ''
-    : (
-      $a_part['width'] == $a_part['height']
-      ? $a_part['width']
-      : $a_part['width'].'x'.$a_part['height']
-    )
-    ).(
-      $a_part['compression'] < 100
-      ? '='.$a_part['compression']
-      : ''
-    ).'.'.$a_part['extension']
-  ;
-}
-
 $a_req_part = explode('/', REQUEST_URL);
 $req_img = end($a_req_part);
 
-$is_ok = checkRequestImageProps($req_img);
-$a_part = parseImageName($req_img);
-
-$res_img = createImageName($a_part);
-
+$imager = new Imager();
+$is_ok = $imager->checkRequestProps($req_img);
+$a_part = $imager->parseImageName($req_img);
+$res_img = $imager->createName($a_part);
 p_debug([$is_ok, $a_part, $req_img, $res_img]);
 
 /////////////////////////////////////////////
