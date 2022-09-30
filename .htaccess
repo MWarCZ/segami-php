@@ -3,8 +3,16 @@
 
 	RewriteEngine On
 
-	RewriteCond %{REQUEST_FILENAME}  -f [OR]
-	RewriteCond %{REQUEST_FILENAME} !-f
+	# RewriteCond %{REQUEST_FILENAME}  -f [OR]
+	# RewriteCond %{REQUEST_FILENAME} !-f
+
+  # Správa obrázků
+  RewriteRule ^upload.php$ upload.php [L,QSA]
+
+  # Přímí přístup k obrázkům pod `img/`
+  RewriteRule ^img/(.*)$ img/$1 [L,QSA]
+
+  # Všechny ostatní adresy směrovat na `index.php`
 	RewriteRule ^(.*)$ index.php [L,QSA]
 
 </IfModule>
