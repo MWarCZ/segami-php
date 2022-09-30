@@ -41,17 +41,19 @@ class Image {
   function resizeCover($width, $height) {
     $w = $this->img->getImageWidth();
     $h = $this->img->getImageHeight();
+    $r_wh = $w / $h;
+    $r_hw = $h / $w;
     if($w > $h) {
       if($width > $height)
-        $this->img->resizeImage($width, $width, $this->filter, 1, true);
+        $this->img->resizeImage($width, (int)($width*$r_hw), $this->filter, 1, true);
       else
-        $this->img->resizeImage($height, $height, $this->filter, 1, true);
+        $this->img->resizeImage((int)($height*$r_wh), $height, $this->filter, 1, true);
     }
     else {
-      if($width > $height)
-        $this->img->resizeImage($width, $width, $this->filter, 1, true);
+      if($width < $height)
+        $this->img->resizeImage((int)($height*$r_wh), $height, $this->filter, 1, true);
       else
-        $this->img->resizeImage($height, $height, $this->filter, 1, true);
+        $this->img->resizeImage($width, (int)($width*$r_hw), $this->filter, 1, true);
     }
     // $this->img->cropImage($width, $height, 0, 0);
     $this->img->cropThumbnailImage($width, $height);
