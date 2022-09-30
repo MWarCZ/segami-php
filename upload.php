@@ -14,10 +14,30 @@ if(isset($_POST['submit_delete'])) {
   if(file_exists($file)) {
     unlink($file);
   }
+  location(ACTUAL_URL);
 }
 
 $a_file = scandir(ORG_IMG_PATH);
 // p_debug([$a_file]);
+
+
+$a_filter = [
+  'FILTER_POINT' => Imagick::FILTER_POINT,
+  'FILTER_BOX' => Imagick::FILTER_BOX,
+  'FILTER_TRIANGLE' => Imagick::FILTER_TRIANGLE,
+  'FILTER_HERMITE' => Imagick::FILTER_HERMITE,
+  'FILTER_HANNING' => Imagick::FILTER_HANNING,
+  'FILTER_HAMMING' => Imagick::FILTER_HAMMING,
+  'FILTER_BLACKMAN' => Imagick::FILTER_BLACKMAN,
+  'FILTER_GAUSSIAN' => Imagick::FILTER_GAUSSIAN,
+  'FILTER_QUADRATIC' => Imagick::FILTER_QUADRATIC,
+  'FILTER_CUBIC' => Imagick::FILTER_CUBIC,
+  'FILTER_CATROM' => Imagick::FILTER_CATROM,
+  'FILTER_MITCHELL' => Imagick::FILTER_MITCHELL,
+  'FILTER_LANCZOS' => Imagick::FILTER_LANCZOS,
+  'FILTER_BESSEL' => Imagick::FILTER_BESSEL,
+  'FILTER_SINC' => Imagick::FILTER_SINC,
+];
 ?>
 <style>body{background:black;color:yellow;}</style>
 
@@ -56,6 +76,11 @@ $a_file = scandir(ORG_IMG_PATH);
               .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@100x300.webp'.'">'
             .'</div>'
           ;
+          // echo '<div class="gallery-preview">';
+          // foreach ($a_filter as $key => $filter) {
+          //     echo '<img title="'.$key.'" src="'.ROOT_MODULE_URL.'/'.$file.'@300='.$filter.'.webp'.'">';
+          // }
+          // echo '</div>';
         }
 
       ?>
@@ -64,3 +89,6 @@ $a_file = scandir(ORG_IMG_PATH);
   </section>
 </form>
 
+<?php
+
+// p_debug();

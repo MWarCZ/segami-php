@@ -23,7 +23,6 @@ define('REQUEST_URL', substr($_SERVER['REQUEST_URI'], strlen(MODULE_PATH)));
 // Cesty k souborům
 ///////////////////////////////////////////////////
 
-
 define('ORG_IMG_PATH', __DIR__.'/img/uploaded');
 define('GEN_IMG_PATH', __DIR__.'/img/generated');
 define('ORG_IMG_URL', ROOT_MODULE_URL.'/img/uploaded');

@@ -1,8 +1,19 @@
 <?php
 ///////////////////////////////////////////////
+// * Aktuální:
 // image@200x100=80.png
+// * Plán:
+// image@<props>.<format>
+// props:
+// - R300x200 - Resize(width=300, height=200)
+//   - R200x300
+//   - R200
+// - C200x100 - Crop(width=200, height=100)
+//   - C100x200
+//   - C100
+// - =75 - Compress(75)
 ///////////////////////////////////////////////
-class Imager {
+class ImageName {
   public $separator;
 
   function __construct($a_separator = []) {
@@ -17,6 +28,7 @@ class Imager {
     );
   }
 
+  /** Pomocná funkce upravující vstupní znak pro použití v regex */
   function escRegex($text, $b_double_quote = false) {
     if(in_array($text, [
       '.', ',', '|', '?', '!', '&', '%', '-',
@@ -48,6 +60,7 @@ class Imager {
     # p_debug([$is_ok, $props]);
     return $is_ok;
   }
+
   /**
    * Získání požadovaných vlastností obrázku z názvu souboru.
    * @param String Název souboru obsahující požadované vlastnosti

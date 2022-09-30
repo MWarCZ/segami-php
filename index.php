@@ -20,27 +20,64 @@ require_once(__DIR__.'/init.config.php');
 $a_req_part = explode('/', REQUEST_URL);
 $req_img = end($a_req_part);
 
-$imager = new Imager();
-$is_ok = $imager->checkRequestProps($req_img);
-$a_part = $imager->parseImageName($req_img);
+$imageName = new ImageName();
+$is_ok = $imageName->checkRequestProps($req_img);
+$a_part = $imageName->parseImageName($req_img);
 if(!$a_part) { die('Error: Neplatný požadavek na obrázek.'); }
-$res_img = $imager->createName($a_part);
+$res_img = $imageName->createName($a_part);
 // p_debug([$is_ok, $a_part, $req_img, $res_img]);
 
 /////////////////////////////////////////////
 // Změnit formát obrázku
 /////////////////////////////////////////////
 
+$tmp_supported_targets = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
 $a_map_extension = [
-  'jpg' =>['imagick'=>'JPEG', 'mime'=>'image/jpeg'   ],
-  'jpeg'=>['imagick'=>'JPEG', 'mime'=>'image/jpeg'   ],
-  'png' =>['imagick'=>'PNG' , 'mime'=>'image/png'    ],
-  'apng'=>['imagick'=>'APNG', 'mime'=>'image/apng'   ],
-  'gif' =>['imagick'=>'GIF' , 'mime'=>'image/gif'    ],
-  'bmp' =>['imagick'=>'BMP' , 'mime'=>'image/bmp'    ],
-  'webp'=>['imagick'=>'WEBP', 'mime'=>'image/webp'   ],
-  'avif'=>['imagick'=>'AVIF', 'mime'=>'image/avif'   ],
-  'svg' =>['imagick'=>'SVG' , 'mime'=>'image/svg+xml'],
+  'jpg' =>[
+    'imagick'=>'JPEG',
+    'mime'=>'image/jpeg',
+    'target'=>$tmp_supported_targets,
+  ],
+  'jpeg'=>[
+    'imagick'=>'JPEG',
+    'mime'=>'image/jpeg',
+    'target'=>$tmp_supported_targets,
+  ],
+  'png'=>[
+    'imagick'=>'PNG',
+    'mime'=>'image/png',
+    'target'=>$tmp_supported_targets,
+  ],
+  'apng'=>[
+    'imagick'=>'APNG',
+    'mime'=>'image/apng',
+    'target'=>[],
+  ],
+  'gif'=>[
+    'imagick'=>'GIF',
+    'mime'=>'image/gif',
+    'target'=>$tmp_supported_targets,
+  ],
+  'bmp'=>[
+    'imagick'=>'BMP',
+    'mime'=>'image/bmp',
+    'target'=>$tmp_supported_targets,
+  ],
+  'webp'=>[
+    'imagick'=>'WEBP',
+    'mime'=>'image/webp',
+    'target'=>$tmp_supported_targets,
+  ],
+  'avif'=>[
+    'imagick'=>'AVIF',
+    'mime'=>'image/avif',
+    'target'=>[],
+  ],
+  'svg'=>[
+    'imagick'=>'SVG',
+    'mime'=>'image/svg+xml',
+    'target'=>[],
+  ],
 ];
 
 // function changeImageFormat($srcFile, $destFile, $destFormat) {
@@ -63,67 +100,30 @@ $a_map_extension = [
 //   return $img;
 // }
 
-class Image {
-  protected $img;
-  function get() { return $this->img; }
-  function read($srcFile) {
-    $this->img = new Imagick();
-    $this->img->readImage($srcFile);
-    return $this;
-  }
-  function write($destFile) {
-    $this->img->writeImage($destFile);
-    return $this;
-  }
-  function setFormat($format) {
-    $this->$img->setImageFormat($format);
-    return $this;
-  }
-  function resizeFill($width, $height) {
-    $this->img->resizeImage($width, $height, Imagick::FILTER_CATROM, 1);
-    return $this;
-  }
-  function resizeContain($width, $height) {
-    $this->img->resizeImage($width, $height, Imagick::FILTER_CATROM, 1, true);
-    return $this;
-  }
-  function resizeCover($width, $height) {
-    $w = $this->img->getImageWidth();
-    $h = $this->img->getImageHeight();
-    if($w > $h) {
-      if($width > $height) {
-        $this->img->resizeImage($width, $width, Imagick::FILTER_CATROM, 1, true);
-      }
-      else {
-        $this->img->resizeImage($height, $height, Imagick::FILTER_CATROM, 1, true);
-      }
-    }
-    else {
-      if($width > $height) {
-        $this->img->resizeImage($width, $width, Imagick::FILTER_CATROM, 1, true);
-      }
-      else {
-        $this->img->resizeImage($height, $height, Imagick::FILTER_CATROM, 1, true);
-      }
-    }
-    // $this->img->cropImage($width, $height, 0, 0);
-    $this->img->cropThumbnailImage($width, $height);
-    // $this->img->resizeImage($width, $height, Imagick::FILTER_CATROM, 1, true);
-    return $this;
-  }
-}
 function changeImageFormat($srcFile, $destFile, $destFormat) {
   return (new Image())->read($srcFile)->setFormat($destFormat)->get();
 }
-function resizeImage($srcFile, $destFile, $width, $height) {
+function resizeImage($srcFile, $destFile, $width, $height, $filter = 100) {
   // return (new Image())->read($srcFile)->resizeFill($width, $height)->get();
   // return (new Image())->read($srcFile)->resizeContain($width, $height)->get();
+  if($filter < 100)
+    return (new Image())->read($srcFile)->resizeFilter($filter)->resizeCover($width, $height)->get();
   return (new Image())->read($srcFile)->resizeCover($width, $height)->get();
+}
+function xxx($a_part) {
+  $img = new Image();
+  $img->read(ORG_IMG_PATH.'/'.$a_part->name);
+  if($a_part->width)
+    $img->resizeCover($a_part->width, $a_part->height);
+  if($a_part->compression < 100)
+    $img->resizeFilter($a_part->compression);
+  return $img->get();
 }
 try {
   // p_debug([ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_map_extension[$a_part->extension]['imagick']]);
   // $img = changeImageFormat(ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_map_extension[$a_part->extension]['imagick']);
-  $img = resizeImage(ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_part->width, $a_part->height);
+  // $img = resizeImage(ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_part->width, $a_part->height, $a_part->compression);
+  $img = xxx($a_part);
 }
 catch (Exception $e){ p_debug($e); }
 
