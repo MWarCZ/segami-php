@@ -46,7 +46,7 @@ class ImageName {
    * @return Bool Odpovídá koncovka požadovanému formátu? Ano = true, Ne = false
    */
   function checkRequestProps($props) {
-    $r_number = '[1-9][0-9]*';
+    $r_number = '[0-9][0-9]*';
     $r_size_v1 = $r_number;
     $r_size_v2 = $r_number.$this->escRegex($this->separator->size2).$r_number;
     $r_extension = $this->escRegex($this->separator->extension).'[a-zA-Z0-9_-]+';

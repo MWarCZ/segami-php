@@ -110,20 +110,27 @@ function resizeImage($srcFile, $destFile, $width, $height, $filter = 100) {
     return (new Image())->read($srcFile)->resizeFilter($filter)->resizeCover($width, $height)->get();
   return (new Image())->read($srcFile)->resizeCover($width, $height)->get();
 }
-function xxx($a_part) {
+function xxx($a_part, $save_img_to = '') {
+  global $a_map_extension, $res_img;
   $img = new Image();
   $img->read(ORG_IMG_PATH.'/'.$a_part->name);
+  $img->setFormat($a_map_extension[$a_part->extension]['imagick']);
   if($a_part->width)
     $img->resizeCover($a_part->width, $a_part->height);
   if($a_part->compression < 100)
-    $img->resizeFilter($a_part->compression);
+    $img->compression($a_part->compression);
+    // $img->resizeFilter($a_part->compression);
+  $img->strip();
+  if($save_img_to)
+    $img->write($save_img_to);
   return $img->get();
+  // return $img->strip()->get();
 }
 try {
   // p_debug([ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_map_extension[$a_part->extension]['imagick']]);
   // $img = changeImageFormat(ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_map_extension[$a_part->extension]['imagick']);
   // $img = resizeImage(ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_part->width, $a_part->height, $a_part->compression);
-  $img = xxx($a_part);
+  $img = xxx($a_part, GEN_IMG_PATH.'/'.$res_img);
 }
 catch (Exception $e){ p_debug($e); }
 
