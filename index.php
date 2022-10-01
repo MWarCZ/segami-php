@@ -10,27 +10,6 @@ require_once(__DIR__.'/init.config.php');
 //   MODULE_PATH, ROOT_URL, ROOT_MODULE_URL, ACTUAL_URL, REQUEST_URL,
 // ]);
 
-// $A_REQUEST_PART = explode('/', REQUEST_URL, 2);
-// p_debug([$A_REQUEST_PART]);
-
-///////////////////////////////////////////////
-// Získání parametrů z názvu
-// image@200x100=80.png
-
-$a_req_part = explode('/', REQUEST_URL);
-$req_img = end($a_req_part);
-
-$imageName = new ImageName();
-$is_ok = $imageName->checkRequestProps($req_img);
-$a_part = $imageName->parseImageName($req_img);
-if(!$a_part) { die('Error: Neplatný požadavek na obrázek.'); }
-$res_img = $imageName->createName($a_part);
-// p_debug([$is_ok, $a_part, $req_img, $res_img]);
-
-/////////////////////////////////////////////
-// Změnit formát obrázku
-/////////////////////////////////////////////
-
 $tmp_supported_targets = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
 $a_map_extension = [
   'jpg' =>[
@@ -80,66 +59,86 @@ $a_map_extension = [
   ],
 ];
 
-// function changeImageFormat($srcFile, $destFile, $destFormat) {
-//   $img = new Imagick();
-//   $img->readImage($srcFile);
-
-//   $img->setImageFormat($destFormat);
-
-//   $img->writeImage($destFile);
-//   return $img;
-// }
-
-// function resizeImage($srcFile, $destFile, $width, $height) {
-//   $img = new Imagick();
-//   $img->readImage($srcFile);
-
-//   $img->resizeImage($width, $height, Imagick::FILTER_CATROM, 1);
-
-//   // $img->writeImage($destFile);
-//   return $img;
-// }
-
-function changeImageFormat($srcFile, $destFile, $destFormat) {
-  return (new Image())->read($srcFile)->setFormat($destFormat)->get();
-}
-function resizeImage($srcFile, $destFile, $width, $height, $filter = 100) {
-  // return (new Image())->read($srcFile)->resizeFill($width, $height)->get();
-  // return (new Image())->read($srcFile)->resizeContain($width, $height)->get();
-  if($filter < 100)
-    return (new Image())->read($srcFile)->resizeFilter($filter)->resizeCover($width, $height)->get();
-  return (new Image())->read($srcFile)->resizeCover($width, $height)->get();
-}
-function xxx($a_part, $save_img_to = '') {
-  global $a_map_extension, $res_img;
+function createImage($from_img_path, $to_img_path, $extImagick, $a_part) {
   $img = new Image();
-  $img->read(ORG_IMG_PATH.'/'.$a_part->name);
-  $img->setFormat($a_map_extension[$a_part->extension]['imagick']);
+  $img->read($from_img_path);
+  $img->setFormat($extImagick);
   if($a_part->width)
     $img->resizeCover($a_part->width, $a_part->height);
+    // $img->resizeFill($a_part->width, $a_part->height);
+    // $img->resizeContain($a_part->width, $a_part->height);
   if($a_part->compression < 100)
     $img->compression($a_part->compression);
     // $img->resizeFilter($a_part->compression);
   $img->strip();
-  if($save_img_to)
-    $img->write($save_img_to);
+  if($to_img_path)
+    $img->write($to_img_path);
   return $img->get();
-  // return $img->strip()->get();
 }
-try {
-  // p_debug([ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_map_extension[$a_part->extension]['imagick']]);
-  // $img = changeImageFormat(ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_map_extension[$a_part->extension]['imagick']);
-  // $img = resizeImage(ORG_IMG_PATH.'/'.$a_part->name, GEN_IMG_PATH.'/'.$res_img, $a_part->width, $a_part->height, $a_part->compression);
-  $img = xxx($a_part, GEN_IMG_PATH.'/'.$res_img);
+
+// ****************************************************
+
+function main($req_img, $a_map_extension, $b_cache_new_image = true) {
+  // START Existující originální obrázek
+  $org_img_path = ORG_IMG_PATH.'/'.$req_img;
+  if(is_file($org_img_path)) {
+    $ext = explode('.', $req_img);
+    $ext = end($ext);
+    $ext = $a_map_extension[$ext];
+    if($ext) {
+      header('Content-type: '.$ext['mime']);
+      header('Content-Length: '.filesize($org_img_path));
+      readfile($org_img_path);
+      return true;
+    }
+  }
+  // END Existující originální obrázek
+  // ***
+  // START Existující vygenerovaný obrázek
+  $imageName = new ImageName();
+  $a_part = $imageName->parseImageName($req_img);
+  if(!$a_part) return false;
+  $ext = $a_map_extension[$a_part->extension];
+  if(!$ext) return false;
+  $res_img = $imageName->createName($a_part);
+  $req_img_path = GEN_IMG_PATH.'/'.$res_img;
+  if(is_file($req_img_path)) {
+    header('Content-type: '.$ext['mime']);
+    header('Content-Length: '.filesize($req_img_path));
+    readfile($req_img_path);
+    return true;
+  }
+  // END Existující vygenerovaný obrázek
+  // ***
+  // START Kontrola povolených vlastností pro obrázky (rozměr, ...)
+  // ...
+  // END Kontrola povolených vlastností pro obrázky (rozměr, ...)
+  // ***
+  // START Vytvořit požadovaný obrázek
+  $from_img_path = ORG_IMG_PATH.'/'.$a_part->name;
+  if(!is_file($from_img_path)) return false;
+  $to_img_path = $b_cache_new_image ? $req_img_path : '';
+  try {
+    $img = createImage($from_img_path, $to_img_path, $ext['imagick'], $a_part);
+    header('Content-type: '.$ext['mime']);
+    echo $img;
+    return true;
+  } catch (Exception $e){ return false; }
+  // END Vytvořit požadovaný obrázek
+  return false;
 }
-catch (Exception $e){ p_debug($e); }
 
-// echo ''
-//   .'<img src="'.ORG_IMG_URL.'/'.$a_part->name.'">'
-//   .'<img src="'.GEN_IMG_URL.'/'.$res_img.'">'
-// ;
-
-header('Content-type: '.$a_map_extension[$a_part->extension]['mime']);
-echo $img;
-
-echo '<style>body{background:black;color:yellow;}</style>';
+///////////////////////////////////////////////
+// Získání názvu obrázku z URL
+$a_req_part = explode('/', REQUEST_URL);
+$req_img = end($a_req_part);
+$req_type = count($a_req_part)>2 ? $a_req_part[count($a_req_part)-2] : '';
+// p_debug([$a_req_part, $req_img, $req_type]);
+// Hlavní tělo programu - získání obrázku
+$res = main($req_img, $a_map_extension, $req_type=='cache');
+if(!$res) {
+  // Obrázek neexistuje
+  header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
+}
+exit;
+// ****************************************************
