@@ -44,12 +44,22 @@ class Image {
   }
 
   function resizeCover($width, $height) {
+    // Originální rozměry obrázku
     $w = $this->img->getImageWidth();
     $h = $this->img->getImageHeight();
-    if(!$width) $width = $w;
-    if(!$height) $height = $h;
+    // Poměr rozměrů originálního obrázku
     $r_wh = $w / $h;
     $r_hw = $h / $w;
+    /////////////////////////////////////////////
+    // Automatické doplněný nezadaných rozměrů
+    // Výchozí velikost obrázku
+    if(!$width && !$height) { $width = $w; $height = $h; }
+    // Vypočtení šířky
+    elseif(!$width) $width = (int)($height * $r_wh);
+    // Vypočtení výšky
+    elseif(!$height) $height = (int)($width * $r_hw);
+    /////////////////////////////////////////////
+    // Cover - dopočítání rozměrů a oříznutí na požadovaný rozměr
     if($w > $h) {
       if($width > $height)
         $this->img->resizeImage($width, (int)($width*$r_hw), $this->_resizeFilter, 1, true);
@@ -64,7 +74,6 @@ class Image {
     }
     // $this->img->cropImage($width, $height, 0, 0);
     $this->img->cropThumbnailImage($width, $height);
-    // $this->img->resizeImage($width, $height, Imagick::FILTER_CATROM, 1, true);
     return $this;
   }
 

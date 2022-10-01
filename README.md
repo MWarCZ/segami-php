@@ -8,7 +8,7 @@
 - [x] Převádění obrázků do požadovaných rozměrů
 - [ ] Ošetření různých vstupů
   - [ ] Existuje zdrojový obrázek
-  - [ ] Nulové rozměry šířky a výšky
+  - [x] Nulové rozměry šířky a výšky = automatické dopočítání rozměru
   - [ ] Kontrola podporovaných formátů
   - [ ] Podpora komprese u daného formátu
   - [ ] ...
