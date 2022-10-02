@@ -84,7 +84,7 @@ class ImageName {
     // Získání rozměrů
     list($width, $height) = explode($this->separator->size2, $tmp.$this->separator->size2.$tmp); // 'x'.$tmp přípona s výchozí hodnotou pro výšku (čtverec)
 
-    return new ImageProps($name, $extension, (int)$compression, (int)$width, (int)$height);
+    return new ImageProps($name, strtolower($extension), (int)$compression, (int)$width, (int)$height);
   }
 
   /**

@@ -1,11 +1,11 @@
 <?php
 
 class ImageProps {
-  /** @var String */ public $name;
-  /** @var String */ public $extension;
-  /** @var Int    */ public $compression;
-  /** @var Int    */ public $width;
-  /** @var Int    */ public $height;
+  /** @property String */ public $name;
+  /** @property String */ public $extension;
+  /** @property Int    */ public $compression;
+  /** @property Int    */ public $width;
+  /** @property Int    */ public $height;
 
   function __construct($name, $extension, $compression, $width, $height) {
     $this->name = $name;
