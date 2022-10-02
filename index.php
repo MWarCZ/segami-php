@@ -9,7 +9,7 @@ require_once(__DIR__.'/init.config.php');
 //   'Definice konstant:',
 //   MODULE_PATH, ROOT_URL, ROOT_MODULE_URL, ACTUAL_URL, REQUEST_URL,
 // ]);
-
+/*
 $tmp_supported_targets = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
 $a_map_extension = [
   'jpg' =>[
@@ -127,6 +127,7 @@ function main($req_img, $a_map_extension, $b_cache_new_image = true) {
   // END Vytvořit požadovaný obrázek
   return false;
 }
+*/
 
 ///////////////////////////////////////////////
 // Získání názvu obrázku z URL
@@ -134,11 +135,19 @@ $a_req_part = explode('/', REQUEST_URL);
 $req_img = end($a_req_part);
 $req_type = count($a_req_part)>2 ? $a_req_part[count($a_req_part)-2] : '';
 // p_debug([$a_req_part, $req_img, $req_type]);
-// Hlavní tělo programu - získání obrázku
-$res = main($req_img, $a_map_extension, $req_type=='cache');
-if(!$res) {
+$segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH);
+try {
+  $segami->returnImage($req_img, $req_type=='cache');
+} catch (Exception $e) {
   // Obrázek neexistuje
   header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
 }
 exit;
+// // Hlavní tělo programu - získání obrázku
+// $res = main($req_img, $a_map_extension, $req_type=='cache');
+// if(!$res) {
+//   // Obrázek neexistuje
+//   header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
+// }
+// exit;
 // ****************************************************
