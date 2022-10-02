@@ -71,9 +71,10 @@ $a_filter = [
           ;
           echo ''
             .'<div class="gallery-preview">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@150.webp'.'">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@300x100.webp'.'">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@100x300.webp'.'">'
+              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@c150.webp'.'">'
+              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@r150.webp'.'">'
+              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@r300x100.webp'.'">'
+              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@r100x300.webp'.'">'
             .'</div>'
           ;
           // echo '<div class="gallery-preview">';

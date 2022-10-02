@@ -90,9 +90,12 @@ class Segami {
     $img->read($from_img_path);
     $img->setFormat($ext['imagick']);
     if($img_props->width)
-      $img->resizeCover($img_props->width, $img_props->height);
-      // $img->resizeFill($img_props->width, $img_props->height);
-      // $img->resizeContain($img_props->width, $img_props->height);
+      if($img_props->fn == 'r')
+        $img->resizeCover($img_props->width, $img_props->height);
+        // $img->resizeFill($img_props->width, $img_props->height);
+        // $img->resizeContain($img_props->width, $img_props->height);
+      elseif($img_props->fn == 'c')
+        $img->cropImage($img_props->width, $img_props->height);
     if($img_props->compression != $ext['default_compression'])
       $img->compression($img_props->compression);
       // $img->resizeFilter($img_props->compression);

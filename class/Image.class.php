@@ -62,28 +62,47 @@ class Image {
     // Cover - dopočítání rozměrů a oříznutí na požadovaný rozměr
     if($w > $h) {
       if($width > $height)
-        $this->img->resizeImage($width, (int)($width*$r_hw), $this->_resizeFilter, 1, true);
+        $this->img->resizeImage((int)$width, (int)($width*$r_hw), $this->_resizeFilter, 1, true);
       else
-        $this->img->resizeImage((int)($height*$r_wh), $height, $this->_resizeFilter, 1, true);
+        $this->img->resizeImage((int)($height*$r_wh), (int)$height, $this->_resizeFilter, 1, true);
     }
     else {
       if($width < $height)
-        $this->img->resizeImage((int)($height*$r_wh), $height, $this->_resizeFilter, 1, true);
+        $this->img->resizeImage((int)($height*$r_wh), (int)$height, $this->_resizeFilter, 1, true);
       else
-        $this->img->resizeImage($width, (int)($width*$r_hw), $this->_resizeFilter, 1, true);
+        $this->img->resizeImage((int)$width, (int)($width*$r_hw), $this->_resizeFilter, 1, true);
     }
-    // $this->img->cropImage($width, $height, 0, 0);
-    $this->img->cropThumbnailImage($width, $height);
+    $this->cropImage($width, $height);
+    // $this->img->cropThumbnailImage($width, $height);
+    return $this;
+  }
+
+  function cropImage($width, $height, $s_x = 'center', $s_y = 'center') {
+    $w = $this->img->getImageWidth();
+    $h = $this->img->getImageHeight();
+    /////////////////////////////////////////////
+    // Výpočet X
+    $x = 0;
+    if($s_x == 'center') $x = ($w - $width) / 2;
+    elseif($s_x == 'left') $x = 0;
+    elseif($s_x == 'right') $x = ($w - $width);
+    /////////////////////////////////////////////
+    // Výpočet Y
+    $y = 0;
+    if($s_y == 'center') $y = ($h - $height) / 2;
+    if($s_y == 'top') $y = 0;
+    if($s_y == 'bottom') $y = ($h - $height);
+    /////////////////////////////////////////////
+    // Provedení ořezu
+    $this->img->cropImage((int)$width, (int)$height, (int)$x, (int)$y);
     return $this;
   }
 
   function compression($quality, $formatImagick = 'JPEG') {
-    // if(in_array($formatImagick, ['PNG'])) {
+    // if(in_array($formatImagick, ['PNG']))
     //   $this->img->setCompression(Imagick::COMPRESSION_ZIP);
-    // }
-    // elseif(in_array($formatImagick, ['JPEG'])) {
+    // elseif(in_array($formatImagick, ['JPEG']))
     //   $this->img->setCompression(Imagick::COMPRESSION_JPEG);
-    // }
     $this->img->setImageCompressionQuality($quality);
     return $this;
   }

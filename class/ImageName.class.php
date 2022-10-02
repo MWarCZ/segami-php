@@ -1,7 +1,8 @@
 <?php
 ///////////////////////////////////////////////
 // * Aktuální:
-// image@200x100=80.png
+// image@r200x100=80.png = Resize
+// image@c200x100=80.png = Crop
 // * Plán:
 // image@<props>.<format>
 // props:
@@ -47,17 +48,18 @@ class ImageName {
    */
   function checkRequestProps($props) {
     $r_number = '[0-9][0-9]*';
+    $r_fn = '(c|r)'; // R = Resize; C = Crop
     $r_size_v1 = $r_number;
     $r_size_v2 = $r_number.$this->escRegex($this->separator->size2).$r_number;
     $r_extension = $this->escRegex($this->separator->extension).'[a-zA-Z0-9_-]+';
     $r_compression = $this->escRegex($this->separator->compression).$r_number;
 
     // /(([1-9][0-9]*)|([1-9][0-9]*x[1-9][0-9]*))?(=[1-9][0-9]*)?(\.[a-z]+)/i
-    $r_full = "(($r_size_v1)|($r_size_v2))?($r_compression)?($r_extension)";
+    $r_full = "($r_fn?(($r_size_v1)|($r_size_v2)))?($r_compression)?($r_extension)";
 
     $is_ok = preg_match('/^'.$r_full.'$/i', $props);
 
-    # p_debug([$is_ok, $props]);
+    // p_debug([$is_ok, $props]);
     return $is_ok;
   }
 
@@ -81,10 +83,17 @@ class ImageName {
     // Získání komprese
     list($tmp, $compression) = explode($this->separator->compression, $tmp.$this->separator->compression.'100'); // '=100' přípona s výchozí hodnotou pro kompresi
 
+    // Získání funkce pro zpracování rozměrů
+    $fn = '';
+    if(strlen($tmp)) {
+      $fn = strtolower($tmp[0]);
+      $tmp = substr($tmp, 1);
+    }
+
     // Získání rozměrů
     list($width, $height) = explode($this->separator->size2, $tmp.$this->separator->size2.$tmp); // 'x'.$tmp přípona s výchozí hodnotou pro výšku (čtverec)
 
-    return new ImageProps($name, strtolower($extension), (int)$compression, (int)$width, (int)$height);
+    return new ImageProps($name, strtolower($extension), (int)$compression, (int)$width, (int)$height, $fn);
   }
 
   /**
@@ -97,7 +106,7 @@ class ImageName {
       .$props->name.$this->separator->props.(
         $props->width == 0
       ? ''
-      : (
+      : $props->fn.(
         $props->width == $props->height
         ? $props->width
         : $props->width.$this->separator->size2.$props->height
