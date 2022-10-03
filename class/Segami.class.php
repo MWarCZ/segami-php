@@ -17,7 +17,7 @@ class Segami {
     $this->gen_img_dir = $gen_img_dir;
     $this->image_name = new ImageName();
 
-    $tmp_supported_targets = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+    $tmp_supported_targets = ['jpg', 'jpeg', 'jp2', 'png', 'gif', 'webp', 'bmp'];
     $this->a_map_extension = [
       'jpg' =>[
         'imagick'=>'JPEG',
@@ -28,6 +28,12 @@ class Segami {
       'jpeg'=>[
         'imagick'=>'JPEG',
         'mime'=>'image/jpeg',
+        'target'=>$tmp_supported_targets,
+        'default_compression'=>100,
+      ],
+      'jp2'=>[
+        'imagick'=>'JP2',
+        'mime'=>'image/jp2',
         'target'=>$tmp_supported_targets,
         'default_compression'=>100,
       ],

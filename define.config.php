@@ -4,10 +4,19 @@
 // Obecná práce s URL
 ///////////////////////////////////////////////////
 
+define(
+  'HTTPS',
+  (
+    empty($_SERVER['HTTPS'])
+    ? $_SERVER['SERVER_PORT'] == 443
+    : $_SERVER['HTTPS'] !== 'off'
+  )
+);
+
 // Hlavní URL adresa serveru
 define(
-	'ROOT_URL',
-	(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST']
+  'ROOT_URL',
+  (HTTPS === 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST']
 );
 // Adresa ke konkrétnímu modulu na serveru
 define('MODULE_PATH', '/segami');
