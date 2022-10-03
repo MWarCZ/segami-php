@@ -22,7 +22,7 @@ try {
 } catch (Exception $e) {
   // Obrázek neexistuje
   header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
-  // p_debug($e);
+  p_debug($e);
 }
 exit;
 
