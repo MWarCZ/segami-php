@@ -19,12 +19,15 @@ class Segami {
 
   /** @property ImageFactory */
   protected $image_factory;
+  /** @property ImageLogger */
+  protected $image_logger;
 
-  function __construct($org_img_dir, $gen_img_dir, $image_factory) {
+  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null) {
     $this->org_img_dir = $org_img_dir;
     $this->gen_img_dir = $gen_img_dir;
     $this->image_name = new ImageName();
     $this->image_factory = $image_factory;
+    $this->image_logger = $image_logger;
 
     $tmp_supported_targets = ['jpg', 'jpeg', 'jp2', 'png', 'gif', 'webp', 'bmp'];
     $this->a_map_extension = [
@@ -138,6 +141,8 @@ class Segami {
       $ext = end($ext);
       $ext = $this->a_map_extension[$ext];
       if($ext) {
+        if($this->image_logger) $this->image_logger->access($org_img_path);
+
         header('Content-type: '.$ext['mime']);
         header('Content-Length: '.filesize($org_img_path));
         readfile($org_img_path);
@@ -154,6 +159,8 @@ class Segami {
     $res_img = $this->image_name->createName($img_props);
     $req_img_path = $this->gen_img_dir.'/'.$res_img;
     if(is_file($req_img_path)) {
+      if($this->image_logger) $this->image_logger->access($req_img_path);
+
       header('Content-type: '.$ext['mime']);
       header('Content-Length: '.filesize($req_img_path));
       readfile($req_img_path);
