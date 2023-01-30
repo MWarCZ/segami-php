@@ -1,6 +1,7 @@
 <?php
+require_once(__DIR__.'/ImageInterface.php');
 
-class Image {
+class Image implements ImageInterface {
 
   protected $img = null;
   protected $_resizeFilter = Imagick::FILTER_CATROM;
@@ -98,7 +99,7 @@ class Image {
     return $this;
   }
 
-  function compression($quality, $formatImagick = 'JPEG') {
+  function compression($quality) {
     // if(in_array($formatImagick, ['PNG']))
     //   $this->img->setCompression(Imagick::COMPRESSION_ZIP);
     // elseif(in_array($formatImagick, ['JPEG']))

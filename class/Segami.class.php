@@ -1,4 +1,8 @@
 <?php
+require_once(__DIR__.'/ImageProps.class.php');
+require_once(__DIR__.'/ImageName.class.php');
+require_once(__DIR__.'/Image.class.php');
+// require_once(__DIR__.'/ImageGD.class.php');
 
 class Segami {
 

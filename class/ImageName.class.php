@@ -18,7 +18,13 @@ class ImageName {
   public $separator;
 
   function __construct($a_separator = []) {
-    $this->separator = (object)array_merge(
+    $this->separator = new StdClass();
+	 $this->separator->props = '@';
+	 $this->separator->extension = '.';
+	 $this->separator->compression = '=';
+	 $this->separator->size2 = 'x';
+    /*
+	 $this->separator = (object)array_merge(
       [
         'props'=>'@',
         'extension'=>'.',
@@ -27,6 +33,7 @@ class ImageName {
       ],
       $a_separator
     );
+	 */
   }
 
   /** Pomocná funkce upravující vstupní znak pro použití v regex */
