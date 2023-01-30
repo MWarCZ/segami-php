@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__.'/ImageInterface.php');
+require_once(__DIR__.'/Image.interface.php');
 
-class Image implements ImageInterface {
+class ImageImagick implements Image {
 
   protected $img = null;
   protected $_resizeFilter = Imagick::FILTER_CATROM;

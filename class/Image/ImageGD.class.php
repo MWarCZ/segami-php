@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__.'/ImageInterface.php');
+require_once(__DIR__.'/Image.interface.php');
 
-class ImageGD implements ImageInterface {
+class ImageGD implements Image {
   protected $fn_imagecreatefrom;
   protected $fn_image;
 
@@ -61,6 +61,18 @@ class ImageGD implements ImageInterface {
   function resizeFill($width, $height) {
     // imagecopyresampled();
     $this->img = imagescale($this->img, $width, $height);
+    return $this;
+  }
+
+  function resizeContain($width, $height) {
+    return $this;
+  }
+
+  function resizeCover($width, $height) {
+    return $this;
+  }
+
+  function cropImage($width, $height, $s_x, $s_y) {
     return $this;
   }
 

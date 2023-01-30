@@ -1,8 +1,10 @@
 <?php
 require_once(__DIR__.'/ImageProps.class.php');
 require_once(__DIR__.'/ImageName.class.php');
-require_once(__DIR__.'/Image.class.php');
-// require_once(__DIR__.'/ImageGD.class.php');
+require_once(__DIR__.'/Image/Image.interface.php');
+require_once(__DIR__.'/Image/ImageFactory.interface.php');
+// require_once(__DIR__.'/Image/ImageImagick.class.php');
+// require_once(__DIR__.'/Image/ImageGD.class.php');
 
 class Segami {
 
@@ -15,11 +17,14 @@ class Segami {
   /** @property Array Mapa koncovek souborů na vlastnosti formátu obrázku. */
   protected $a_map_extension;
 
+  /** @property ImageFactory */
+  protected $image_factory;
 
-  function __construct($org_img_dir, $gen_img_dir) {
+  function __construct($org_img_dir, $gen_img_dir, $image_factory) {
     $this->org_img_dir = $org_img_dir;
     $this->gen_img_dir = $gen_img_dir;
     $this->image_name = new ImageName();
+    $this->image_factory = $image_factory;
 
     $tmp_supported_targets = ['jpg', 'jpeg', 'jp2', 'png', 'gif', 'webp', 'bmp'];
     $this->a_map_extension = [
@@ -96,7 +101,8 @@ class Segami {
    */
   function createImage($from_img_path, $to_img_path, $img_props) {
     $ext = $this->a_map_extension[$img_props->extension];
-    $img = new Image();
+    // $img = new ImageImagick();
+    $img = ($this->image_factory)::newImage();
     $img->read($from_img_path);
     $img->setFormat($ext['imagick']);
     if($img_props->width)
