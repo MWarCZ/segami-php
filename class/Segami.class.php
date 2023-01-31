@@ -1,8 +1,9 @@
 <?php
-require_once(__DIR__.'/ImageProps.class.php');
-require_once(__DIR__.'/ImageName.class.php');
 require_once(__DIR__.'/Image/Image.interface.php');
 require_once(__DIR__.'/Image/ImageFactory.interface.php');
+require_once(__DIR__.'/ImageProps.class.php');
+require_once(__DIR__.'/ImageName.class.php');
+require_once(__DIR__.'/ImageFS.class.php');
 // require_once(__DIR__.'/Image/ImageImagick.class.php');
 // require_once(__DIR__.'/Image/ImageGD.class.php');
 
@@ -23,8 +24,8 @@ class Segami {
   protected $image_logger;
 
   function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null) {
-    $this->org_img_dir = $org_img_dir;
-    $this->gen_img_dir = $gen_img_dir;
+    $this->org_img_dir = realpath($org_img_dir);
+    $this->gen_img_dir = realpath($gen_img_dir);
     $this->image_name = new ImageName();
     $this->image_factory = $image_factory;
     $this->image_logger = $image_logger;
@@ -135,7 +136,7 @@ class Segami {
    */
   function returnImage($req_img, $b_cache_new_image = true) {
     // START Existující originální obrázek
-    $org_img_path = $this->org_img_dir.'/'.$req_img;
+    $org_img_path = $this->org_img_dir.DIRECTORY_SEPARATOR.$req_img;
     if(is_file($org_img_path)) {
       $ext = explode('.', $req_img);
       $ext = end($ext);
@@ -157,7 +158,7 @@ class Segami {
     $ext = $this->a_map_extension[$img_props->extension];
     if(!$ext) throw new Exception('2) Koncovka obrázku "'.$ext->extension.'" není podporovaná.');
     $res_img = $this->image_name->createName($img_props);
-    $req_img_path = $this->gen_img_dir.'/'.$res_img;
+    $req_img_path = $this->gen_img_dir.DIRECTORY_SEPARATOR.$res_img;
     if(is_file($req_img_path)) {
       if($this->image_logger) $this->image_logger->access($req_img_path);
 
@@ -173,7 +174,7 @@ class Segami {
     // END Kontrola povolených vlastností pro obrázky (rozměr, ...)
     // ***
     // START Vytvořit požadovaný obrázek
-    $from_img_path = $this->org_img_dir.'/'.$img_props->name;
+    $from_img_path = $this->org_img_dir.DIRECTORY_SEPARATOR.$img_props->name;
     if(!is_file($from_img_path)) throw new Exception('3) Zdrojový obrázek "'.$img_props->name.'" neexistuje.');
     $to_img_path = $b_cache_new_image ? $req_img_path : '';
     $img = $this->createImage($from_img_path, $to_img_path, $img_props);
@@ -181,6 +182,40 @@ class Segami {
     echo $img;
     return true;
     // END Vytvořit požadovaný obrázek
+  }
+
+  /**
+   * Funkce odstraní zadaný obrázek a při správném nastavení
+   * může odstranit i obrázky z něj vygenerované.
+   *
+   * @param String $req_img Název požadovaného obrázku.
+   * @param Bool $b_remove_all Odstranit zadaný obrázek i všechny z něj vygenerované.
+   *
+   * @throws Exception Něco se nepodařilo.
+   */
+  function removeImage($req_img, $b_remove_all = false) {
+    $file = $this->org_img_dir.DIRECTORY_SEPARATOR.$req_img;
+    if(file_exists($file)) unlink($file);
+    if($b_remove_all) {
+      ImageFS::removeFiles(ImageFS::getFilesFromOrg($this->gen_img_dir, $req_img));
+    }
+    else {
+      $file = $this->gen_img_dir.DIRECTORY_SEPARATOR.$req_img;
+      if(file_exists($file)) unlink($file);
+    }
+  }
+
+  /**
+   * Funkce odstraní vygenerované obrázky starší než zadané datum/čas.
+   *
+   * @param String|Int $mtime Časová jednotka 1. celočíselná hodnota např. `time()` nebo
+   *                          textový řetězec obsahující časový údaj např. `-7 days`,`-4 week`.
+   * @param Bool $b_remove_all Odstranit zadaný obrázek i všechny z něj vygenerované obrázky.
+   *
+   * @throws Exception Něco se nepodařilo.
+   */
+  function removeUnusedImage($mtime = '-30 days') {
+    ImageFS::removeUnusedFiles($this->gen_img_dir, $mtime);
   }
 
 }

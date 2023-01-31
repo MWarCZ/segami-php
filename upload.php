@@ -10,10 +10,14 @@ if(isset($_POST['submit_upload'])) {
   }
 }
 if(isset($_POST['submit_delete'])) {
-  $file = ORG_IMG_PATH.'/'.$_POST['submit_delete'];
-  if(file_exists($file)) {
-    unlink($file);
-  }
+  $segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH, new ImageImagickFactory(), new ImageLoggerFS());
+  $segami->removeImage($_POST['submit_delete'], true);
+  location(ACTUAL_URL);
+}
+// TODO
+if(isset($_POST['submit_delete_unused_1day'])) {
+  $segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH, new ImageImagickFactory(), new ImageLoggerFS());
+  $segami->removeUnusedImage('-1 day');
   location(ACTUAL_URL);
 }
 
@@ -69,12 +73,13 @@ $a_filter = [
               .'</figcaption>'
             .'</figure>'
           ;
+			 $cache = '';
           echo ''
             .'<div class="gallery-preview">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@c150.webp'.'">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@r150.webp'.'">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@r300x100.webp'.'">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$file.'@r100x300.webp'.'">'
+              .'<img src="'.ROOT_MODULE_URL.'/'.$cache.$file.'@c150.webp'.'">'
+              .'<img src="'.ROOT_MODULE_URL.'/'.$cache.$file.'@r150.webp'.'">'
+              .'<img src="'.ROOT_MODULE_URL.'/'.$cache.$file.'@r300x100.webp'.'">'
+              .'<img src="'.ROOT_MODULE_URL.'/'.$cache.$file.'@r100x300.webp'.'">'
             .'</div>'
           ;
           // echo '<div class="gallery-preview">';
