@@ -4,6 +4,7 @@ require_once(__DIR__.'/Image/ImageFactory.interface.php');
 require_once(__DIR__.'/ImageProps.class.php');
 require_once(__DIR__.'/ImageName.class.php');
 require_once(__DIR__.'/ImageFS.class.php');
+require_once(__DIR__.'/Limiter/LimiterFree.class.php');
 // require_once(__DIR__.'/Image/ImageImagick.class.php');
 // require_once(__DIR__.'/Image/ImageGD.class.php');
 
@@ -22,13 +23,17 @@ class Segami {
   protected $image_factory;
   /** @property ImageLogger */
   protected $image_logger;
+  /** @property Limiter */
+  protected $limiter;
 
-  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null) {
+  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null) {
     $this->org_img_dir = realpath($org_img_dir);
     $this->gen_img_dir = realpath($gen_img_dir);
     $this->image_name = new ImageName();
     $this->image_factory = $image_factory;
     $this->image_logger = $image_logger;
+
+    $this->limiter = $limiter instanceof LimiterInterface ? $limiter : new LimiterFree();
 
     $tmp_supported_targets = ['jpg', 'jpeg', 'jp2', 'png', 'gif', 'webp', 'bmp'];
     $this->a_map_extension = [
@@ -171,22 +176,7 @@ class Segami {
     // ***
     // START Kontrola povolených vlastností pro obrázky (rozměr, ...)
     // p_debug($img_props);
-    if(!$this->checkReqImage(
-      // [
-      //   // 'strict'=>[
-      //   //   [['jpg', 'png'], [200, 300]],
-      //   //   [['jpg'], [400]],
-      //   // ],
-      //   // 'lax'=>[
-      //   //   [],
-      //   //   ['webp'],
-      //   //   [[50, 100], [100], [200]],
-      //   // ],
-      // ],
-      false,
-      '*',
-      $img_props,
-    )) throw new Exception('4) Nepovolené parametry obrázku.');
+    if(!$this->limiter->check($img_props->width, $img_props->height, $img_props->extension)) throw new Exception('4) Nepovolené parametry obrázku.');
     // ...
     // END Kontrola povolených vlastností pro obrázky (rozměr, ...)
     // ***
@@ -244,112 +234,5 @@ class Segami {
   function removeUnusedImage($mtime = '-30 days') {
     ImageFS::removeUnusedFiles($this->gen_img_dir, $mtime);
   }
-
-  /////////////////////////////////////////////////////
-
-
-  /** ImageName */
-  // function checkImage($allow, $image_name) {
-  /** ImageProps */
-  /**
-   * [[input format, output format], [width, height]]
-   * [[input format, ...], [output format, ...], [size, ...]]
-   * [[input format, ...], [output format, ...], [width, ...], [height, ...]]
-   * @param [strict?:[...], lax?:[...]] $allow
-   * @param [...] $input_format
-   */
-  private function checkReqImage($allow, $input_format, $req_img_props) {
-
-    if($allow === false || $allow === null) return true;
-    if(!is_array($allow)) return false;
-    // strict - přesná shoda
-    if(isset($allow['strict']) && is_array($allow['strict']) && count($allow['strict']) == 2) return $this->checkReqImageStrict($allow['strict'], $input_format, $req_img_props);
-    // lax v1
-    elseif(isset($allow['lax']) && is_array($allow['lax']) && count($allow['lax'])  == 3) return $this->checkReqImageLaxV1($allow['lax'], $input_format, $req_img_props);
-    // lax v2
-    elseif(isset($allow['lax']) && is_array($allow['lax']) && count($allow['lax'])  == 4) return $this->checkReqImageLaxV2($allow['lax'], $input_format, $req_img_props);
-
-    return false;
-  }
-  private function checkReqImage_v2($allow, $input_format, $req_img_props) {
-    if($allow === true) return true;
-    if(!is_array($allow)) return false;
-    // strict - přesná shoda
-    if(isset($allow['strict']) && is_array($allow['strict']) && count($allow['strict']) == 2) {
-      return $this->checkReqImageStrict($allow['strict'], $input_format, $req_img_props);
-    }
-    // lax
-    elseif(isset($allow['lax']) && is_array($allow['lax'])) {
-      if(count($allow['lax'])  == 3) {
-        return $this->checkReqImageLaxV1($allow['lax'], $input_format, $req_img_props);
-      }
-      elseif(count($allow['lax'])  == 4) {
-        return $this->checkReqImageLaxV2($allow['lax'], $input_format, $req_img_props);
-      }
-    }
-
-    return false;
-  }
-  /**
-   * [[input format, output format], [width, height]]
-   * @param [io_format, size][] $a_allow
-   */
-  private function checkReqImageStrict($a_allow, $input_format, $req_img_props) {
-    if(!is_array($a_allow)) return false;
-
-    foreach ($a_allow as $allow) {
-      // if(!is_array($allow)) continue;
-
-      list($io_format, $size) = $allow;
-      $i_format = $io_format[0];
-      $o_format = end($io_format);
-      $width = $size[0];
-      $height = end($size);
-      $b_res = ( true
-        // && ($i_format==$input_format)
-        && ($o_format == $req_img_props->extension)
-        && ($width == $req_img_props->width)
-        && ($height == $req_img_props->height)
-      );
-
-      if($b_res) return $b_res;
-    }
-    return false;
-  }
-  /**
-   * [[input format, ...], [output format, ...], [size, ...]]
-   * @param [io_format, size] $allow
-   */
-  private function checkReqImageLaxV1($allow, $input_format, $req_img_props) {
-    list($a_i_format, $a_o_format, $a_size) = $allow;
-    $b_res = ( true
-      // && in_array($input_format, $a_i_format)
-      && in_array($req_img_props->extension, $a_o_format)
-      // Kontrola velikosti
-      && count(
-        array_filter($a_size, function($size) use ($req_img_props) {
-          $width = $size[0];
-          $height = end($size);
-          return ($width == $req_img_props->width) && ($height == $req_img_props->height);
-        })
-      )
-    );
-    return $b_res;
-  }
-  /**
-   * [[input format, ...], [output format, ...], [width, ...], [height, ...]]
-   * @param [io_format, size] $allow
-   */
-  private function checkReqImageLaxV2($allow, $input_format, $req_img_props) {
-    list($a_i_format, $a_o_format, $a_width, $a_height) = $allow;
-    $b_res = ( true
-      // && in_array($input_format, $a_i_format)
-      && in_array($req_img_props->extension, $a_o_format)
-      && in_array($req_img_props->width, $a_width)
-      && in_array($req_img_props->height, $a_height)
-    );
-    return $b_res;
-  }
-
 
 }
