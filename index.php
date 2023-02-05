@@ -16,7 +16,15 @@ $a_req_part = explode('/', REQUEST_URL);
 $req_img = urldecode(end($a_req_part));
 $req_type = count($a_req_part)>2 ? urldecode($a_req_part[count($a_req_part)-2]) : '';
 // p_debug([$a_req_part, $req_img, $req_type]);
-$segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH, new ImageImagickFactory(), new ImageLoggerFS());
+$segami = new Segami(
+  ORG_IMG_PATH,
+  GEN_IMG_PATH,
+  new ImageImagickFactory(),
+  new ImageLoggerFS(),
+  // new LimiterMix([
+  //   new LimiterStrict([500, 500], 'webp'),
+  // ]),
+);
 try {
   $segami->returnImage($req_img, $req_type=='cache');
 } catch (Exception $e) {

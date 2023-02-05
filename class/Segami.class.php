@@ -4,6 +4,7 @@ require_once(__DIR__.'/Image/ImageFactory.interface.php');
 require_once(__DIR__.'/ImageProps.class.php');
 require_once(__DIR__.'/ImageName.class.php');
 require_once(__DIR__.'/ImageFS.class.php');
+require_once(__DIR__.'/Limiter/LimiterFree.class.php');
 // require_once(__DIR__.'/Image/ImageImagick.class.php');
 // require_once(__DIR__.'/Image/ImageGD.class.php');
 
@@ -22,13 +23,17 @@ class Segami {
   protected $image_factory;
   /** @property ImageLogger */
   protected $image_logger;
+  /** @property Limiter */
+  protected $limiter;
 
-  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null) {
+  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null) {
     $this->org_img_dir = realpath($org_img_dir);
     $this->gen_img_dir = realpath($gen_img_dir);
     $this->image_name = new ImageName();
     $this->image_factory = $image_factory;
     $this->image_logger = $image_logger;
+
+    $this->limiter = $limiter instanceof LimiterInterface ? $limiter : new LimiterFree();
 
     $tmp_supported_targets = ['jpg', 'jpeg', 'jp2', 'png', 'gif', 'webp', 'bmp'];
     $this->a_map_extension = [
@@ -170,6 +175,8 @@ class Segami {
     // END Existující vygenerovaný obrázek
     // ***
     // START Kontrola povolených vlastností pro obrázky (rozměr, ...)
+    // p_debug($img_props);
+    if(!$this->limiter->check($img_props->width, $img_props->height, $img_props->extension)) throw new Exception('4) Nepovolené parametry obrázku.');
     // ...
     // END Kontrola povolených vlastností pro obrázky (rozměr, ...)
     // ***
@@ -194,15 +201,25 @@ class Segami {
    * @throws Exception Něco se nepodařilo.
    */
   function removeImage($req_img, $b_remove_all = false) {
+    // START Odstranění originálního obrázku pokud existuje
     $file = $this->org_img_dir.DIRECTORY_SEPARATOR.$req_img;
     if(file_exists($file)) unlink($file);
+    // END Odstranění originálního obrázku pokud existuje
+    // ***
+    // START Odstranění generovaného obrázku
     if($b_remove_all) {
-      ImageFS::removeFiles(ImageFS::getFilesFromOrg($this->gen_img_dir, $req_img));
+      ImageFS::removeFiles(
+        ImageFS::getFilesByGlob(
+          $this->gen_img_dir,
+          $req_img.$this->image_name->separator->props.'*'
+        )
+      );
     }
     else {
       $file = $this->gen_img_dir.DIRECTORY_SEPARATOR.$req_img;
       if(file_exists($file)) unlink($file);
     }
+    // END Odstranění generovaného obrázku
   }
 
   /**
