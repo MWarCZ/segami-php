@@ -170,6 +170,23 @@ class Segami {
     // END Existující vygenerovaný obrázek
     // ***
     // START Kontrola povolených vlastností pro obrázky (rozměr, ...)
+    // p_debug($img_props);
+    if(!$this->checkReqImage(
+      // [
+      //   // 'strict'=>[
+      //   //   [['jpg', 'png'], [200, 300]],
+      //   //   [['jpg'], [400]],
+      //   // ],
+      //   // 'lax'=>[
+      //   //   [],
+      //   //   ['webp'],
+      //   //   [[50, 100], [100], [200]],
+      //   // ],
+      // ],
+      false,
+      '*',
+      $img_props,
+    )) throw new Exception('4) Nepovolené parametry obrázku.');
     // ...
     // END Kontrola povolených vlastností pro obrázky (rozměr, ...)
     // ***
@@ -194,15 +211,25 @@ class Segami {
    * @throws Exception Něco se nepodařilo.
    */
   function removeImage($req_img, $b_remove_all = false) {
+    // START Odstranění originálního obrázku pokud existuje
     $file = $this->org_img_dir.DIRECTORY_SEPARATOR.$req_img;
     if(file_exists($file)) unlink($file);
+    // END Odstranění originálního obrázku pokud existuje
+    // ***
+    // START Odstranění generovaného obrázku
     if($b_remove_all) {
-      ImageFS::removeFiles(ImageFS::getFilesFromOrg($this->gen_img_dir, $req_img));
+      ImageFS::removeFiles(
+        ImageFS::getFilesByGlob(
+          $this->gen_img_dir,
+          $req_img.$this->image_name->separator->props.'*'
+        )
+      );
     }
     else {
       $file = $this->gen_img_dir.DIRECTORY_SEPARATOR.$req_img;
       if(file_exists($file)) unlink($file);
     }
+    // END Odstranění generovaného obrázku
   }
 
   /**
@@ -217,5 +244,112 @@ class Segami {
   function removeUnusedImage($mtime = '-30 days') {
     ImageFS::removeUnusedFiles($this->gen_img_dir, $mtime);
   }
+
+  /////////////////////////////////////////////////////
+
+
+  /** ImageName */
+  // function checkImage($allow, $image_name) {
+  /** ImageProps */
+  /**
+   * [[input format, output format], [width, height]]
+   * [[input format, ...], [output format, ...], [size, ...]]
+   * [[input format, ...], [output format, ...], [width, ...], [height, ...]]
+   * @param [strict?:[...], lax?:[...]] $allow
+   * @param [...] $input_format
+   */
+  private function checkReqImage($allow, $input_format, $req_img_props) {
+
+    if($allow === false || $allow === null) return true;
+    if(!is_array($allow)) return false;
+    // strict - přesná shoda
+    if(isset($allow['strict']) && is_array($allow['strict']) && count($allow['strict']) == 2) return $this->checkReqImageStrict($allow['strict'], $input_format, $req_img_props);
+    // lax v1
+    elseif(isset($allow['lax']) && is_array($allow['lax']) && count($allow['lax'])  == 3) return $this->checkReqImageLaxV1($allow['lax'], $input_format, $req_img_props);
+    // lax v2
+    elseif(isset($allow['lax']) && is_array($allow['lax']) && count($allow['lax'])  == 4) return $this->checkReqImageLaxV2($allow['lax'], $input_format, $req_img_props);
+
+    return false;
+  }
+  private function checkReqImage_v2($allow, $input_format, $req_img_props) {
+    if($allow === true) return true;
+    if(!is_array($allow)) return false;
+    // strict - přesná shoda
+    if(isset($allow['strict']) && is_array($allow['strict']) && count($allow['strict']) == 2) {
+      return $this->checkReqImageStrict($allow['strict'], $input_format, $req_img_props);
+    }
+    // lax
+    elseif(isset($allow['lax']) && is_array($allow['lax'])) {
+      if(count($allow['lax'])  == 3) {
+        return $this->checkReqImageLaxV1($allow['lax'], $input_format, $req_img_props);
+      }
+      elseif(count($allow['lax'])  == 4) {
+        return $this->checkReqImageLaxV2($allow['lax'], $input_format, $req_img_props);
+      }
+    }
+
+    return false;
+  }
+  /**
+   * [[input format, output format], [width, height]]
+   * @param [io_format, size][] $a_allow
+   */
+  private function checkReqImageStrict($a_allow, $input_format, $req_img_props) {
+    if(!is_array($a_allow)) return false;
+
+    foreach ($a_allow as $allow) {
+      // if(!is_array($allow)) continue;
+
+      list($io_format, $size) = $allow;
+      $i_format = $io_format[0];
+      $o_format = end($io_format);
+      $width = $size[0];
+      $height = end($size);
+      $b_res = ( true
+        // && ($i_format==$input_format)
+        && ($o_format == $req_img_props->extension)
+        && ($width == $req_img_props->width)
+        && ($height == $req_img_props->height)
+      );
+
+      if($b_res) return $b_res;
+    }
+    return false;
+  }
+  /**
+   * [[input format, ...], [output format, ...], [size, ...]]
+   * @param [io_format, size] $allow
+   */
+  private function checkReqImageLaxV1($allow, $input_format, $req_img_props) {
+    list($a_i_format, $a_o_format, $a_size) = $allow;
+    $b_res = ( true
+      // && in_array($input_format, $a_i_format)
+      && in_array($req_img_props->extension, $a_o_format)
+      // Kontrola velikosti
+      && count(
+        array_filter($a_size, function($size) use ($req_img_props) {
+          $width = $size[0];
+          $height = end($size);
+          return ($width == $req_img_props->width) && ($height == $req_img_props->height);
+        })
+      )
+    );
+    return $b_res;
+  }
+  /**
+   * [[input format, ...], [output format, ...], [width, ...], [height, ...]]
+   * @param [io_format, size] $allow
+   */
+  private function checkReqImageLaxV2($allow, $input_format, $req_img_props) {
+    list($a_i_format, $a_o_format, $a_width, $a_height) = $allow;
+    $b_res = ( true
+      // && in_array($input_format, $a_i_format)
+      && in_array($req_img_props->extension, $a_o_format)
+      && in_array($req_img_props->width, $a_width)
+      && in_array($req_img_props->height, $a_height)
+    );
+    return $b_res;
+  }
+
 
 }
