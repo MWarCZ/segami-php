@@ -46,6 +46,12 @@ $a_filter = [
 <style>body{background:black;color:yellow;}</style>
 
 <form action="" method="post" enctype="multipart/form-data">
+  <section class="remove-unused">
+    <label>
+      <span>Smazat nepoužívané soubory</span>
+      <button type="submit" name="submit_delete_unused_1day">-1 den</button>
+    </label>
+  </section>
   <section class="upload">
     <h2>Nahrát obrázek</h2>
     <label>

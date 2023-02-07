@@ -6,5 +6,14 @@ require_once(__DIR__.'/ImageLogger.interface.php');
  */
 class ImageLoggerNone implements ImageLogger {
   function __construct() {}
-  function access($file_name) { return true; }
+  public function access($file_path) { return true; }
+
+  public function &getUnusedFiles($dir_path, $mtime) {
+    throw new Exception('Funkce není implementovaná!');
+  }
+
+  public function &getFiles($dir_path, $img_name, $img_separator_props) {
+    throw new Exception('Funkce není implementovaná!');
+  }
+
 }
