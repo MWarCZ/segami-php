@@ -3,10 +3,7 @@ require_once(__DIR__.'/Image/Image.interface.php');
 require_once(__DIR__.'/Image/ImageFactory.interface.php');
 require_once(__DIR__.'/ImageProps.class.php');
 require_once(__DIR__.'/ImageName.class.php');
-require_once(__DIR__.'/ImageFS.class.php');
 require_once(__DIR__.'/Limiter/LimiterFree.class.php');
-// require_once(__DIR__.'/Image/ImageImagick.class.php');
-// require_once(__DIR__.'/Image/ImageGD.class.php');
 
 class Segami {
 
@@ -208,12 +205,14 @@ class Segami {
     // ***
     // START Odstranění generovaného obrázku
     if($b_remove_all) {
-      ImageFS::removeFiles(
-        ImageFS::getFilesByGlob(
-          $this->gen_img_dir,
-          $req_img.$this->image_name->separator->props.'*'
-        )
+      $a_file_path = $this->image_logger->getFiles(
+        $this->gen_img_dir,
+        $req_img,
+        $this->image_name->separator->props
       );
+      foreach ($a_file_path as &$file_path) {
+        unlink($file_path);
+      }
     }
     else {
       $file = $this->gen_img_dir.DIRECTORY_SEPARATOR.$req_img;
@@ -227,12 +226,15 @@ class Segami {
    *
    * @param String|Int $mtime Časová jednotka 1. celočíselná hodnota např. `time()` nebo
    *                          textový řetězec obsahující časový údaj např. `-7 days`,`-4 week`.
-   * @param Bool $b_remove_all Odstranit zadaný obrázek i všechny z něj vygenerované obrázky.
-   *
    * @throws Exception Něco se nepodařilo.
    */
   function removeUnusedImage($mtime = '-30 days') {
-    ImageFS::removeUnusedFiles($this->gen_img_dir, $mtime);
+    if(!($this->image_logger instanceof ImageLogger)) throw new Exception('Není nastaveno rozpoznávání souborů pro smazání.');
+
+    $a_file_path = $this->image_logger->getUnusedFiles($this->gen_img_dir, $mtime);
+    foreach ($a_file_path as &$file_path) {
+      unlink($file_path);
+    }
   }
 
 }
