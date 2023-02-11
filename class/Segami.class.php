@@ -2,7 +2,8 @@
 require_once(__DIR__.'/Image/Image.interface.php');
 require_once(__DIR__.'/Image/ImageFactory.interface.php');
 require_once(__DIR__.'/ImageProps.class.php');
-require_once(__DIR__.'/ImageName.class.php');
+require_once(__DIR__.'/ImageName/ImageNameV1.class.php');
+// require_once(__DIR__.'/ImageName.class.php');
 require_once(__DIR__.'/Limiter/LimiterFree.class.php');
 
 class Segami {
@@ -26,7 +27,7 @@ class Segami {
   function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null) {
     $this->org_img_dir = realpath($org_img_dir);
     $this->gen_img_dir = realpath($gen_img_dir);
-    $this->image_name = new ImageName();
+    $this->image_name = new ImageNameV1();
     $this->image_factory = $image_factory;
     $this->image_logger = $image_logger;
 
@@ -118,9 +119,9 @@ class Segami {
         // $img->resizeContain($img_props->width, $img_props->height);
       elseif($img_props->fn == 'c')
         $img->cropImage($img_props->width, $img_props->height);
-    if($img_props->compression != $ext['default_compression'])
-      $img->compression($img_props->compression);
-      // $img->resizeFilter($img_props->compression);
+    if($img_props->quality != $ext['default_compression'])
+      $img->compression($img_props->quality);
+      // $img->resizeFilter($img_props->quality);
     $img->strip();
     if($to_img_path)
       $img->write($to_img_path);
@@ -155,7 +156,7 @@ class Segami {
     // END Existující originální obrázek
     // ***
     // START Existující vygenerovaný obrázek
-    $img_props = $this->image_name->parseImageName($req_img);
+    $img_props = $this->image_name->parseName($req_img);
     if(!$img_props) throw new Exception('1) Nepodařilo se získat vlastnosti požadovaného obrázku.');
     $ext = $this->a_map_extension[$img_props->extension];
     if(!$ext) throw new Exception('2) Koncovka obrázku "'.$ext->extension.'" není podporovaná.');
