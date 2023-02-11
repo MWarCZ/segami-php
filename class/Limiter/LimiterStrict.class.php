@@ -2,12 +2,16 @@
 
 require_once(__DIR__.'/Limiter.interface.php');
 
-// [[input format, output format], [width, height]]
-class LimiterStrict implements LimiterInterface {
-  public $i_format;
-  public $o_format;
-  public $o_width;
-  public $o_height;
+/**
+ * Striktní omezovač - omezuje výstupní výšku, šířku, formát a vstupní formát obrázku.
+ * Všechny zadané parametry musí být splněny.
+ * @example [[input format, output format], [width, height]]
+ */
+class LimiterStrict implements Limiter {
+  protected $i_format;
+  protected $o_format;
+  protected $o_width;
+  protected $o_height;
 
   function __construct($o_size = true, $o_format = true, $i_format = true) {
     if($o_size !== true && !(is_array($o_size) && is_numeric($o_size[0]))) throw new Exception('$o_size musi být "true" nebo "number[]"');

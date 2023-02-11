@@ -19,21 +19,10 @@ class ImageName {
 
   function __construct($a_separator = []) {
     $this->separator = new StdClass();
-	 $this->separator->props = '@';
-	 $this->separator->extension = '.';
-	 $this->separator->compression = '=';
-	 $this->separator->size2 = 'x';
-    /*
-	 $this->separator = (object)array_merge(
-      [
-        'props'=>'@',
-        'extension'=>'.',
-        'compression'=>'=',
-        'size2'=>'x',
-      ],
-      $a_separator
-    );
-	 */
+    $this->separator->props = '@';
+    $this->separator->extension = '.';
+    $this->separator->compression = '=';
+    $this->separator->size2 = 'x';
   }
 
   /** Pomocná funkce upravující vstupní znak pro použití v regex */

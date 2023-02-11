@@ -2,12 +2,17 @@
 
 require_once(__DIR__.'/Limiter.interface.php');
 
-// [[input format, ...], [output format, ...], [width, ...], [height, ...]]
-class LimiterLaxV2 implements LimiterInterface {
-  public $a_i_format;
-  public $a_o_format;
-  public $a_o_width;
-  public $a_o_height;
+/**
+ * Laxní omezovač - omezuje výstupní výšku, šířku, formát a vstupní formát obrázku.
+ * Musí být splněny podmínky existence šířky, existence výšky, existence výstupního formátu,
+ * existence vstupního formátu.
+ * @example [[input format, ...], [output format, ...], [width, ...], [height, ...]]
+ */
+class LimiterLaxV2 implements Limiter {
+  protected $a_i_format;
+  protected $a_o_format;
+  protected $a_o_width;
+  protected $a_o_height;
 
   function __construct($a_o_width = true, $a_o_height = true, $a_o_format = true, $a_i_format = true) {
     if($a_o_width !== true && !is_array($a_o_width)) throw new Exception('$a_o_width musí být ...');

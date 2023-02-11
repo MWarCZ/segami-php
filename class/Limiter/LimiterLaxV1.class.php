@@ -2,11 +2,16 @@
 
 require_once(__DIR__.'/Limiter.interface.php');
 
-// [[input format, ...], [output format, ...], [size, ...]]
-class LimiterLaxV1 implements LimiterInterface {
-  public $a_i_format;
-  public $a_o_format;
-  public $a_o_size;
+/**
+ * Laxní omezovač - omezuje výstupní výšku, šířku, formát a vstupní formát obrázku.
+ * Musí být splněny podmínky existence [šířka, výška], existence výstupního formátu,
+ * existence vstupního formátu.
+ * @example [[input format, ...], [output format, ...], [size, ...]]
+ */
+class LimiterLaxV1 implements Limiter {
+  protected $a_i_format;
+  protected $a_o_format;
+  protected $a_o_size;
 
   function __construct($a_o_size = true, $a_o_format = true, $a_i_format = true) {
     if($a_o_size !== true && !is_array($a_o_size)) throw new Exception('$a_o_size musi být ...');
@@ -21,7 +26,7 @@ class LimiterLaxV1 implements LimiterInterface {
 
   public function check($o_width, $o_height, $o_format) {
     return (true
-      && ($this->a_o_size     === true || in_array([$width, $height], $this->a_o_size) || ($width == $height && in_array([$width], $this->a_o_size)))
+      && ($this->a_o_size   === true || in_array([$width, $height], $this->a_o_size) || ($width == $height && in_array([$width], $this->a_o_size)))
       && ($this->a_o_format === true || in_array($o_format, $this->a_o_format))
       // && ($this->a_i_format === true || in_array($i_format, $this->a_i_format))
     );

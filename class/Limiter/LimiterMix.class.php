@@ -2,9 +2,13 @@
 
 require_once(__DIR__.'/Limiter.interface.php');
 
-// [Limiter, ...]
-class LimiterMix implements LimiterInterface {
-  public $a_limiter;
+/**
+ * Složený omezovač - sada omezovačů s logikou OR
+ * tj. stačí, aby pouze jeden omezovač splnil platnost
+ * @example [Limiter, ...]
+ */
+class LimiterMix implements Limiter {
+  protected $a_limiter;
 
   function __construct($a_limiter = true) {
     if($a_limiter !== true && !is_array($a_limiter)) throw new Exception('$a_limiter musí být ...');
