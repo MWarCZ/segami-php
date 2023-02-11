@@ -6,6 +6,9 @@
 	# RewriteCond %{REQUEST_FILENAME}  -f [OR]
 	# RewriteCond %{REQUEST_FILENAME} !-f
 
+  # Test
+  RewriteRule ^test.php$ test.php [L,QSA]
+
   # Správa obrázků
   RewriteRule ^upload.php$ upload.php [L,QSA]
 

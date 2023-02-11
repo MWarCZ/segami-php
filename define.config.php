@@ -19,7 +19,7 @@ define(
   (HTTPS === 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST']
 );
 // Adresa ke konkrétnímu modulu na serveru
-define('MODULE_PATH', '/segami');
+define('MODULE_PATH', '/segami1');
 // Kompletní URL adresa k modulu na serveru
 define('ROOT_MODULE_URL', ROOT_URL.MODULE_PATH);
 // Aktuálně požadovaná URL adresa
