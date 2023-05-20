@@ -1,0 +1,13 @@
+{
+  "name": "mwarcz/segami",
+  "description": "TODO",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "MWarCZ"
+    }
+  ],
+  "require": {},
+  "require-dev": {}
+}
