@@ -1,15 +1,17 @@
 <?php
+namespace MWarCZ\Segami;
+
 require_once(__DIR__.'/Image.interface.php');
 
 class ImageImagick implements Image {
 
   protected $img = null;
-  protected $_resizeFilter = Imagick::FILTER_CATROM;
+  protected $_resizeFilter = \Imagick::FILTER_CATROM;
 
   function get() { return $this->img; }
 
   function read($srcFile) {
-    $this->img = new Imagick();
+    $this->img = new \Imagick();
     $this->img->readImage($srcFile);
     return $this;
   }

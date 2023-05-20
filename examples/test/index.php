@@ -1,9 +1,5 @@
 <?php
-// require_once(__DIR__.'/init.config.php');
-
 require_once(__DIR__.'/../../test/Test.class.php');
-// require_once(__DIR__.'/../../class/ImageName.class.php');
-// require_once(__DIR__.'/../../class/ImageName/ImageNameV1.class.php');
 
 Test::init();
 

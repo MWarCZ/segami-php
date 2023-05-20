@@ -1,4 +1,5 @@
 <?php
+use MWarCZ\Segami\LimiterStrict;
 
 require_once(__DIR__.'/../src/class/Limiter/LimiterFree.class.php');
 require_once(__DIR__.'/../src/class/Limiter/LimiterStrict.class.php');

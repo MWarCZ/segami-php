@@ -1,4 +1,5 @@
 <?php
+use MWarCZ\Segami\ImageNameV1;
 
 require_once(__DIR__.'/../src/class/ImageName/ImageNameV1.class.php');
 

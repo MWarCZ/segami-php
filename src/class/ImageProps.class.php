@@ -1,4 +1,5 @@
 <?php
+namespace MWarCZ\Segami;
 
 class ImageProps {
   /** @property String */ public $name;

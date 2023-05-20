@@ -1,4 +1,5 @@
 <?php
+use MWarCZ\Segami\Segami;
 
 require_once(__DIR__.'/init.config.php');
 

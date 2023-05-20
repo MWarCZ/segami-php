@@ -1,4 +1,7 @@
 <?php
+
+namespace MWarCZ\Segami;
+
 require_once(__DIR__.'/Image/Image.interface.php');
 require_once(__DIR__.'/Image/ImageFactory.interface.php');
 require_once(__DIR__.'/ImageProps.class.php');
