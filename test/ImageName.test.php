@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__.'/../class/ImageName/ImageNameV1.class.php');
+require_once(__DIR__.'/../src/class/ImageName/ImageNameV1.class.php');
 
 Test::group('Test třídy `ImageNameV1`', function() {
 
