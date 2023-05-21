@@ -8,9 +8,10 @@ require_once(__DIR__.'/ImageLogger.interface.php');
  */
 class ImageLoggerFS implements ImageLogger {
 
-  public function access($file_path) {
-    if(is_file($file_path)) {
-      touch($file_path);
+  public function access($full_file_path, $filename) {
+    if(is_file($full_file_path)) {
+      touch($full_file_path);
+
       return true;
     }
     return false;
@@ -18,7 +19,7 @@ class ImageLoggerFS implements ImageLogger {
 
   private function &getFilesByModifyDate($dir_path, $sort = SORT_ASC) {
     $files = [];
-    foreach (new DirectoryIterator($dir_path) as $file) {
+    foreach (new \DirectoryIterator($dir_path) as $file) {
       if(!$file->isFile()) continue;
       else $files[$file->getFilename()] = $file->getMTime();
     }
@@ -31,7 +32,7 @@ class ImageLoggerFS implements ImageLogger {
     $dir_path = realpath($dir_path);
     if(!is_int($mtime)) {
       $mtime = strtotime($mtime);
-      if(!is_int($mtime)) throw new Exception('mtime is not int.');
+      if(!is_int($mtime)) throw new \Exception('mtime is not int.');
     }
     $files = $this->getFilesByModifyDate($dir_path);
     $a_file_path = [];

@@ -5,6 +5,8 @@ Test::init();
 
 require_once(__DIR__.'/../../test/ImageName.test.php');
 require_once(__DIR__.'/../../test/Limiter.test.php');
+require_once(__DIR__.'/../../test/ImageLoggerNone.test.php');
+require_once(__DIR__.'/../../test/ImageLoggerFS/ImageLoggerFS.test.php');
 
 Test::summary();
 

@@ -148,7 +148,7 @@ class Segami {
       $ext = end($ext);
       $ext = $this->a_map_extension[$ext];
       if($ext) {
-        if($this->image_logger) $this->image_logger->access($org_img_path);
+        if($this->image_logger) $this->image_logger->access($org_img_path, $req_img);
 
         header('Content-type: '.$ext['mime']);
         header('Content-Length: '.filesize($org_img_path));
@@ -166,7 +166,7 @@ class Segami {
     $res_img = $this->image_name->createName($img_props);
     $req_img_path = $this->gen_img_dir.DIRECTORY_SEPARATOR.$res_img;
     if(is_file($req_img_path)) {
-      if($this->image_logger) $this->image_logger->access($req_img_path);
+      if($this->image_logger) $this->image_logger->access($req_img_path, $req_img);
 
       header('Content-type: '.$ext['mime']);
       header('Content-Length: '.filesize($req_img_path));
@@ -233,7 +233,7 @@ class Segami {
    * @throws Exception Něco se nepodařilo.
    */
   function removeUnusedImage($mtime = '-30 days') {
-    if(!($this->image_logger instanceof ImageLogger)) throw new Exception('Není nastaveno rozpoznávání souborů pro smazání.');
+    if(!($this->image_logger instanceof ImageLogger)) throw new \Exception('Není nastaveno rozpoznávání souborů pro smazání.');
 
     $a_file_path = $this->image_logger->getUnusedFiles($this->gen_img_dir, $mtime);
     foreach ($a_file_path as &$file_path) {

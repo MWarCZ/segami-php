@@ -6,7 +6,7 @@ interface ImageLogger {
   /**
    * @param String $file_path Absolutní cesta k souboru
    */
-  public function access($file_path);
+  public function access($full_file_path, $filename);
 
   /**
    * @param String $dir_path Cesta ke složce se soubory
