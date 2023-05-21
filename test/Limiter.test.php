@@ -1,7 +1,8 @@
 <?php
+use MWarCZ\Segami\LimiterStrict;
 
-require_once(__DIR__.'/../class/Limiter/LimiterFree.class.php');
-require_once(__DIR__.'/../class/Limiter/LimiterStrict.class.php');
+require_once(__DIR__.'/../src/class/Limiter/LimiterFree.class.php');
+require_once(__DIR__.'/../src/class/Limiter/LimiterStrict.class.php');
 
 Test::group('Test třídy `LimiterStrict`', function() {
 
