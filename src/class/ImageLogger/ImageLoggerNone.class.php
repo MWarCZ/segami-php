@@ -1,14 +1,17 @@
 <?php
 namespace MWarCZ\Segami;
 
-require_once(__DIR__.'/ImageLogger.interface.php');
+require_once(__DIR__ . '/ImageLogger.interface.php');
 
 /**
  * Logger dělající nic.
  */
 class ImageLoggerNone implements ImageLogger {
-  function __construct() {}
-  public function access($full_file_path, $filename) { return true; }
+  function __construct() {
+  }
+  public function access($full_file_path, $filename) {
+    return true;
+  }
 
   public function &getUnusedFiles($dir_path, $mtime) {
     throw new \Exception('Funkce není implementovaná!');

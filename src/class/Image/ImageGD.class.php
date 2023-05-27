@@ -1,7 +1,7 @@
 <?php
 namespace MWarCZ\Segami;
 
-require_once(__DIR__.'/Image.interface.php');
+require_once(__DIR__ . '/Image.interface.php');
 
 class ImageGD implements Image {
   protected $fn_imagecreatefrom;
@@ -15,22 +15,22 @@ class ImageGD implements Image {
 
   function __construct() {
     $this->fn_imagecreatefrom = [
-      'avif'=>'imagecreatefromavif',
-      'bmp' =>'imagecreatefrombmp',
-      'gif' =>'imagecreatefromgif',
-      'jpeg'=>'imagecreatefromjpeg',
-      'jpg' =>'imagecreatefromjpeg',
-      'png' =>'imagecreatefrompng',
-      'webp'=>'imagecreatefromwebp',
+      'avif' => 'imagecreatefromavif',
+      'bmp' => 'imagecreatefrombmp',
+      'gif' => 'imagecreatefromgif',
+      'jpeg' => 'imagecreatefromjpeg',
+      'jpg' => 'imagecreatefromjpeg',
+      'png' => 'imagecreatefrompng',
+      'webp' => 'imagecreatefromwebp',
     ];
     $this->fn_imagecreatefrom = [
-      'avif'=>'imageavif',
-      'bmp' =>'imagebmp',
-      'gif' =>'imagegif',
-      'jpeg'=>'imagejpeg',
-      'jpg' =>'imagejpeg',
-      'png' =>'imagepng',
-      'webp'=>'imagewebp',
+      'avif' => 'imageavif',
+      'bmp' => 'imagebmp',
+      'gif' => 'imagegif',
+      'jpeg' => 'imagejpeg',
+      'jpg' => 'imagejpeg',
+      'png' => 'imagepng',
+      'webp' => 'imagewebp',
     ];
   }
 
@@ -53,7 +53,9 @@ class ImageGD implements Image {
     return $this;
   }
 
-  function strip() { return $this; }
+  function strip() {
+    return $this;
+  }
 
   function setFormat($extension) {
     $this->src_extension = strtolower(end($extension));

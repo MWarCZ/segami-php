@@ -1,14 +1,16 @@
 <?php
 namespace MWarCZ\Segami;
 
-require_once(__DIR__.'/Image.interface.php');
+require_once(__DIR__ . '/Image.interface.php');
 
 class ImageImagick implements Image {
 
   protected $img = null;
   protected $_resizeFilter = \Imagick::FILTER_CATROM;
 
-  function get() { return $this->img; }
+  function get() {
+    return $this->img;
+  }
 
   function read($srcFile) {
     $this->img = new \Imagick();
@@ -56,24 +58,28 @@ class ImageImagick implements Image {
     /////////////////////////////////////////////
     // Automatické doplněný nezadaných rozměrů
     // Výchozí velikost obrázku
-    if(!$width && !$height) { $width = $w; $height = $h; }
+    if (!$width && !$height) {
+      $width = $w;
+      $height = $h;
+    }
     // Vypočtení šířky
-    elseif(!$width) $width = (int)($height * $r_wh);
+    elseif (!$width)
+      $width = (int) ($height * $r_wh);
     // Vypočtení výšky
-    elseif(!$height) $height = (int)($width * $r_hw);
+    elseif (!$height)
+      $height = (int) ($width * $r_hw);
     /////////////////////////////////////////////
     // Cover - dopočítání rozměrů a oříznutí na požadovaný rozměr
-    if($w > $h) {
-      if($width > $height)
-        $this->img->resizeImage((int)$width, (int)($width*$r_hw), $this->_resizeFilter, 1, true);
+    if ($w > $h) {
+      if ($width > $height)
+        $this->img->resizeImage((int) $width, (int) ($width * $r_hw), $this->_resizeFilter, 1, true);
       else
-        $this->img->resizeImage((int)($height*$r_wh), (int)$height, $this->_resizeFilter, 1, true);
-    }
-    else {
-      if($width < $height)
-        $this->img->resizeImage((int)($height*$r_wh), (int)$height, $this->_resizeFilter, 1, true);
+        $this->img->resizeImage((int) ($height * $r_wh), (int) $height, $this->_resizeFilter, 1, true);
+    } else {
+      if ($width < $height)
+        $this->img->resizeImage((int) ($height * $r_wh), (int) $height, $this->_resizeFilter, 1, true);
       else
-        $this->img->resizeImage((int)$width, (int)($width*$r_hw), $this->_resizeFilter, 1, true);
+        $this->img->resizeImage((int) $width, (int) ($width * $r_hw), $this->_resizeFilter, 1, true);
     }
     $this->cropImage($width, $height);
     // $this->img->cropThumbnailImage($width, $height);
@@ -86,18 +92,24 @@ class ImageImagick implements Image {
     /////////////////////////////////////////////
     // Výpočet X
     $x = 0;
-    if($s_x == 'center') $x = ($w - $width) / 2;
-    elseif($s_x == 'left') $x = 0;
-    elseif($s_x == 'right') $x = ($w - $width);
+    if ($s_x == 'center')
+      $x = ($w - $width) / 2;
+    elseif ($s_x == 'left')
+      $x = 0;
+    elseif ($s_x == 'right')
+      $x = ($w - $width);
     /////////////////////////////////////////////
     // Výpočet Y
     $y = 0;
-    if($s_y == 'center') $y = ($h - $height) / 2;
-    if($s_y == 'top') $y = 0;
-    if($s_y == 'bottom') $y = ($h - $height);
+    if ($s_y == 'center')
+      $y = ($h - $height) / 2;
+    if ($s_y == 'top')
+      $y = 0;
+    if ($s_y == 'bottom')
+      $y = ($h - $height);
     /////////////////////////////////////////////
     // Provedení ořezu
-    $this->img->cropImage((int)$width, (int)$height, (int)$x, (int)$y);
+    $this->img->cropImage((int) $width, (int) $height, (int) $x, (int) $y);
     return $this;
   }
 
