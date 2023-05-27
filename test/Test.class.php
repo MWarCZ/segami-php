@@ -48,41 +48,45 @@ class Test {
   public static $counter = 0;
   public static $a_tmp_error = [];
   public static function assert_handler($file, $line, $code, $desc = null) {
-    Test::$a_tmp_error[] = $file.' : '.$line.' : '.$code;
+    Test::$a_tmp_error[] = $file . ' : ' . $line . ' : ' . $code;
   }
   public static function test($desc, $result) {
     Test::$a_tmp_error = [];
     Test::$counter += 1;
     $err = false;
     try {
-      if(is_callable($result)) { $result(); } else { assert($result); }
+      if (is_callable($result)) {
+        $result();
+      } else {
+        assert($result);
+      }
       Test::$counter_ok += 1;
-    }
-    catch (AssertionError $e) {
+    } catch (AssertionError $e) {
       $err = true;
       Test::$counter_ko += 1;
     }
     $err_count = count(Test::$a_tmp_error);
-    echo '<div class="'.($err ? 'test-ko' : 'test-ok').'">'.'<span>'.Test::$counter.') </span>'.(
+    echo '<div class="' . ($err ? 'test-ko' : 'test-ok') . '">' . '<span>' . Test::$counter . ') </span>' . (
       $err
-      ? '<span>✕</span> '.$desc.'<pre>'.implode(Test::$a_tmp_error).'</pre>'
-      : '<span>✓</span> '.$desc
-    ).'</div>';
+      ? '<span>✕</span> ' . $desc . '<pre>' . implode(Test::$a_tmp_error) . '</pre>'
+      : '<span>✓</span> ' . $desc
+    ) . '</div>';
   }
 
   public static function group($desc, $result) {
     echo '<details class="group" open>';
-    echo '<summary class="group__title">'.$desc.'</summary>';
-    if(is_callable($result)) { $result(); }
+    echo '<summary class="group__title">' . $desc . '</summary>';
+    if (is_callable($result)) {
+      $result();
+    }
     echo '</details>';
   }
 
   public static function summary() {
     echo '<div>'
-      .'<div style="font-weight:bold;">Souhrn:</div>'
-      .'<div><span>✓</span> '.Test::$counter_ok.'</div>'
-      .'<div><span>✕</span> '.Test::$counter_ko.'</div>'
-    .'</div>';
+      . '<div style="font-weight:bold;">Souhrn:</div>'
+      . '<div><span>✓</span> ' . Test::$counter_ok . '</div>'
+      . '<div><span>✕</span> ' . Test::$counter_ko . '</div>'
+      . '</div>';
   }
 }
-
