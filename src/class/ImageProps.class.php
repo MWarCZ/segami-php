@@ -9,6 +9,14 @@ class ImageProps {
   /** @property int    $height */public $height;
   /** @property string $fn */public $fn;
 
+  /**
+   * @param string $name
+   * @param string $extension
+   * @param int    $quality
+   * @param int    $width
+   * @param int    $height
+   * @param string $fn
+   */
   function __construct($name, $extension, $quality, $width, $height, $fn = '') {
     $this->name = $name;
     $this->extension = $extension;
