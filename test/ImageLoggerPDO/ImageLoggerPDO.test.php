@@ -7,31 +7,41 @@ Test::group('Test třídy `ImageLoggerPDO`', function() {
 
   /////////////////////////////////////////////////////
 
-
   $fn_setup_db_1 = function() {
 
+    ///////////////////////////////////////////////////////////////
+    // Vytvoření adresáře
+    ///////////////////////////////////////////////////////////////
     $test_dir = __DIR__.DIRECTORY_SEPARATOR.'files';
-    $tested_filename = 'tested_file';
-    $tested_filepath = $test_dir.DIRECTORY_SEPARATOR.$tested_filename;
+    // mkdir($test_dir, 0777, true);
 
-    $old_file_1day_filename = 'old_file_1day';
-    $old_file_1day_filepath = $test_dir.DIRECTORY_SEPARATOR.$old_file_1day_filename;
-    $old_file_2day_filename = 'old_file_2day';
-    $old_file_2day_filepath = $test_dir.DIRECTORY_SEPARATOR.$old_file_2day_filename;
-    $old_file_3day_filename = 'old_file_3day';
-    $old_file_3day_filepath = $test_dir.DIRECTORY_SEPARATOR.$old_file_3day_filename;
-    $old_file_4day_filename = 'old_file_4day';
-    $old_file_4day_filepath = $test_dir.DIRECTORY_SEPARATOR.$old_file_4day_filename;
-    $old_file_5day_filename = 'old_file_5day';
-    $old_file_5day_filepath = $test_dir.DIRECTORY_SEPARATOR.$old_file_5day_filename;
-    touch($tested_filepath);
-    touch($old_file_1day_filepath, strtotime('-1 day'));
-    touch($old_file_2day_filepath, strtotime('-2 days'));
-    touch($old_file_3day_filepath, strtotime('-3 days'));
-    touch($old_file_4day_filepath, strtotime('-4 days'));
-    touch($old_file_5day_filepath, strtotime('-5 days'));
+    ///////////////////////////////////////////////////////////////
+    // Smazání souborů
+    ///////////////////////////////////////////////////////////////
 
-    $db = new PDO('sqlite:'.__DIR__.'/files/database.sqlite');
+    $a_f = scandir($test_dir);
+    $a_f = array_filter($a_f, function($f) { return $f[0] != '.'; });
+    foreach ($a_f as $f) {
+      unlink($test_dir.DIRECTORY_SEPARATOR.$f);
+    }
+
+    ///////////////////////////////////////////////////////////////
+    // Vytvoření souborů
+    ///////////////////////////////////////////////////////////////
+    $a_file = [];
+    for ($i=1; $i <= 5; $i++) {
+      $file = [];
+      $file['name'] = 'old_file_'.$i.'days';
+      $file['path'] = $test_dir.DIRECTORY_SEPARATOR.$file['name'];
+      $file['time'] = strtotime('- '.$i.' days');
+      $a_file[] = $file;
+      touch($file['path'], $file['time']);
+    }
+
+    ///////////////////////////////////////////////////////////////
+    // Vytvoření databáze
+    ///////////////////////////////////////////////////////////////
+    $db = new PDO('sqlite:'.$test_dir.DIRECTORY_SEPARATOR.'database.sqlite');
 
     $db_table = 'tabulka';
     $db_column_date = 'datum';
@@ -49,25 +59,14 @@ Test::group('Test třídy `ImageLoggerPDO`', function() {
       );
     ';
     $res2 = $db->prepare($sql)->execute();
-    // echo '<pre>'.print_r(['$res1'=>$res1, '$res2'=>$res2],true).'</pre>';
+
     return [
       'db'=>$db,
       'db_table'=>$db_table,
       'db_column_date'=>$db_column_date,
       'db_column_file'=>$db_column_file,
       'test_dir'=>$test_dir,
-      'tested_filename'=>$tested_filename,
-      'tested_filepath'=>$tested_filepath,
-      'old_file_1day_filename'=>$old_file_1day_filename,
-      'old_file_1day_filepath'=>$old_file_1day_filepath,
-      'old_file_2day_filename'=>$old_file_2day_filename,
-      'old_file_2day_filepath'=>$old_file_2day_filepath,
-      'old_file_3day_filename'=>$old_file_3day_filename,
-      'old_file_3day_filepath'=>$old_file_3day_filepath,
-      'old_file_4day_filename'=>$old_file_4day_filename,
-      'old_file_4day_filepath'=>$old_file_4day_filepath,
-      'old_file_5day_filename'=>$old_file_5day_filename,
-      'old_file_5day_filepath'=>$old_file_5day_filepath,
+      'a_file'=>$a_file,
     ];
   };
 
@@ -78,13 +77,11 @@ Test::group('Test třídy `ImageLoggerPDO`', function() {
     $sql = '
       INSERT INTO '.$data['db_table'].'('.$data['db_column_file'].', '.$data['db_column_date'].')
       VALUES
-      ("'.$data['old_file_1day_filename'].'", "'.date('Y-m-d H:i:s', strtotime('-1 day')).'"),
-      ("'.$data['old_file_2day_filename'].'", "'.date('Y-m-d H:i:s', strtotime('-2 day')).'"),
-      ("'.$data['old_file_3day_filename'].'", "'.date('Y-m-d H:i:s', strtotime('-3 day')).'"),
-      ("'.$data['old_file_4day_filename'].'", "'.date('Y-m-d H:i:s', strtotime('-4 day')).'"),
-      ("'.$data['old_file_5day_filename'].'", "'.date('Y-m-d H:i:s', strtotime('-5 day')).'")
+      '.implode(', ', array_map(function($file) {
+        return '("'.$file['name'].'", "'.date('Y-m-d H:i:s', $file['time']).'")';
+      }, $data['a_file'])).'
     ';
-    // echo $sql;
+    // // echo $sql;
     $res2 = $data['db']->prepare($sql)->execute();
 
     return $data;
@@ -103,7 +100,7 @@ Test::group('Test třídy `ImageLoggerPDO`', function() {
     );
 
     $now = date('Y-m-d H:i:s');
-    $res = $l->access($data['tested_filepath'], $data['tested_filename']);
+    $res = $l->access($data['a_file'][0]['path'], $data['a_file'][0]['name']);
 
     $sql = '
       SELECT * FROM '.$data['db_table'].'
@@ -111,7 +108,7 @@ Test::group('Test třídy `ImageLoggerPDO`', function() {
     ';
     $q_test = $data['db']->prepare($sql);
 
-    $r_q = $q_test->execute([':filename'=>$data['tested_filename']]);
+    $r_q = $q_test->execute([':filename'=>$data['a_file'][0]['name']]);
     $a_q = $q_test->fetchAll();
 
     assert(is_array($a_q));
@@ -122,9 +119,9 @@ Test::group('Test třídy `ImageLoggerPDO`', function() {
     ////////////////////////////////////////////
     // Sekundární přístup nepřidá nový záznam
     ////////////////////////////////////////////
-    $res = $l->access($data['tested_filepath'], $data['tested_filename']);
+    $res = $l->access($data['a_file'][0]['path'], $data['a_file'][0]['name']);
 
-    $r_q = $q_test->execute([':filename'=>$data['tested_filename']]);
+    $r_q = $q_test->execute([':filename'=>$data['a_file'][0]['name']]);
     $a_q = $q_test->fetchAll();
 
     assert(count($a_q) === 1);
@@ -142,7 +139,7 @@ Test::group('Test třídy `ImageLoggerPDO`', function() {
     );
 
     $now = date('Y-m-d H:i:s');
-    $res = $l->access(__DIR__.DIRECTORY_SEPARATOR.'none', 'none');
+    $res = $l->access($data['test_dir'].DIRECTORY_SEPARATOR.'none', 'none');
 
     $sql = '
       SELECT * FROM '.$data['db_table'].'
@@ -207,7 +204,6 @@ Test::group('Test třídy `ImageLoggerPDO`', function() {
       assert(count($res) === $count);
     });
   }
-
 
 
 });
