@@ -4,7 +4,8 @@ namespace MWarCZ\Segami;
 interface ImageLogger {
 
   /**
-   * @param string $file_path Absolutní cesta k souboru
+   * @param string $full_file_path Absolutní cesta k souboru
+   * @param string $filename
    */
   public function access($full_file_path, $filename);
 
