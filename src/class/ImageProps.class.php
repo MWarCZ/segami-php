@@ -2,12 +2,12 @@
 namespace MWarCZ\Segami;
 
 class ImageProps {
-  /** @property String */ public $name;
-  /** @property String */ public $extension;
-  /** @property Int    */ public $quality;
-  /** @property Int    */ public $width;
-  /** @property Int    */ public $height;
-  /** @property String */ public $fn;
+  /** @property string $name */public $name;
+  /** @property string $extension */public $extension;
+  /** @property int    $quality */public $quality;
+  /** @property int    $width */public $width;
+  /** @property int    $height */public $height;
+  /** @property string $fn */public $fn;
 
   function __construct($name, $extension, $quality, $width, $height, $fn = '') {
     $this->name = $name;

@@ -1,22 +1,24 @@
 <?php
 use MWarCZ\Segami\Segami;
+use MWarCZ\Segami\ImageImagickFactory;
+use MWarCZ\Segami\ImageLoggerFS;
 
-require_once(__DIR__.'/init.config.php');
+require_once(__DIR__ . '/init.config.php');
 
-if(isset($_POST['submit_upload'])) {
-  if(isset($_FILES['image'])) {
+if (isset($_POST['submit_upload'])) {
+  if (isset($_FILES['image'])) {
     $file = $_FILES['image'];
-    move_uploaded_file($file['tmp_name'], ORG_IMG_PATH.'/'.$file['name']);
+    move_uploaded_file($file['tmp_name'], ORG_IMG_PATH . '/' . $file['name']);
     location(ACTUAL_URL);
   }
 }
-if(isset($_POST['submit_delete'])) {
+if (isset($_POST['submit_delete'])) {
   $segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH, new ImageImagickFactory(), new ImageLoggerFS());
   $segami->removeImage($_POST['submit_delete'], true);
   location(ACTUAL_URL);
 }
 // TODO
-if(isset($_POST['submit_delete_unused_1day'])) {
+if (isset($_POST['submit_delete_unused_1day'])) {
   $segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH, new ImageImagickFactory(), new ImageLoggerFS());
   $segami->removeUnusedImage('-1 day');
   location(ACTUAL_URL);
@@ -44,7 +46,12 @@ $a_filter = [
   'FILTER_SINC' => Imagick::FILTER_SINC,
 ];
 ?>
-<style>body{background:black;color:yellow;}</style>
+<style>
+  body {
+    background: black;
+    color: yellow;
+  }
+</style>
 
 <form action="" method="post" enctype="multipart/form-data">
   <section class="remove-unused">
@@ -67,34 +74,35 @@ $a_filter = [
     </header>
     <main class="gallery__body">
       <?php
-        foreach ($a_file as $key => $file) {
-          if(in_array($file, ['.', '..'])) continue;
-          echo ''
-            .'<figure class="photo">'
-              .'<picture class="photo__picture">'
-                .'<img src="'.ORG_IMG_URL.'/'.$file.'" alt="'.$file.'" class="photo__img">'
-              .'</picture>'
-              .'<figcaption class="photo__caption">'
-                .'<span>'.$file.'</span>'
-                .'<button type="submit" name="submit_delete" value="'.$file.'" title="Smazat">❌</button>'
-              .'</figcaption>'
-            .'</figure>'
-          ;
-			 $cache = '';
-          echo ''
-            .'<div class="gallery-preview">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$cache.$file.'@c150.webp'.'">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$cache.$file.'@r150.webp'.'">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$cache.$file.'@r300x100.webp'.'">'
-              .'<img src="'.ROOT_MODULE_URL.'/'.$cache.$file.'@r100x300.webp'.'">'
-            .'</div>'
-          ;
-          // echo '<div class="gallery-preview">';
-          // foreach ($a_filter as $key => $filter) {
-          //     echo '<img title="'.$key.'" src="'.ROOT_MODULE_URL.'/'.$file.'@300='.$filter.'.webp'.'">';
-          // }
-          // echo '</div>';
-        }
+      foreach ($a_file as $key => $file) {
+        if (in_array($file, ['.', '..']))
+          continue;
+        echo ''
+          . '<figure class="photo">'
+          . '<picture class="photo__picture">'
+          . '<img src="' . ORG_IMG_URL . '/' . $file . '" alt="' . $file . '" class="photo__img">'
+          . '</picture>'
+          . '<figcaption class="photo__caption">'
+          . '<span>' . $file . '</span>'
+          . '<button type="submit" name="submit_delete" value="' . $file . '" title="Smazat">❌</button>'
+          . '</figcaption>'
+          . '</figure>'
+        ;
+        $cache = '';
+        echo ''
+          . '<div class="gallery-preview">'
+          . '<img src="' . ROOT_MODULE_URL . '/' . $cache . $file . '@c150.webp' . '">'
+          . '<img src="' . ROOT_MODULE_URL . '/' . $cache . $file . '@r150.webp' . '">'
+          . '<img src="' . ROOT_MODULE_URL . '/' . $cache . $file . '@r300x100.webp' . '">'
+          . '<img src="' . ROOT_MODULE_URL . '/' . $cache . $file . '@r100x300.webp' . '">'
+          . '</div>'
+        ;
+        // echo '<div class="gallery-preview">';
+        // foreach ($a_filter as $key => $filter) {
+        //     echo '<img title="'.$key.'" src="'.ROOT_MODULE_URL.'/'.$file.'@300='.$filter.'.webp'.'">';
+        // }
+        // echo '</div>';
+      }
 
       ?>
     </main>

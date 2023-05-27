@@ -1,7 +1,7 @@
 <?php
 namespace MWarCZ\Segami;
 
-require_once(__DIR__.'/Limiter.interface.php');
+require_once(__DIR__ . '/Limiter.interface.php');
 
 /**
  * Vše je povoleno XD

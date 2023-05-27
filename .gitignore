@@ -1,1 +1,3 @@
-test/*/files
+test/*/files/
+vendor/
+*.code-workspace
