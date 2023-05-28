@@ -14,9 +14,14 @@ class LimiterStrict implements Limiter {
   protected $o_width;
   protected $o_height;
 
+  /**
+   * @param true|int[]  $o_size
+   * @param true|string $o_format
+   * @param true|string $i_format
+   */
   function __construct($o_size = true, $o_format = true, $i_format = true) {
     if ($o_size !== true && !(is_array($o_size) && is_numeric($o_size[0])))
-      throw new \Exception('$o_size musi být "true" nebo "number[]"');
+      throw new \InvalidArgumentException('1. parametr $o_size musi být true|number[]');
     if ($o_size === true) {
       $this->o_width = $this->o_height = true;
     } else {
@@ -25,11 +30,11 @@ class LimiterStrict implements Limiter {
     }
 
     if ($o_format !== true && !is_string($o_format))
-      throw new \Exception('$o_format musi být ...');
+      throw new \InvalidArgumentException('1. parametr $o_format musi být true|string');
     $this->o_format = $o_format;
 
     if ($i_format !== true && !is_string($i_format))
-      throw new \Exception('$i_format musi být ...');
+      throw new \InvalidArgumentException('1. parametr $i_format musi být true|string');
     $this->i_format = $i_format;
   }
 
