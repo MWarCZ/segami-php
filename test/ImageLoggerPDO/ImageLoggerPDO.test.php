@@ -1,7 +1,5 @@
 <?php
-use MWarCZ\Segami\ImageLoggerPDO;
-
-require_once(__DIR__ . '/../../src/class/ImageLogger/ImageLoggerPDO.class.php');
+use MWarCZ\Segami\ImageLogger\ImageLoggerPDO;
 
 Test::group('Test třídy `ImageLoggerPDO`', function () {
 

@@ -1,7 +1,5 @@
 <?php
-namespace MWarCZ\Segami;
-
-require_once(__DIR__ . '/Image.interface.php');
+namespace MWarCZ\Segami\Image;
 
 class ImageGD implements Image {
   protected $fn_imagecreatefrom;

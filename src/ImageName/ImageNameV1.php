@@ -1,8 +1,7 @@
 <?php
-namespace MWarCZ\Segami;
+namespace MWarCZ\Segami\ImageName;
 
-require_once(__DIR__ . '/ImageName.interface.php');
-require_once(__DIR__ . '/../ImageProps.class.php');
+use MWarCZ\Segami\ImageProps;
 
 ///////////////////////////////////////////////
 // * Aktuální:

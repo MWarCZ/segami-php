@@ -1,7 +1,5 @@
 <?php
-namespace MWarCZ\Segami;
-
-require_once(__DIR__ . '/Image.interface.php');
+namespace MWarCZ\Segami\Image;
 
 class ImageSVG implements Image {
 

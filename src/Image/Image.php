@@ -1,5 +1,5 @@
 <?php
-namespace MWarCZ\Segami;
+namespace MWarCZ\Segami\Image;
 
 interface Image {
 

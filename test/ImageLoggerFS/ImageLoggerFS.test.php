@@ -1,7 +1,5 @@
 <?php
-use MWarCZ\Segami\ImageLoggerFS;
-
-require_once(__DIR__ . '/../../src/class/ImageLogger/ImageLoggerFS.class.php');
+use MWarCZ\Segami\ImageLogger\ImageLoggerFS;
 
 Test::group('Test třídy `ImageLoggerFS`', function () {
 

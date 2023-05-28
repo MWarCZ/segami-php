@@ -1,7 +1,5 @@
 <?php
-use MWarCZ\Segami\ImageLoggerNone;
-
-require_once(__DIR__ . '/../src/class/ImageLogger/ImageLoggerNone.class.php');
+use MWarCZ\Segami\ImageLogger\ImageLoggerNone;
 
 Test::group('Test třídy `ImageLoggerNone`', function () {
 

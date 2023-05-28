@@ -1,7 +1,5 @@
 <?php
-namespace MWarCZ\Segami;
-
-require_once(__DIR__ . '/ImageLogger.interface.php');
+namespace MWarCZ\Segami\ImageLogger;
 
 /**
  * Logger dělající nic.

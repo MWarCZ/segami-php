@@ -1,7 +1,5 @@
 <?php
-use MWarCZ\Segami\LimiterFree;
-
-require_once(__DIR__ . '/../src/class/Limiter/LimiterFree.class.php');
+use MWarCZ\Segami\Limiter\LimiterFree;
 
 Test::group('Test třídy `LimiterFree`', function () {
 
@@ -28,9 +26,7 @@ Test::group('Test třídy `LimiterFree`', function () {
 });
 
 
-use MWarCZ\Segami\LimiterLaxV1;
-
-require_once(__DIR__ . '/../src/class/Limiter/LimiterLaxV1.class.php');
+use MWarCZ\Segami\Limiter\LimiterLaxV1;
 
 Test::group('Test třídy `LimiterLaxV1`', function () {
 
@@ -171,9 +167,7 @@ Test::group('Test třídy `LimiterLaxV1`', function () {
 });
 
 
-use MWarCZ\Segami\LimiterStrict;
-
-require_once(__DIR__ . '/../src/class/Limiter/LimiterStrict.class.php');
+use MWarCZ\Segami\Limiter\LimiterStrict;
 
 Test::group('Test třídy `LimiterStrict`', function () {
 
