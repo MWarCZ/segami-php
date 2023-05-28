@@ -15,21 +15,27 @@ class LimiterLaxV2 implements Limiter {
   protected $a_o_width;
   protected $a_o_height;
 
+  /**
+   * @param true|int[]    $a_o_width
+   * @param true|int[]    $a_o_height
+   * @param true|string[] $a_o_format
+   * @param true|string[] $a_i_format
+   */
   function __construct($a_o_width = true, $a_o_height = true, $a_o_format = true, $a_i_format = true) {
     if ($a_o_width !== true && !is_array($a_o_width))
-      throw new \Exception('$a_o_width musí být ...');
+      throw new \InvalidArgumentException('1. parametr $a_o_width musí být true|int[]');
     $this->a_o_width = $a_o_width;
 
     if ($a_o_height !== true && !is_array($a_o_height))
-      throw new \Exception('$a_o_height musí být ...');
+      throw new \InvalidArgumentException('2. parametr $a_o_height musí být true|int[]');
     $this->a_o_height = $a_o_height;
 
     if ($a_o_format !== true && !is_array($a_o_format))
-      throw new \Exception('$a_o_format musí být ...');
+      throw new \InvalidArgumentException('3. parametr $a_o_format musí být true|string[]');
     $this->a_o_format = $a_o_format;
 
     if ($a_i_format !== true && !is_array($a_i_format))
-      throw new \Exception('$a_i_format musí být ...');
+      throw new \InvalidArgumentException('4. parametr $a_i_format musí být true|string[]');
     $this->a_i_format = $a_i_format;
   }
 
