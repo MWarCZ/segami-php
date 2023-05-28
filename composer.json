@@ -3,11 +3,17 @@
   "description": "TODO",
   "type": "library",
   "license": "MIT",
+  "version": "0.0.1",
   "authors": [
     {
       "name": "MWarCZ"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "MWarCZ\\Segami\\": "src/"
+    }
+  },
   "require": {},
   "require-dev": {}
 }

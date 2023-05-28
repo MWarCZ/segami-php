@@ -1,7 +1,5 @@
 <?php
-namespace MWarCZ\Segami;
-
-require_once(__DIR__ . '/Limiter.interface.php');
+namespace MWarCZ\Segami\Limiter;
 
 /**
  * Laxní omezovač - omezuje výstupní výšku, šířku, formát a vstupní formát obrázku.

@@ -2,12 +2,12 @@
 
 namespace MWarCZ\Segami;
 
-require_once(__DIR__ . '/Image/Image.interface.php');
-require_once(__DIR__ . '/Image/ImageFactory.interface.php');
-require_once(__DIR__ . '/ImageProps.class.php');
-require_once(__DIR__ . '/ImageName/ImageNameV1.class.php');
-// require_once(__DIR__.'/ImageName.class.php');
-require_once(__DIR__ . '/Limiter/LimiterFree.class.php');
+use MWarCZ\Segami\Image\ImageFactory;
+use MWarCZ\Segami\ImageName\ImageName;
+use MWarCZ\Segami\ImageName\ImageNameV1;
+use MWarCZ\Segami\ImageLogger\ImageLogger;
+use MWarCZ\Segami\Limiter\Limiter;
+use MWarCZ\Segami\Limiter\LimiterFree;
 
 class Segami {
 

@@ -1,8 +1,5 @@
 <?php
-namespace MWarCZ\Segami;
-
-require_once(__DIR__ . '/ImageFactory.interface.php');
-require_once(__DIR__ . '/ImageGD.class.php');
+namespace MWarCZ\Segami\Image;
 
 class ImageGDFactory implements ImageFactory {
   /**

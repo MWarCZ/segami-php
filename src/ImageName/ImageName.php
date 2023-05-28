@@ -1,5 +1,7 @@
 <?php
-namespace MWarCZ\Segami;
+namespace MWarCZ\Segami\ImageName;
+
+use MWarCZ\Segami\ImageProps;
 
 interface ImageName {
 
