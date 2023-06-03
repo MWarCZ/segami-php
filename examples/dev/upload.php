@@ -1,7 +1,7 @@
 <?php
 use MWarCZ\Segami\Segami;
-use MWarCZ\Segami\ImageImagickFactory;
-use MWarCZ\Segami\ImageLoggerFS;
+use MWarCZ\Segami\Image\ImageImagickFactory;
+use MWarCZ\Segami\ImageLogger\ImageLoggerFS;
 
 require_once(__DIR__ . '/init.config.php');
 
