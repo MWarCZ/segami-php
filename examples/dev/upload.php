@@ -26,6 +26,9 @@ if (isset($_POST['submit_delete_unused_1day'])) {
 
 $a_file = scandir(ORG_IMG_PATH);
 // p_debug([$a_file]);
+// p_debug([
+//   'mkdir' => mkdir(ORG_IMG_PATH . '/abc', 0777, true),
+// ]);
 
 
 $a_filter = [

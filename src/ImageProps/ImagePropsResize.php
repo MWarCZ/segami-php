@@ -7,10 +7,10 @@ namespace MWarCZ\Segami\ImageProps;
  * @property int $type
  */
 class ImagePropsResize implements ImageProps {
-  public static const TYPE_FILL = 0;
-  public static const TYPE_CONTAIN = 1;
-  public static const TYPE_COVER = 2;
-  public static const SIZE_AUTO = 0;
+  public const TYPE_FILL = 0;
+  public const TYPE_CONTAIN = 1;
+  public const TYPE_COVER = 2;
+  public const SIZE_AUTO = 0;
 
   public $width;
   public $height;
@@ -27,9 +27,41 @@ class ImagePropsResize implements ImageProps {
     $this->type = $type;
   }
 
+  /**
+   * @param int $v
+   */
+  public function setWidth($v) {
+    $this->width = $v;
+    return $this;
+  }
+  public function getWidth() {
+    return $this->width;
+  }
+  /**
+   * @param int $v
+   */
+  public function setHeight($v) {
+    $this->height = $v;
+    return $this;
+  }
+  public function getHeight() {
+    return $this->height;
+  }
+  /**
+   * @param int $v
+   */
+  public function setType($v) {
+    $this->type = $v;
+    return $this;
+  }
+  public function getType() {
+    return $this->type;
+  }
+
   public static function parseQuery($query) {
     // r200, r200x300
     // r200x300_fill, r200x300_contain, r200x300_cover
+    // r200x300_fil, r200x300_con, r200x300_cov
     // r200x300_l, r200x300_n, r200x300_r
 
     // default
@@ -42,10 +74,10 @@ class ImagePropsResize implements ImageProps {
     $a_tmp = explode('_', $query);
     if (count($a_tmp) > 1) {
       $s = end($a_tmp);
-      if (in_array($s, ['n', 'contain'])) {
+      if (in_array($s, ['n', 'con', 'contain'])) {
         $type = self::TYPE_CONTAIN;
-      } elseif (in_array($s, ['r', 'cover'])) {
-        $type = self::TYPE_CONTAIN;
+      } elseif (in_array($s, ['r', 'cov', 'cover'])) {
+        $type = self::TYPE_COVER;
       }
     }
     // size
@@ -65,7 +97,7 @@ class ImagePropsResize implements ImageProps {
   public static function validRegex() {
     $r_number = '[0-9][0-9]*';
     $r_size = '(' . $r_number . ')|(' . $r_number . 'x' . $r_number . ')';
-    $r_type = '(_fill|_l|_contain|_n|_cover|_r)?';
+    $r_type = '(_fill|_fil|_l|_contain|_con|_n|_cover|_cov|_r)?';
     $r_full = 'r(' . $r_size . ')' . $r_type;
     return $r_full;
   }

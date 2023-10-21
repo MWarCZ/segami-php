@@ -8,7 +8,7 @@ namespace MWarCZ\Segami\ImageProps;
  * @property int $height
  */
 class ImagePropsCrop implements ImageProps {
-  public static const SIZE_AUTO = 0;
+  public const SIZE_AUTO = 0;
   public $x;
   public $y;
   public $width;
@@ -25,6 +25,47 @@ class ImagePropsCrop implements ImageProps {
     $this->y = $y;
     $this->width = $width;
     $this->height = $height;
+  }
+
+  /**
+   * @param int $v
+   */
+  public function setX($v) {
+    $this->x = $v;
+    return $this;
+  }
+  public function getX() {
+    return $this->x;
+  }
+  /**
+   * @param int $v
+   */
+  public function setY($v) {
+    $this->y = $v;
+    return $this;
+  }
+  public function getY() {
+    return $this->y;
+  }
+  /**
+   * @param int $v
+   */
+  public function setWidth($v) {
+    $this->width = $v;
+    return $this;
+  }
+  public function getWidth() {
+    return $this->width;
+  }
+  /**
+   * @param int $v
+   */
+  public function setHeight($v) {
+    $this->height = $v;
+    return $this;
+  }
+  public function getHeight() {
+    return $this->height;
   }
   public static function parseQuery($query) {
     // c200

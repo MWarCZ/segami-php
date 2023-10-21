@@ -6,36 +6,80 @@ namespace MWarCZ\Segami\ImageProps;
  * @property string $extension
  */
 class ImagePropsBasic implements ImageProps {
-  public $name;
-  public $extension;
-  public $props;
+  /**
+   * @var string
+   */
+  protected $name;
+  /**
+   * @var string
+   */
+  protected $extension;
+  /**
+   * @var string[]
+   */
+  protected $props;
 
   /**
    * @param string $name
    * @param string $extension
-   * @param string $props
+   * @param string[] $props
    */
-  function __construct($name, $extension, $props = '') {
-    $this->name = $name;
-    $this->extension = $extension;
-    $this->props = $props;
+  function __construct($name, $extension, $props = []) {
+    $this->setName($name);
+    $this->setExtension($extension);
+    $this->setProps($props);
+  }
+  /**
+   * @param string $v
+   */
+  public function setName($v) {
+    $this->name = $v;
+    return $this;
+  }
+  public function getName() {
+    return $this->name;
+  }
+  /**
+   * @param string $v
+   */
+  public function setExtension($v) {
+    $this->extension = $v;
+    return $this;
+  }
+  public function getExtension() {
+    return $this->extension;
+  }
+  /**
+   * @param string[] $v
+   */
+  public function setProps($v) {
+    $this->props = $v;
+    return $this;
+  }
+  public function getProps() {
+    return $this->props;
   }
 
   public static function parseQuery($query) {
     // Name
     $a_tmp = explode('@', $query);
-    $props = array_pop($a_tmp);
+    $props1 = array_pop($a_tmp);
     $name = implode('@', $a_tmp);
     // Extension
-    $a_tmp = explode('.', $props);
+    $a_tmp = explode('.', $props1);
     $extension = array_pop($a_tmp);
-    $props = implode('.', $a_tmp);
+    $props = array_filter($a_tmp, function ($tmp) {
+      return $tmp;
+    });
+    // $props = implode('.', $a_tmp);
 
     return new self($name, $extension, $props);
   }
 
   public static function validQuery($query) {
-    return true;
+    $regex = self::validRegex();
+    return preg_match('/^' . $regex . '$/i', $query);
+    // return true;
   }
 
   public static function validRegex() {
@@ -46,7 +90,7 @@ class ImagePropsBasic implements ImageProps {
    * @param self $image_props
    */
   public static function createQuery($image_props) {
-    return $image_props->name . '@' . $image_props->props . '.' . $image_props->extension;
+    return $image_props->getName() . '@' . implode('.', $image_props->getProps()) . '.' . $image_props->getExtension();
   }
 
   public function toQuery() {
