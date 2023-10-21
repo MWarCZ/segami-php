@@ -3,12 +3,9 @@
 namespace MWarCZ\Segami;
 
 use MWarCZ\Segami\Image\ImageFactory;
-use MWarCZ\Segami\ImageName\ImageName;
-use MWarCZ\Segami\ImageName\ImageNameV1;
 use MWarCZ\Segami\ImageLogger\ImageLogger;
 use MWarCZ\Segami\Limiter\Limiter;
 use MWarCZ\Segami\Limiter\LimiterFree;
-use MWarCZ\Segami\ImageProps\ImageProps;
 use MWarCZ\Segami\ImageProps\ImagePropsManager;
 use MWarCZ\Segami\ImageProps\ImagePropsCrop;
 use MWarCZ\Segami\ImageProps\ImagePropsResize;
@@ -20,8 +17,6 @@ class Segami {
   protected $org_img_dir;
   /** @property string $gen_img_dir Cesta k adresáři s generovanými obrázky. */
   protected $gen_img_dir;
-  /** @property ImageName $image_name Třída pro zpracování vlastností z názvů obrázků. */
-  protected $image_name;
   /** @property array $a_map_extension Mapa koncovek souborů na vlastnosti formátu obrázku. */
   protected $a_map_extension;
 
@@ -35,7 +30,6 @@ class Segami {
   function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null) {
     $this->org_img_dir = realpath($org_img_dir);
     $this->gen_img_dir = realpath($gen_img_dir);
-    // $this->image_name = new ImageNameV1();
     $this->image_factory = $image_factory;
     $this->image_logger = $image_logger;
 
@@ -116,7 +110,6 @@ class Segami {
    */
   function createImage($from_img_path, $to_img_path, $img_props) {
     $ext = $this->a_map_extension[$img_props->basic->getExtension()];
-    // $img = new ImageImagick();
     $img = ($this->image_factory)::newImage();
     $img->read($from_img_path);
     $img->setFormat($ext['imagick']);
@@ -133,14 +126,6 @@ class Segami {
         $img->resizeFill($img_props->resize->getWidth(), $img_props->resize->getHeight());
       }
     }
-
-    // if ($img_props->width)
-    //   if ($img_props->fn == 'r')
-    //     $img->resizeCover($img_props->width, $img_props->height);
-    //   // $img->resizeFill($img_props->width, $img_props->height);
-    //   // $img->resizeContain($img_props->width, $img_props->height);
-    //   elseif ($img_props->fn == 'c')
-    //     $img->cropImage($img_props->width, $img_props->height);
     // if ($img_props->quality != $ext['default_compression'])
     //   $img->compression($img_props->quality);
     // $img->resizeFilter($img_props->quality);
@@ -182,7 +167,6 @@ class Segami {
     // END Existující originální obrázek
     // ***
     // START Existující vygenerovaný obrázek
-    // TODO START
     $img_props = ImagePropsManager::parseQuery($req_img);
     $ext = $this->a_map_extension[$img_props->basic->getExtension()];
     if (!$ext)
@@ -198,32 +182,11 @@ class Segami {
       readfile($req_img_path);
       return true;
     }
-    // TODO END
-    // $img_props = $this->image_name->parseName($req_img);
-    // if (!$img_props)
-    //   throw new \Exception('1) Nepodařilo se získat vlastnosti požadovaného obrázku.');
-    // $ext = $this->a_map_extension[$img_props->extension];
-    // if (!$ext)
-    //   throw new \Exception('2) Koncovka obrázku "' . $img_props->extension . '" není podporovaná.');
-    // $res_img = $this->image_name->createName($img_props);
-    // $req_img_path = $this->gen_img_dir . DIRECTORY_SEPARATOR . $res_img;
-    // if (is_file($req_img_path)) {
-    //   if ($this->image_logger)
-    //     $this->image_logger->access($req_img_path, $req_img);
-
-    //   header('Content-type: ' . $ext['mime']);
-    //   header('Content-Length: ' . filesize($req_img_path));
-    //   readfile($req_img_path);
-    //   return true;
-    // }
     // END Existující vygenerovaný obrázek
     // ***
     // START Kontrola povolených vlastností pro obrázky (rozměr, ...)
-    // p_debug($img_props);
     if (!$img_props->checkLimiter($this->limiter))
       throw new \Exception('4) Nepovolené parametry obrázku.');
-    // if (!$this->limiter->check($img_props->width, $img_props->height, $img_props->extension))
-    //   throw new \Exception('4) Nepovolené parametry obrázku.');
     // ...
     // END Kontrola povolených vlastností pro obrázky (rozměr, ...)
     // ***
@@ -260,7 +223,7 @@ class Segami {
       $a_file_path = $this->image_logger->getFiles(
         $this->gen_img_dir,
         $req_img,
-        $this->image_name->props_separator
+        '@'
       );
       foreach ($a_file_path as &$file_path) {
         unlink($file_path);
