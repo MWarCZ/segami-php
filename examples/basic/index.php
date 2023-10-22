@@ -22,11 +22,15 @@ require_once(__DIR__ . '/../../vendor/autoload.php');
 // Setup default page settings
 ///////////////////////////////////////////////////
 
+
 define(
   'HTTPS',
   (
     empty($_SERVER['HTTPS'])
-    ? $_SERVER['SERVER_PORT'] == 443
+    ? (
+      $_SERVER['SERVER_PORT'] == 443
+      || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
+    )
     : $_SERVER['HTTPS'] !== 'off'
   )
 );
@@ -34,7 +38,7 @@ define(
 // Hlavní URL adresa serveru
 define(
   'ROOT_URL',
-  (HTTPS === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']
+  (HTTPS === true ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']
 );
 // Adresa ke konkrétnímu modulu na serveru
 define('MODULE_PATH', '/segami-php/examples/basic');
@@ -62,12 +66,13 @@ $segami = new \MWarCZ\Segami\Segami(
   __DIR__ . '/img/original',
   // Selected path to dir with generated images
   __DIR__ . '/img/generated',
-    // Selected image engine
+  // Selected image engine
   new \MWarCZ\Segami\Image\ImageImagickFactory(),
-    // Selected logger for logging access to images
+  // Selected logger for logging access to images
   new \MWarCZ\Segami\ImageLogger\ImageLoggerNone(),
-    // Selected limiter with rules for generated images
+  // Selected limiter with rules for generated images
   new \MWarCZ\Segami\Limiter\LimiterFree(),
+  30, // cache_expires_dais
 );
 
 ///////////////////////////////////////////////////

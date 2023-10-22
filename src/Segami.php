@@ -3,11 +3,13 @@
 namespace MWarCZ\Segami;
 
 use MWarCZ\Segami\Image\ImageFactory;
-use MWarCZ\Segami\ImageName\ImageName;
-use MWarCZ\Segami\ImageName\ImageNameV1;
 use MWarCZ\Segami\ImageLogger\ImageLogger;
 use MWarCZ\Segami\Limiter\Limiter;
 use MWarCZ\Segami\Limiter\LimiterFree;
+use MWarCZ\Segami\ImageProps\ImagePropsManager;
+use MWarCZ\Segami\ImageProps\ImagePropsCrop;
+use MWarCZ\Segami\ImageProps\ImagePropsResize;
+
 
 class Segami {
 
@@ -15,8 +17,6 @@ class Segami {
   protected $org_img_dir;
   /** @property string $gen_img_dir Cesta k adresáři s generovanými obrázky. */
   protected $gen_img_dir;
-  /** @property ImageName $image_name Třída pro zpracování vlastností z názvů obrázků. */
-  protected $image_name;
   /** @property array $a_map_extension Mapa koncovek souborů na vlastnosti formátu obrázku. */
   protected $a_map_extension;
 
@@ -27,14 +27,14 @@ class Segami {
   /** @property Limiter $limiter */
   protected $limiter;
 
-  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null) {
+  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null, $cache_expires_dais = 0) {
     $this->org_img_dir = realpath($org_img_dir);
     $this->gen_img_dir = realpath($gen_img_dir);
-    $this->image_name = new ImageNameV1();
     $this->image_factory = $image_factory;
     $this->image_logger = $image_logger;
+    $this->cache_expires_dais = $cache_expires_dais;
 
-    $this->limiter = $limiter instanceof LimiterInterface ? $limiter : new LimiterFree();
+    $this->limiter = $limiter instanceof Limiter ? $limiter : new LimiterFree();
 
     $tmp_supported_targets = ['jpg', 'jpeg', 'jp2', 'png', 'gif', 'webp', 'bmp'];
     $this->a_map_extension = [
@@ -105,25 +105,30 @@ class Segami {
    * @param string $from_img_path Celá cesta ke zdrojovému obrázku.
    * @param string $to_img_path Cesta pro uložení vygenerovaného obrázku ('' = Neukládat).
    * @param string $ext_imagick Formát cílového obrázku (imagick).
-   * @param ImageProps $img_props Vlastnosti požadovaného obrázku.
+   * @param ImagePropsManager $img_props Vlastnosti požadovaného obrázku.
    *
    * @return \Imagick Instance Imagick s finálním obrázkem.
    */
   function createImage($from_img_path, $to_img_path, $img_props) {
-    $ext = $this->a_map_extension[$img_props->extension];
-    // $img = new ImageImagick();
+    $ext = $this->a_map_extension[$img_props->basic->getExtension()];
     $img = ($this->image_factory)::newImage();
     $img->read($from_img_path);
     $img->setFormat($ext['imagick']);
-    if ($img_props->width)
-      if ($img_props->fn == 'r')
-        $img->resizeCover($img_props->width, $img_props->height);
-      // $img->resizeFill($img_props->width, $img_props->height);
-      // $img->resizeContain($img_props->width, $img_props->height);
-      elseif ($img_props->fn == 'c')
-        $img->cropImage($img_props->width, $img_props->height);
-    if ($img_props->quality != $ext['default_compression'])
-      $img->compression($img_props->quality);
+
+    if ($img_props->crop) {
+      $img->cropImage($img_props->crop->getWidth(), $img_props->crop->getHeight());
+    } elseif ($img_props->resize) {
+      $type = $img_props->resize->getType();
+      if ($type == ImagePropsResize::TYPE_COVER) {
+        $img->resizeCover($img_props->resize->getWidth(), $img_props->resize->getHeight());
+      } elseif ($type == ImagePropsResize::TYPE_CONTAIN) {
+        $img->resizeContain($img_props->resize->getWidth(), $img_props->resize->getHeight());
+      } else {
+        $img->resizeFill($img_props->resize->getWidth(), $img_props->resize->getHeight());
+      }
+    }
+    // if ($img_props->quality != $ext['default_compression'])
+    //   $img->compression($img_props->quality);
     // $img->resizeFilter($img_props->quality);
     $img->strip();
     if ($to_img_path)
@@ -156,6 +161,7 @@ class Segami {
 
         header('Content-type: ' . $ext['mime']);
         header('Content-Length: ' . filesize($org_img_path));
+        $this->addExpireHeaders();
         readfile($org_img_path);
         return true;
       }
@@ -163,13 +169,11 @@ class Segami {
     // END Existující originální obrázek
     // ***
     // START Existující vygenerovaný obrázek
-    $img_props = $this->image_name->parseName($req_img);
-    if (!$img_props)
-      throw new \Exception('1) Nepodařilo se získat vlastnosti požadovaného obrázku.');
-    $ext = $this->a_map_extension[$img_props->extension];
+    $img_props = ImagePropsManager::parseQuery($req_img);
+    $ext = $this->a_map_extension[$img_props->basic->getExtension()];
     if (!$ext)
-      throw new \Exception('2) Koncovka obrázku "' . $img_props->extension . '" není podporovaná.');
-    $res_img = $this->image_name->createName($img_props);
+      throw new \Exception('2) Koncovka obrázku "' . $img_props->basic->getExtension() . '" není podporovaná.');
+    $res_img = $img_props->toQuery();
     $req_img_path = $this->gen_img_dir . DIRECTORY_SEPARATOR . $res_img;
     if (is_file($req_img_path)) {
       if ($this->image_logger)
@@ -177,28 +181,37 @@ class Segami {
 
       header('Content-type: ' . $ext['mime']);
       header('Content-Length: ' . filesize($req_img_path));
+      $this->addExpireHeaders();
       readfile($req_img_path);
       return true;
     }
     // END Existující vygenerovaný obrázek
     // ***
     // START Kontrola povolených vlastností pro obrázky (rozměr, ...)
-    // p_debug($img_props);
-    if (!$this->limiter->check($img_props->width, $img_props->height, $img_props->extension))
+    if (!$img_props->checkLimiter($this->limiter))
       throw new \Exception('4) Nepovolené parametry obrázku.');
     // ...
     // END Kontrola povolených vlastností pro obrázky (rozměr, ...)
     // ***
     // START Vytvořit požadovaný obrázek
-    $from_img_path = $this->org_img_dir . DIRECTORY_SEPARATOR . $img_props->name;
+    $from_img_path = $this->org_img_dir . DIRECTORY_SEPARATOR . $img_props->basic->getName();
     if (!is_file($from_img_path))
-      throw new \Exception('3) Zdrojový obrázek "' . $img_props->name . '" neexistuje.');
+      throw new \Exception('3) Zdrojový obrázek "' . $img_props->basic->getName() . '" neexistuje.');
     $to_img_path = $b_cache_new_image ? $req_img_path : '';
     $img = $this->createImage($from_img_path, $to_img_path, $img_props);
     header('Content-type: ' . $ext['mime']);
+    $this->addExpireHeaders();
     echo $img;
     return true;
     // END Vytvořit požadovaný obrázek
+  }
+
+  function addExpireHeaders($dais = 30) {
+    if ($this->cache_expires_dais > 0) {
+      $cache_expires = 60 * 60 * 24 * $this->cache_expires_dais;
+      header('Cache-Control: public, max-age=' . $cache_expires);
+      header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cache_expires) . ' GMT');
+    }
   }
 
   /**
@@ -222,7 +235,7 @@ class Segami {
       $a_file_path = $this->image_logger->getFiles(
         $this->gen_img_dir,
         $req_img,
-        $this->image_name->props_separator
+        '@'
       );
       foreach ($a_file_path as &$file_path) {
         unlink($file_path);
