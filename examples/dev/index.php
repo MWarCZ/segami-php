@@ -61,6 +61,7 @@ $segami = new Segami(
   // new LimiterMix([
   //   new LimiterStrict([500, 500], 'webp'),
   // ]),
+  30, // cache_expires_dais
 );
 try {
   $segami->returnImage($req_img, $req_type == 'cache');

@@ -8,7 +8,10 @@ define(
   'HTTPS',
   (
     empty($_SERVER['HTTPS'])
-    ? $_SERVER['SERVER_PORT'] == 443
+    ? (
+      $_SERVER['SERVER_PORT'] == 443
+      || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
+    )
     : $_SERVER['HTTPS'] !== 'off'
   )
 );
@@ -16,7 +19,7 @@ define(
 // Hlavní URL adresa serveru
 define(
   'ROOT_URL',
-  (HTTPS === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']
+  (HTTPS === true ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']
 );
 // Adresa ke konkrétnímu modulu na serveru
 define('MODULE_PATH', '/segami-php/examples/dev');

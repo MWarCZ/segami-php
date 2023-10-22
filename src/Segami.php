@@ -27,11 +27,12 @@ class Segami {
   /** @property Limiter $limiter */
   protected $limiter;
 
-  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null) {
+  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null, $cache_expires_dais = 0) {
     $this->org_img_dir = realpath($org_img_dir);
     $this->gen_img_dir = realpath($gen_img_dir);
     $this->image_factory = $image_factory;
     $this->image_logger = $image_logger;
+    $this->cache_expires_dais = $cache_expires_dais;
 
     $this->limiter = $limiter instanceof Limiter ? $limiter : new LimiterFree();
 
@@ -160,6 +161,7 @@ class Segami {
 
         header('Content-type: ' . $ext['mime']);
         header('Content-Length: ' . filesize($org_img_path));
+        $this->addExpireHeaders();
         readfile($org_img_path);
         return true;
       }
@@ -179,6 +181,7 @@ class Segami {
 
       header('Content-type: ' . $ext['mime']);
       header('Content-Length: ' . filesize($req_img_path));
+      $this->addExpireHeaders();
       readfile($req_img_path);
       return true;
     }
@@ -197,9 +200,18 @@ class Segami {
     $to_img_path = $b_cache_new_image ? $req_img_path : '';
     $img = $this->createImage($from_img_path, $to_img_path, $img_props);
     header('Content-type: ' . $ext['mime']);
+    $this->addExpireHeaders();
     echo $img;
     return true;
     // END Vytvořit požadovaný obrázek
+  }
+
+  function addExpireHeaders($dais = 30) {
+    if ($this->cache_expires_dais > 0) {
+      $cache_expires = 60 * 60 * 24 * $this->cache_expires_dais;
+      header('Cache-Control: public, max-age=' . $cache_expires);
+      header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cache_expires) . ' GMT');
+    }
   }
 
   /**

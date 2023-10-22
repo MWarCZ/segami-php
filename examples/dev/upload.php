@@ -27,7 +27,7 @@ if (isset($_POST['submit_delete_unused_1day'])) {
 $a_file = scandir(ORG_IMG_PATH);
 // p_debug([$a_file]);
 // p_debug([
-//   'mkdir' => mkdir(ORG_IMG_PATH . '/abc', 0777, true),
+//   'xxx' => $_SERVER,
 // ]);
 
 
@@ -101,8 +101,8 @@ $a_filter = [
           . '</div>'
         ;
         // echo '<div class="gallery-preview">';
-        // foreach ($a_filter as $key => $filter) {
-        //     echo '<img title="'.$key.'" src="'.ROOT_MODULE_URL.'/'.$file.'@300='.$filter.'.webp'.'">';
+        // foreach ([[300, 300],] as $key => $item) {
+        //   echo '<img src="' . ROOT_MODULE_URL . '/cache/' . $file . '@c' . $item[0] . 'x' . $item[1] . '.png' . '" width="' . $item[0] . '" height="' . $item[1] . '">';
         // }
         // echo '</div>';
       }
