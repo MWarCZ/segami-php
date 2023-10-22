@@ -61,6 +61,7 @@ $segami = new Segami(
   // new LimiterMix([
   //   new LimiterStrict([500, 500], 'webp'),
   // ]),
+  null, // limiter
   30, // cache_expires_dais
 );
 try {
