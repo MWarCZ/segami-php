@@ -116,6 +116,7 @@ class ImageImagick implements Image {
     //   $this->img->setCompression(Imagick::COMPRESSION_ZIP);
     // elseif(in_array($formatImagick, ['JPEG']))
     //   $this->img->setCompression(Imagick::COMPRESSION_JPEG);
+    $this->img->setCompressionQuality($quality);
     $this->img->setImageCompressionQuality($quality);
     return $this;
   }

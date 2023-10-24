@@ -9,6 +9,7 @@ use MWarCZ\Segami\Limiter\LimiterFree;
 use MWarCZ\Segami\ImageProps\ImagePropsManager;
 use MWarCZ\Segami\ImageProps\ImagePropsCrop;
 use MWarCZ\Segami\ImageProps\ImagePropsResize;
+use MWarCZ\Segami\ImageProps\ImagePropsQuality;
 
 
 class Segami {
@@ -115,18 +116,25 @@ class Segami {
     $img->read($from_img_path);
     $img->setFormat($ext['imagick']);
 
-    if ($img_props->crop) {
-      $img->cropImage($img_props->crop->getWidth(), $img_props->crop->getHeight());
-    } elseif ($img_props->resize) {
-      $type = $img_props->resize->getType();
-      if ($type == ImagePropsResize::TYPE_COVER) {
-        $img->resizeCover($img_props->resize->getWidth(), $img_props->resize->getHeight());
-      } elseif ($type == ImagePropsResize::TYPE_CONTAIN) {
-        $img->resizeContain($img_props->resize->getWidth(), $img_props->resize->getHeight());
+    foreach ($img_props->others as $key => $props) {
+      if ($props instanceof ImagePropsCrop) {
+        $img->cropImage($props->getWidth(), $props->getHeight());
+      } elseif ($props instanceof ImagePropsResize) {
+        $type = $props->getType();
+        if ($type == ImagePropsResize::TYPE_COVER) {
+          $img->resizeCover($props->getWidth(), $props->getHeight());
+        } elseif ($type == ImagePropsResize::TYPE_CONTAIN) {
+          $img->resizeContain($props->getWidth(), $props->getHeight());
+        } else {
+          $img->resizeFill($props->getWidth(), $props->getHeight());
+        }
+      } elseif ($props instanceof ImagePropsQuality) {
+        $img->compression($props->getCompression());
       } else {
-        $img->resizeFill($img_props->resize->getWidth(), $img_props->resize->getHeight());
+        throw new \Exception('Neznámí instance ImageProps');
       }
     }
+
     // if ($img_props->quality != $ext['default_compression'])
     //   $img->compression($img_props->quality);
     // $img->resizeFilter($img_props->quality);
