@@ -9,15 +9,15 @@ class ImagePropsBasic implements ImageProps {
   /**
    * @var string
    */
-  protected $name;
+  protected $name = '';
   /**
    * @var string
    */
-  protected $extension;
+  protected $extension = '';
   /**
    * @var string[]
    */
-  protected $props;
+  protected $props = [];
 
   /**
    * @param string $name
@@ -29,6 +29,9 @@ class ImagePropsBasic implements ImageProps {
     $this->setExtension($extension);
     $this->setProps($props);
   }
+  public static function getSymbol(): string {
+    return 'ImagePropsBasic';
+  }
   /**
    * @param string $v
    */
@@ -36,7 +39,7 @@ class ImagePropsBasic implements ImageProps {
     $this->name = $v;
     return $this;
   }
-  public function getName() {
+  public function getName(): string {
     return $this->name;
   }
   /**
@@ -46,7 +49,7 @@ class ImagePropsBasic implements ImageProps {
     $this->extension = $v;
     return $this;
   }
-  public function getExtension() {
+  public function getExtension(): string {
     return $this->extension;
   }
   /**
@@ -60,7 +63,7 @@ class ImagePropsBasic implements ImageProps {
     return $this->props;
   }
 
-  public static function parseQuery($query) {
+  public static function parseQuery($query): self {
     // Name
     $a_tmp = explode('@', $query);
     $props1 = array_pop($a_tmp);
@@ -76,24 +79,24 @@ class ImagePropsBasic implements ImageProps {
     return new self($name, $extension, $props);
   }
 
-  public static function validQuery($query) {
+  public static function validQuery($query): bool {
     $regex = self::validRegex();
     return preg_match('/^' . $regex . '$/i', $query);
     // return true;
   }
 
-  public static function validRegex() {
+  public static function validRegex(): string {
     return '.+@.*\\..+';
   }
 
   /**
    * @param self $image_props
    */
-  public static function createQuery($image_props) {
+  public static function createQuery($image_props): string {
     return $image_props->getName() . '@' . implode('.', $image_props->getProps()) . '.' . $image_props->getExtension();
   }
 
-  public function toQuery() {
+  public function toQuery(): string {
     return self::createQuery($this);
   }
 }

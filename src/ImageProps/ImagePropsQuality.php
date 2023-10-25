@@ -11,6 +11,9 @@ class ImagePropsQuality implements ImageProps {
   function __construct($compression = 0) {
     $this->compression = $compression;
   }
+  public static function getSymbol(): string {
+    return 'ImagePropsQuality';
+  }
 
   /**
    * @param int $v
@@ -19,10 +22,10 @@ class ImagePropsQuality implements ImageProps {
     $this->compression = $v;
     return $this;
   }
-  public function getCompression() {
+  public function getCompression(): int {
     return $this->compression;
   }
-  public static function parseQuery($query) {
+  public static function parseQuery($query): self {
     // q100, q50, q1
     // Default
     $compression = 0;
@@ -32,11 +35,11 @@ class ImagePropsQuality implements ImageProps {
     return new self((int) $compression);
   }
 
-  public static function validQuery($query) {
+  public static function validQuery($query): bool {
     $regex = self::validRegex();
     return preg_match('/^' . $regex . '$/i', $query);
   }
-  public static function validRegex() {
+  public static function validRegex(): string {
     $r_number = '[0-9][0-9]*';
     $r_full = 'q(' . $r_number . ')';
     return $r_full;
@@ -45,13 +48,13 @@ class ImagePropsQuality implements ImageProps {
   /**
    * @param self $image_props
    */
-  public static function createQuery($image_props) {
+  public static function createQuery($image_props): string {
     $query = 'q';
     $query .= $image_props->compression;
     return $query;
   }
 
-  public function toQuery() {
+  public function toQuery(): string {
     return self::createQuery($this);
   }
 }
