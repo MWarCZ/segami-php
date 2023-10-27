@@ -67,19 +67,16 @@ URL adresa pro získání vygenerovaného obrázku vždy obsahuje znak `@`, kter
 ## Roadmap
 
 - [x] Zpracování parametrů obrázku z URL adresy (formát, výška, šířka, komprese)
-- [x] Převádění obrázků do požadovaných formátů
-- [x] Převádění obrázků do požadovaných rozměrů
-- [ ] Ošetření různých vstupů
-  - [x] Existuje zdrojový obrázek
-  - [x] Nulové rozměry šířky a výšky = automatické dopočítání rozměru
-  - [x] Kontrola podporovaných formátů
-  - [ ] Podpora komprese u daného formátu
-  - [x] Nastavování a kontrola omezení pro tvorbu obrázků
-    - [x] Striktní omezení na generované obrázky => Seznam kombinací parametrů: `[výška, šířka, formát] = obrázek`
-    - [x] Laxní omezení na generování obrázků => Seznam povolených rozměrů a seznam formátů: `[[výška_1, šířka_1], [výška_2, šířka_2], ...] + [formát_1, formát_2, ...] = obrázek`
-    - [x] Laxnější omezení na generování obrázků => Seznam povolených výšek, šířek a formátů: `[výška_1, výška_2, ...] + [šířka_1, šířka_2, ...] + [formát_1, formát_2, ...] = obrázek`
-    - [x] Volné / Bez omezení.
-  - [ ] ...
+- [ ] Převádění obrázků do požadovaných formátů
+  - [x] Převod mezi formáty využívající raster (gif, png, jpg, webp, avif)
+  - [ ] Převod z vektorového obrázku na raster (svg => png, jpg, webp)
+- [ ] Převádění obrázků do požadovaných rozměrů
+  - [x] Změna rozměru obrázku využívajících raster (gif, png, jpg, webp, avif)
+  - [ ] Změna rozměrů vektorových obrázků (svg)
+- [ ] Vytváření výřezů z obrázku
+  - [x] Vytvoření výřezu o zadaných rozměrech
+  - [ ] Vytvořit výřez s vrcholem (ze souřadnic X a Y)
+  - [ ] Vytvořit výřez SVG obrázku
 - [x] Cache - ukládání vygenerovaných obrázků
   - [x] Možnost vybírat zda bude ukládán či nikoliv
   - [ ] Vytváření obrázků
@@ -93,5 +90,17 @@ URL adresa pro získání vygenerovaného obrázku vždy obsahuje znak `@`, kter
   - [x] Odebírání vygenerovaných obrázků, které nebyly dlouhodobě použity
     - [x] Využívat záznam o posledním použití/zobrazení obrázku
   - [ ] ...
-- [ ] Přepracování a rozšíření parametrů obrázku v URL adrese
+- [ ] Přepracování veškerá ošetření vstupů (rozměr, typy obrázků, kombinace, ...)
 - [ ] ...
+
+> - [ ] Ošetření různých vstupů
+>   - [x] Existuje zdrojový obrázek
+>   - [x] Nulové rozměry šířky a výšky = automatické dopočítání rozměru
+>   - [x] Kontrola podporovaných formátů
+>   - [ ] Podpora komprese u daného formátu
+>   - [x] Nastavování a kontrola omezení pro tvorbu obrázků
+>     - [x] Striktní omezení na generované obrázky => Seznam kombinací parametrů: `[výška, šířka, formát] = obrázek`
+>     - [x] Laxní omezení na generování obrázků => Seznam povolených rozměrů a seznam formátů: `[[výška_1, šířka_1], [výška_2, šířka_2], ...] + [formát_1, formát_2, ...] = obrázek`
+>     - [x] Laxnější omezení na generování obrázků => Seznam povolených výšek, šířek a formátů: `[výška_1, výška_2, ...] + [šířka_1, šířka_2, ...] + [formát_1, formát_2, ...] = obrázek`
+>     - [x] Volné / Bez omezení.
+>   - [ ] ...
