@@ -4,21 +4,26 @@ namespace MWarCZ\Segami\ImageProps;
 interface ImageProps {
 
   /**
-   * @param string $query
+   * @return string
    */
-  public static function parseQuery($query);
+  public static function getSymbol(): string;
 
   /**
    * @param string $query
    */
-  public static function validQuery($query);
+  public static function parseQuery($query): self;
 
-  public static function validRegex();
+  /**
+   * @param string $query
+   */
+  public static function validQuery($query): bool;
+
+  public static function validRegex(): string;
 
   /**
    * @param self $image_props
    */
-  public static function createQuery($image_props);
+  public static function createQuery($image_props): string;
 
-  public function toQuery();
+  public function toQuery(): string;
 }

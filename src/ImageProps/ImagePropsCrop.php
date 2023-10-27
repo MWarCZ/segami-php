@@ -26,6 +26,9 @@ class ImagePropsCrop implements ImageProps {
     $this->width = $width;
     $this->height = $height;
   }
+  public static function getSymbol(): string {
+    return 'ImagePropsCrop';
+  }
 
   /**
    * @param int $v
@@ -34,7 +37,7 @@ class ImagePropsCrop implements ImageProps {
     $this->x = $v;
     return $this;
   }
-  public function getX() {
+  public function getX(): int {
     return $this->x;
   }
   /**
@@ -44,7 +47,7 @@ class ImagePropsCrop implements ImageProps {
     $this->y = $v;
     return $this;
   }
-  public function getY() {
+  public function getY(): int {
     return $this->y;
   }
   /**
@@ -54,7 +57,7 @@ class ImagePropsCrop implements ImageProps {
     $this->width = $v;
     return $this;
   }
-  public function getWidth() {
+  public function getWidth(): int {
     return $this->width;
   }
   /**
@@ -64,10 +67,10 @@ class ImagePropsCrop implements ImageProps {
     $this->height = $v;
     return $this;
   }
-  public function getHeight() {
+  public function getHeight(): int {
     return $this->height;
   }
-  public static function parseQuery($query) {
+  public static function parseQuery($query): self {
     // c200
     // c200f20
     // c200f20x30
@@ -102,11 +105,11 @@ class ImagePropsCrop implements ImageProps {
     return new self((int) $x, (int) $y, (int) $width, (int) $height);
   }
 
-  public static function validQuery($query) {
+  public static function validQuery($query): bool {
     $regex = self::validRegex();
     return preg_match('/^' . $regex . '$/i', $query);
   }
-  public static function validRegex() {
+  public static function validRegex(): string {
     $r_number = '[0-9][0-9]*';
     $r_size = '(' . $r_number . ')|(' . $r_number . 'x' . $r_number . ')';
     $r_from = 'f(' . $r_size . ')';
@@ -117,7 +120,7 @@ class ImagePropsCrop implements ImageProps {
   /**
    * @param self $image_props
    */
-  public static function createQuery($image_props) {
+  public static function createQuery($image_props): string {
     $query = 'c';
     // Size
     if ($image_props->width == $image_props->height) {
@@ -137,7 +140,7 @@ class ImagePropsCrop implements ImageProps {
     return $query;
   }
 
-  public function toQuery() {
+  public function toQuery(): string {
     return self::createQuery($this);
   }
 }

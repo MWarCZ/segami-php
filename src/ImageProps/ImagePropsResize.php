@@ -26,6 +26,9 @@ class ImagePropsResize implements ImageProps {
     $this->height = $height;
     $this->type = $type;
   }
+  public static function getSymbol(): string {
+    return 'ImagePropsResize';
+  }
 
   /**
    * @param int $v
@@ -34,7 +37,7 @@ class ImagePropsResize implements ImageProps {
     $this->width = $v;
     return $this;
   }
-  public function getWidth() {
+  public function getWidth(): int {
     return $this->width;
   }
   /**
@@ -44,7 +47,7 @@ class ImagePropsResize implements ImageProps {
     $this->height = $v;
     return $this;
   }
-  public function getHeight() {
+  public function getHeight(): int {
     return $this->height;
   }
   /**
@@ -58,7 +61,7 @@ class ImagePropsResize implements ImageProps {
     return $this->type;
   }
 
-  public static function parseQuery($query) {
+  public static function parseQuery($query): self {
     // r200, r200x300
     // r200x300_fill, r200x300_contain, r200x300_cover
     // r200x300_fil, r200x300_con, r200x300_cov
@@ -90,11 +93,11 @@ class ImagePropsResize implements ImageProps {
     return new self($width, $height, $type);
   }
 
-  public static function validQuery($query) {
+  public static function validQuery($query): bool {
     $regex = self::validRegex();
     return preg_match('/^' . $regex . '$/i', $query);
   }
-  public static function validRegex() {
+  public static function validRegex(): string {
     $r_number = '[0-9][0-9]*';
     $r_size = '(' . $r_number . ')|(' . $r_number . 'x' . $r_number . ')';
     $r_type = '(_fill|_fil|_l|_contain|_con|_n|_cover|_cov|_r)?';
@@ -105,7 +108,7 @@ class ImagePropsResize implements ImageProps {
   /**
    * @param self $image_props
    */
-  public static function createQuery($image_props) {
+  public static function createQuery($image_props): string {
     $query = 'r';
     // Size
     if ($image_props->width == $image_props->height) {
@@ -124,7 +127,7 @@ class ImagePropsResize implements ImageProps {
     return $query;
   }
 
-  public function toQuery() {
+  public function toQuery(): string {
     return self::createQuery($this);
   }
 }
