@@ -2,6 +2,8 @@
 namespace MWarCZ\Segami\ImageProps;
 
 use MWarCZ\Segami\Limiter\Limiter;
+use MWarCZ\Segami\Exception\UnknownModifierException;
+use MWarCZ\Segami\Exception\InvalidFormatException;
 
 /**
  * @property ImagePropsBasic $basic
@@ -17,7 +19,7 @@ class ImagePropsManager {
   public static function parseQuery($query) {
     $self = new self();
     if (!ImagePropsBasic::validQuery($query))
-      throw new \Exception('Neplatný formát obrázku');
+      throw new InvalidFormatException('Neplatný formát obrázku');
 
     $self->basic = ImagePropsBasic::parseQuery($query);
 
@@ -30,7 +32,7 @@ class ImagePropsManager {
       } elseif (ImagePropsQuality::validQuery($prop)) {
         $self->others[] = ImagePropsQuality::parseQuery($prop);
       } else {
-        throw new \Exception('Neznámí modifikátor obrázku');
+        throw new UnknownModifierException('Neznámí modifikátor obrázku');
       }
     }
     return $self;

@@ -11,6 +11,12 @@ use MWarCZ\Segami\ImageProps\ImagePropsCrop;
 use MWarCZ\Segami\ImageProps\ImagePropsResize;
 use MWarCZ\Segami\ImageProps\ImagePropsQuality;
 
+use MWarCZ\Segami\Exception\LimiterException;
+use MWarCZ\Segami\Exception\MissingImageLoggerException;
+use MWarCZ\Segami\Exception\SourceImageNotFoundException;
+use MWarCZ\Segami\Exception\UnknownInstanceOfModifierException;
+use MWarCZ\Segami\Exception\UnsupportedImageExtensionException;
+
 
 class Segami {
 
@@ -131,7 +137,7 @@ class Segami {
       } elseif ($props instanceof ImagePropsQuality) {
         $img->compression($props->getCompression());
       } else {
-        throw new \Exception('Neznámí instance ImageProps');
+        throw new UnknownInstanceOfModifierException('Neznámí instance ImageProps');
       }
     }
 
@@ -155,7 +161,7 @@ class Segami {
    */
   function returnImage($req_img, $b_cache_new_image = true) {
     if (!is_string($req_img))
-      throw new \Exception('$dir_path must be string');
+      throw new \InvalidArgumentException('$dir_path must be string');
 
     // START Existující originální obrázek
     $org_img_path = $this->org_img_dir . DIRECTORY_SEPARATOR . $req_img;
@@ -180,7 +186,7 @@ class Segami {
     $img_props = ImagePropsManager::parseQuery($req_img);
     $ext = $this->a_map_extension[$img_props->basic->getExtension()];
     if (!$ext)
-      throw new \Exception('2) Koncovka obrázku "' . $img_props->basic->getExtension() . '" není podporovaná.');
+      throw new UnsupportedImageExtensionException($img_props->basic->getExtension());
     $res_img = $img_props->toQuery();
     $req_img_path = $this->gen_img_dir . DIRECTORY_SEPARATOR . $res_img;
     if (is_file($req_img_path)) {
@@ -197,14 +203,14 @@ class Segami {
     // ***
     // START Kontrola povolených vlastností pro obrázky (rozměr, ...)
     if (!$img_props->checkLimiter($this->limiter))
-      throw new \Exception('4) Nepovolené parametry obrázku.');
+      throw new LimiterException();
     // ...
     // END Kontrola povolených vlastností pro obrázky (rozměr, ...)
     // ***
     // START Vytvořit požadovaný obrázek
     $from_img_path = $this->org_img_dir . DIRECTORY_SEPARATOR . $img_props->basic->getName();
     if (!is_file($from_img_path))
-      throw new \Exception('3) Zdrojový obrázek "' . $img_props->basic->getName() . '" neexistuje.');
+      throw new SourceImageNotFoundException($img_props->basic->getName());
     $to_img_path = $b_cache_new_image ? $req_img_path : '';
     $img = $this->createImage($from_img_path, $to_img_path, $img_props);
     header('Content-type: ' . $ext['mime']);
@@ -265,7 +271,7 @@ class Segami {
    */
   function removeUnusedImage($mtime = '-30 days') {
     if (!($this->image_logger instanceof ImageLogger))
-      throw new \Exception('Není nastaveno rozpoznávání souborů pro smazání.');
+      throw new MissingImageLoggerException('Není nastaveno rozpoznávání souborů pro smazání.');
 
     $a_file_path = $this->image_logger->getUnusedFiles($this->gen_img_dir, $mtime);
     foreach ($a_file_path as &$file_path) {
