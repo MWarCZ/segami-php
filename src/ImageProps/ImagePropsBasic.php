@@ -1,22 +1,12 @@
 <?php
 namespace MWarCZ\Segami\ImageProps;
 
-/**
- * @property string $name
- * @property string $extension
- */
 class ImagePropsBasic implements ImageProps {
-  /**
-   * @var string
-   */
+  /** @var string */
   protected $name = '';
-  /**
-   * @var string
-   */
+  /** @var string */
   protected $extension = '';
-  /**
-   * @var string[]
-   */
+  /** @var string[] */
   protected $props = [];
 
   /**

@@ -5,10 +5,8 @@ use MWarCZ\Segami\Limiter\Limiter;
 use MWarCZ\Segami\Exception\UnknownModifierException;
 use MWarCZ\Segami\Exception\InvalidFormatException;
 
-/**
- * @property ImagePropsBasic $basic
- */
 class ImagePropsManager {
+  /** @var ImagePropsBasic */
   public $basic;
   /** @var ImageProps[] */
   public $others = [];

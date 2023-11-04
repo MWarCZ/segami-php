@@ -20,19 +20,21 @@ use MWarCZ\Segami\Exception\UnsupportedImageExtensionException;
 
 class Segami {
 
-  /** @property string $org_img_dir Cesta k adresáři s originálními obrázky. */
+  /** @var string $org_img_dir Cesta k adresáři s originálními obrázky. */
   protected $org_img_dir;
-  /** @property string $gen_img_dir Cesta k adresáři s generovanými obrázky. */
+  /** @var string $gen_img_dir Cesta k adresáři s generovanými obrázky. */
   protected $gen_img_dir;
-  /** @property array $a_map_extension Mapa koncovek souborů na vlastnosti formátu obrázku. */
+  /** @var array $a_map_extension Mapa koncovek souborů na vlastnosti formátu obrázku. */
   protected $a_map_extension;
 
-  /** @property ImageFactory $image_factory */
+  /** @var ImageFactory $image_factory */
   protected $image_factory;
-  /** @property ImageLogger $image_logger */
+  /** @var ImageLogger $image_logger */
   protected $image_logger;
-  /** @property Limiter $limiter */
+  /** @var Limiter $limiter */
   protected $limiter;
+  /** @var int $cache_expires_dais */
+  protected $cache_expires_dais;
 
   function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null, $cache_expires_dais = 0) {
     $this->org_img_dir = realpath($org_img_dir);
