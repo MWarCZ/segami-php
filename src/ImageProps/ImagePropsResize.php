@@ -1,19 +1,17 @@
 <?php
 namespace MWarCZ\Segami\ImageProps;
 
-/**
- * @property int $width
- * @property int $height
- * @property int $type
- */
 class ImagePropsResize implements ImageProps {
   public const TYPE_FILL = 0;
   public const TYPE_CONTAIN = 1;
   public const TYPE_COVER = 2;
   public const SIZE_AUTO = 0;
 
+  /** @var int */
   public $width;
+  /** @var int */
   public $height;
+  /** @var int */
   public $type;
 
   /**

@@ -1,17 +1,15 @@
 <?php
 namespace MWarCZ\Segami\ImageProps;
 
-/**
- * @property int $x
- * @property int $y
- * @property int $width
- * @property int $height
- */
 class ImagePropsCrop implements ImageProps {
   public const SIZE_AUTO = 0;
+  /** @var int */
   public $x;
+  /** @var int */
   public $y;
+  /** @var int */
   public $width;
+  /** @var int */
   public $height;
 
   /**
