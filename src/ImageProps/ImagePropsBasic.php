@@ -6,6 +6,8 @@ class ImagePropsBasic implements ImageProps {
   protected $name = '';
   /** @var string */
   protected $extension = '';
+  /** @var string */
+  protected $original_extension = '';
   /** @var string[] */
   protected $props = [];
 
@@ -27,6 +29,9 @@ class ImagePropsBasic implements ImageProps {
    */
   public function setName($v) {
     $this->name = $v;
+    $a_part = explode('.', $v);
+    $original_extension = strtolower(end($a_part));
+    $this->original_extension = $original_extension;
     return $this;
   }
   public function getName(): string {
@@ -36,11 +41,14 @@ class ImagePropsBasic implements ImageProps {
    * @param string $v
    */
   public function setExtension($v) {
-    $this->extension = $v;
+    $this->extension = strtolower($v);
     return $this;
   }
   public function getExtension(): string {
     return $this->extension;
+  }
+  public function getOriginalExtension(): string {
+    return $this->original_extension;
   }
   /**
    * @param string[] $v

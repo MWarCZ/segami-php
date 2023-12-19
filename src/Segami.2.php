@@ -18,14 +18,16 @@ use MWarCZ\Segami\Exception\UnknownInstanceOfModifierException;
 use MWarCZ\Segami\Exception\UnsupportedImageExtensionException;
 
 
-class Segami {
+class Segami2 {
 
-  /** @var string $org_img_dir Cesta k adresáři s originálními obrázky. */
-  protected $org_img_dir;
-  /** @var string $gen_img_dir Cesta k adresáři s generovanými obrázky. */
-  protected $gen_img_dir;
+  /** @var string $path_to_original_images Cesta k adresáři s originálními obrázky. */
+  protected $path_to_original_images;
+  /** @var string $path_to_generated_images Cesta k adresáři s generovanými obrázky. */
+  protected $path_to_generated_images;
   /** @var string[] $extension2mime Tabulka pro převod koncovky na MIME */
   protected $extension2mime;
+
+  protected $plugins;
 
   /** @var ImageFactory $image_factory */
   protected $image_factory;
@@ -36,14 +38,23 @@ class Segami {
   /** @var int $cache_expires_dais */
   protected $cache_expires_dais;
 
-  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null, $cache_expires_dais = 0) {
-    $this->org_img_dir = realpath($org_img_dir);
-    $this->gen_img_dir = realpath($gen_img_dir);
-    $this->image_factory = $image_factory;
-    $this->image_logger = $image_logger;
-    $this->cache_expires_dais = $cache_expires_dais;
-
-    $this->limiter = $limiter instanceof Limiter ? $limiter : new LimiterFree();
+  function __construct($opts = []) {
+    $opt = array_merge([
+      'path_to_original_images' => '',
+      'path_to_generated_images' => '',
+      'plugins' => [],
+      'limiter' => null,
+      'image_factory' => null, // ...
+      'image_logger' => null,
+      'cache_expires_dais' => 0,
+    ], $opts);
+    $this->path_to_original_images = realpath($opt['path_to_original_images']);
+    $this->path_to_generated_images = realpath($opt['path_to_generated_images']);
+    $this->plugins = $opt['plugins'];
+    $this->limiter = $opt['limiter'];
+    $this->image_factory = $opt['image_factory'];
+    $this->image_logger = $opt['image_logger'];
+    $this->cache_expires_dais = $opt['cache_expires_dais'];
 
     $this->extension2mime = [
       'jpg' => 'image/jpeg',
@@ -69,6 +80,10 @@ class Segami {
    * @return \Imagick Instance Imagick s finálním obrázkem.
    */
   function createImage($from_img_path, $to_img_path, $img_props) {
+    if ($this->limiter && !$this->limiter->check($img_props)) {
+      // KO
+    }
+
     $img = ($this->image_factory)::newImage();
     $img->read($from_img_path);
     $img->setFormat($img_props->basic->getExtension());
@@ -145,13 +160,13 @@ class Segami {
   }
   function returnOriginalImage($required_image) {
     // Vytvoření absolutní cesty k obrázku
-    $org_img_path = $this->org_img_dir . DIRECTORY_SEPARATOR . $required_image;
+    $org_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . $required_image;
     // Pokus o vrácení obrázku
     return $this->returnImage($org_img_path, $required_image);
   }
   function returnGeneratedImage($required_image) {
     // Vytvoření absolutní cesty k obrázku
-    $req_img_path = $this->gen_img_dir . DIRECTORY_SEPARATOR . $required_image;
+    $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $required_image;
     // Pokus o vrácení obrázku
     return $this->returnImage($req_img_path, $required_image);
   }
@@ -175,14 +190,14 @@ class Segami {
   }
   function createAndReturnImage($img_props, $b_cache_new_image = true) {
     // Vytvoření absolutní cesty ke zdrojovému obrázku
-    $from_img_path = $this->org_img_dir . DIRECTORY_SEPARATOR . $img_props->basic->getName();
+    $from_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . $img_props->basic->getName();
     if (!is_file($from_img_path))
       throw new SourceImageNotFoundException($img_props->basic->getName());
 
     // Vytvoření absolutní cesty ke generovanému obrázku (pokud se má uložit)
     $req_img_path = '';
     if ($b_cache_new_image)
-      $req_img_path = $this->gen_img_dir . DIRECTORY_SEPARATOR . $img_props->toQuery();
+      $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $img_props->toQuery();
 
     $img = $this->createImage($from_img_path, $req_img_path, $img_props);
 
@@ -210,7 +225,7 @@ class Segami {
    */
   function removeImage($req_img, $b_remove_all = false) {
     // START Odstranění originálního obrázku pokud existuje
-    $file = $this->org_img_dir . DIRECTORY_SEPARATOR . $req_img;
+    $file = $this->path_to_original_images . DIRECTORY_SEPARATOR . $req_img;
     if (file_exists($file))
       unlink($file);
     // END Odstranění originálního obrázku pokud existuje
@@ -218,7 +233,7 @@ class Segami {
     // START Odstranění generovaného obrázku
     if ($b_remove_all) {
       $a_file_path = $this->image_logger->getFiles(
-        $this->gen_img_dir,
+        $this->path_to_generated_images,
         $req_img,
         '@'
       );
@@ -226,7 +241,7 @@ class Segami {
         unlink($file_path);
       }
     } else {
-      $file = $this->gen_img_dir . DIRECTORY_SEPARATOR . $req_img;
+      $file = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $req_img;
       if (file_exists($file))
         unlink($file);
     }
@@ -244,7 +259,7 @@ class Segami {
     if (!($this->image_logger instanceof ImageLogger))
       throw new MissingImageLoggerException('Není nastaveno rozpoznávání souborů pro smazání.');
 
-    $a_file_path = $this->image_logger->getUnusedFiles($this->gen_img_dir, $mtime);
+    $a_file_path = $this->image_logger->getUnusedFiles($this->path_to_generated_images, $mtime);
     foreach ($a_file_path as &$file_path) {
       unlink($file_path);
     }

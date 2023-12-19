@@ -65,7 +65,7 @@ $segami = new Segami(
   30, // cache_expires_dais
 );
 try {
-  $segami->returnImage($req_img, $req_type == 'cache');
+  $segami->smartReturnImage($req_img, $req_type == 'cache');
 } catch (Exception $e) {
   // Obrázek neexistuje
   header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');

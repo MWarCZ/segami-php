@@ -1,6 +1,8 @@
 <?php
 namespace MWarCZ\Segami\Image;
 
+use MWarCZ\Segami\Exception\UnsupportedImageExtensionException;
+
 class ImageImagick implements Image {
 
   protected $img = null;
@@ -26,7 +28,24 @@ class ImageImagick implements Image {
     return $this;
   }
 
-  function setFormat($format) {
+  function setFormat($extension) {
+    $extension2format = [
+      'jpg' => 'JPEG',
+      'jpeg' => 'JPEG',
+      'jp2' => 'JP2',
+      'png' => 'PNG',
+      'apng' => 'APNG',
+      'gif' => 'GIF',
+      'bmp' => 'BMP',
+      'webp' => 'WEBP',
+      'avif' => 'AVIF',
+      'svg' => 'SVG',
+    ];
+    $extension = strtolower($extension);
+    if (!isset($extension2format[$extension]))
+      throw new UnsupportedImageExtensionException($extension);
+
+    $format = $extension2format[$extension];
     $this->img->setImageFormat($format);
     return $this;
   }

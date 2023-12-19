@@ -10,8 +10,12 @@ class ImagePropsManager {
   public $basic;
   /** @var ImageProps[] */
   public $others = [];
+  /** @var Limiter[] */
+  protected $map_limiter;
+
 
   public function __construct() {
+    $this->map_limiter = [];
   }
 
   public static function parseQuery($query) {
@@ -52,11 +56,15 @@ class ImagePropsManager {
     return self::createQuery($this);
   }
 
-  /**
-   * @param Limiter $limiter
-   */
-  public function checkLimiter($limiter) {
+  public function checkLimiter() {
     foreach ($this->others as $key => $other) {
+      $symbol = $other->getSymbol();
+      if (!isset($this->map_limiter[$symbol]))
+        continue;
+      $limiter = $this->map_limiter[$symbol];
+      if ($limiter instanceof Limiter)
+        continue;
+
       if ($other instanceof ImagePropsCrop) {
         if (!$limiter->check($other->getWidth(), $other->getHeight(), $this->basic->getExtension()))
           return false;
@@ -66,6 +74,14 @@ class ImagePropsManager {
       }
     }
     return true;
+  }
+
+  /**
+   * @param string $symbol
+   * @param Limiter $limiter
+   */
+  public function registerLimiter($symbol, $limiter) {
+    $this->map_limiter[$symbol] = $limiter;
   }
 
 }

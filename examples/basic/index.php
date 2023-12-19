@@ -80,7 +80,7 @@ $segami = new \MWarCZ\Segami\Segami(
 ///////////////////////////////////////////////////
 
 try {
-  $segami->returnImage($image_name, $type == 'cache');
+  $segami->smartReturnImage($image_name, $type == 'cache');
 } catch (\Exception $e) {
   http_response_code(404);
   echo '<pre>' . print_r($e, true) . '</pre>';
