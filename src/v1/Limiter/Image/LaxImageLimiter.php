@@ -20,7 +20,7 @@ class LaxImageLimiter implements ImageLimiter {
    */
   function __construct($map_a_limiter = []) {
     if (!$this->valid_map_a_limiter($map_a_limiter)) {
-      throw new \Exception('StrictImageLimiter chybný parametr konstruktoru.');
+      throw new \Exception('LaxImageLimiter chybný parametr konstruktoru.');
     }
     $this->map_a_limiter = $map_a_limiter;
   }

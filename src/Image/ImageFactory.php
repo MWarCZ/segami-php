@@ -5,5 +5,5 @@ interface ImageFactory {
   /**
    * @return Image
    */
-  public static function newImage(): Image;
+  public function newImage(): Image;
 }

@@ -17,8 +17,14 @@ use MWarCZ\Segami\Exception\SourceImageNotFoundException;
 use MWarCZ\Segami\Exception\UnknownInstanceOfModifierException;
 use MWarCZ\Segami\Exception\UnsupportedImageExtensionException;
 
+use MWarCZ\Segami\v1\Plugin\CorePlugin;
+use MWarCZ\Segami\v1\Props\PropsFactory;
+use MWarCZ\Segami\v1\Limiter\Image\ImageLimiter;
+use MWarCZ\Segami\v1\Plugin\Plugin;
+use MWarCZ\Segami\v1\Plugin\PluginManager;
 
-class Segami2 {
+
+class Segami_v1 {
 
   /** @var string $path_to_original_images Cesta k adresáři s originálními obrázky. */
   protected $path_to_original_images;
@@ -27,14 +33,14 @@ class Segami2 {
   /** @var string[] $extension2mime Tabulka pro převod koncovky na MIME */
   protected $extension2mime;
 
-  protected $plugins;
-
+  /** @var Plugin[] $plugin */
+  protected $plugin;
+  /** @var ImageLimiter $limiter */
+  protected $limiter;
   /** @var ImageFactory $image_factory */
   protected $image_factory;
   /** @var ImageLogger $image_logger */
   protected $image_logger;
-  /** @var Limiter $limiter */
-  protected $limiter;
   /** @var int $cache_expires_dais */
   protected $cache_expires_dais;
 
@@ -42,15 +48,14 @@ class Segami2 {
     $opt = array_merge([
       'path_to_original_images' => '',
       'path_to_generated_images' => '',
-      'plugins' => [],
+      'plugin' => [],
       'limiter' => null,
-      'image_factory' => null, // ...
       'image_logger' => null,
       'cache_expires_dais' => 0,
     ], $opts);
     $this->path_to_original_images = realpath($opt['path_to_original_images']);
     $this->path_to_generated_images = realpath($opt['path_to_generated_images']);
-    $this->plugins = $opt['plugins'];
+    $this->plugin = $opt['plugin'];
     $this->limiter = $opt['limiter'];
     $this->image_factory = $opt['image_factory'];
     $this->image_logger = $opt['image_logger'];
@@ -75,37 +80,29 @@ class Segami2 {
    * @param string $from_img_path Celá cesta ke zdrojovému obrázku.
    * @param string $to_img_path Cesta pro uložení vygenerovaného obrázku ('' = Neukládat).
    * @param string $ext_imagick Formát cílového obrázku (imagick).
-   * @param ImagePropsManager $img_props Vlastnosti požadovaného obrázku.
+   * @param PluginManager $plugin_manager Vlastnosti požadovaného obrázku.
    *
    * @return \Imagick Instance Imagick s finálním obrázkem.
    */
-  function createImage($from_img_path, $to_img_path, $img_props) {
-    if ($this->limiter && !$this->limiter->check($img_props)) {
-      // KO
-    }
+  function createImage($from_img_path, $to_img_path, $plugin_manager) {
+    // TODO Limiter->check
+    // if ($this->limiter && !$this->limiter->check($img_props)) {
+    //   // KO
+    // }
 
-    $img = ($this->image_factory)::newImage();
+    $img = ($this->image_factory)->newImage();
     $img->read($from_img_path);
-    $img->setFormat($img_props->basic->getExtension());
 
-    foreach ($img_props->others as $key => $props) {
-      if ($props instanceof ImagePropsCrop) {
-        $img->cropImage($props->getWidth(), $props->getHeight());
-      } elseif ($props instanceof ImagePropsResize) {
-        $type = $props->getType();
-        if ($type == ImagePropsResize::TYPE_COVER) {
-          $img->resizeCover($props->getWidth(), $props->getHeight());
-        } elseif ($type == ImagePropsResize::TYPE_CONTAIN) {
-          $img->resizeContain($props->getWidth(), $props->getHeight());
-        } else {
-          $img->resizeFill($props->getWidth(), $props->getHeight());
-        }
-      } elseif ($props instanceof ImagePropsQuality) {
-        $img->compression($props->getCompression());
-      } else {
-        throw new UnknownInstanceOfModifierException('Neznámí instance ImageProps');
+    $plugin_manager->core_plugin->modifyImage($img, $plugin_manager->core_props);
+
+    foreach ($plugin_manager->a_other_plugin as $key => $plugin) {
+      if (isset($plugin_manager->a_other_props[$key])) {
+        $plugin->modifyImage($img, $plugin_manager->a_other_props[$key]);
       }
     }
+    // else {
+    //     throw new UnknownInstanceOfModifierException('Neznámí instance ImageProps');
+    //   }
 
     $img->strip();
     if ($to_img_path)
@@ -131,18 +128,80 @@ class Segami2 {
       return true;
 
     // Normalizace názvu generovaného obrázku
-    $img_props = ImagePropsManager::parseQuery($required_image);
-    $required_image = $img_props->toQuery();
+    // $img_props = ImagePropsManager::parseQuery($required_image);
+    // $required_image = $img_props->toQuery();
+    // TODO Oddělit do samostatné třídy PropsManager.php
+    $plugin_manager = PluginManager::parseQuery($this->plugin, $required_image);
+    $required_image = $plugin_manager->toQuery();
 
     // Vrať generovaný obrázek pokud existuje
     if ($this->returnGeneratedImage($required_image))
       return true;
 
     // Vygeneruj obrázek
-    if ($this->createAndReturnImage($img_props, $b_cache_new_image))
+    if ($this->createAndReturnImage($plugin_manager, $b_cache_new_image))
       return true;
 
     return false;
+  }
+
+  function parseImageQuery($full_query) {
+    $a_props = [];
+    // Oddělit základní plugin od ostatních
+    $core_key = '';
+    $core_plugin = null;
+    $a_other_plugin = [];
+    foreach ($this->plugin as $key => $plugin) {
+      if ($plugin instanceof CorePlugin) {
+        $core_key = $key;
+        $core_plugin = $plugin;
+      } else {
+        $a_other_plugin[$key] = $plugin;
+      }
+    }
+    if (!$core_plugin)
+      throw new \Exception('Chybí CorePlugin');
+    // Základní plugin
+    if (!$core_plugin->getFactory()->validQuery($full_query)) {
+      throw new \Exception('Chybí BasicPlugin');
+    }
+    $a_props[$core_key] = $core_plugin->getFactory()->parseQuery($full_query);
+    // Procházení ostatních vlastností a hledán vhodný plugin
+    $a_props_query = $a_props[$core_key]->getProps();
+    foreach ($a_props_query as $props_query) {
+      $next_key = '';
+      $next_plugin = null;
+      foreach ($a_other_plugin as $key => $plugin) {
+        if ($plugin->getFactory()->validQuery($props_query)) {
+          $next_key = $key;
+          $next_plugin = $plugin;
+        }
+      }
+      if (!$next_plugin)
+        throw new \Exception('Nebyl nalezen správný Plugin');
+      $a_props[$next_key] = $next_plugin->getFactory()->parseQuery($props_query);
+    }
+
+    return $a_props;
+  }
+  function toImageQuery($a_props) {
+    // Oddělit základní vlastnosti od ostatních
+    $core_props = null;
+    $a_other_props = [];
+    foreach ($a_props as $key => $props) {
+      if ($props instanceof CoreProps) {
+        $core_props = $props;
+      } else {
+        $a_other_props[$key] = $props;
+      }
+    }
+    // ---
+    $a_props_query = [];
+    foreach ($a_other_props as $key => $props) {
+      $a_props_query[] = $props->toQuery();
+    }
+    $core_props->setProps($a_props_query);
+    return $core_props->toQuery();
   }
 
   function addExpireHeaders() {
@@ -188,20 +247,20 @@ class Segami2 {
     readfile($path_to_image);
     return true;
   }
-  function createAndReturnImage($img_props, $b_cache_new_image = true) {
+  function createAndReturnImage($plugin_manager, $b_cache_new_image = true) {
     // Vytvoření absolutní cesty ke zdrojovému obrázku
-    $from_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . $img_props->basic->getName();
+    $from_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . $plugin_manager->core_props->getName();
     if (!is_file($from_img_path))
-      throw new SourceImageNotFoundException($img_props->basic->getName());
+      throw new SourceImageNotFoundException($plugin_manager->core_props->getName());
 
     // Vytvoření absolutní cesty ke generovanému obrázku (pokud se má uložit)
     $req_img_path = '';
     if ($b_cache_new_image)
-      $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $img_props->toQuery();
+      $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $plugin_manager->toQuery();
 
-    $img = $this->createImage($from_img_path, $req_img_path, $img_props);
+    $img = $this->createImage($from_img_path, $req_img_path, $plugin_manager);
 
-    $mime = $this->extension2mime[strtolower($this->parseExtension($img_props->basic->getExtension()))];
+    $mime = $this->extension2mime[strtolower($this->parseExtension($plugin_manager->core_props->getExtension()))];
     if ($mime)
       header('Content-type: ' . $mime);
 
