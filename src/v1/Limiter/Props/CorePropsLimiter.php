@@ -1,9 +1,9 @@
 <?php
 namespace MWarCZ\Segami\v1\Limiter\Props;
 
-use MWarCZ\Segami\v1\Props\BasicProps;
+use MWarCZ\Segami\v1\Props\CoreProps;
 
-class BasicPropsLimiter implements PropsLimiter {
+class CorePropsLimiter implements PropsLimiter {
   /** @var string */
   protected $extension = '';
   /** @var string */
@@ -40,11 +40,11 @@ class BasicPropsLimiter implements PropsLimiter {
   }
 
   /**
-   * @param BasicProps $props
+   * @param CoreProps $props
    */
   public function check($props): bool {
     return
-      $props instanceof BasicProps
+      $props instanceof CoreProps
       &&
       $this->getOriginalExtension() === $props->getOriginalExtension()
       &&

@@ -1,8 +1,8 @@
 <?php
 namespace MWarCZ\Segami\v1\Props;
 
-class BasicPropsFactory implements PropsFactory {
-  public function parseQuery($query): BasicProps {
+class CorePropsFactory implements PropsFactory {
+  public function parseQuery($query): CoreProps {
     // Name
     $a_tmp = explode('@', $query);
     $props1 = array_pop($a_tmp);
@@ -14,7 +14,7 @@ class BasicPropsFactory implements PropsFactory {
       return $tmp;
     });
     // $props = implode('.', $a_tmp);
-    return new BasicProps($name, $extension, $props);
+    return new CoreProps($name, $extension, $props);
   }
 
   public function validQuery($query): bool {
@@ -28,7 +28,7 @@ class BasicPropsFactory implements PropsFactory {
   }
 
   /**
-   * @param BasicProps $props
+   * @param CoreProps $props
    */
   public function createQuery($props): string {
     return $props->getName() . '@' . implode('.', $props->getProps()) . '.' . $props->getExtension();

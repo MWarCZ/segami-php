@@ -1,7 +1,7 @@
 <?php
 namespace MWarCZ\Segami\v1\Props;
 
-class BasicProps implements Props {
+class CoreProps implements Props {
   /** @var string */
   protected $name = '';
   /** @var string */
