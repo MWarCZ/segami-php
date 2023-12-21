@@ -1,4 +1,5 @@
 <?php
+use MWarCZ\Segami\Limiter\Image\FreeImageLimiter;
 use MWarCZ\Segami\Segami;
 use MWarCZ\Segami\Image\ImageImagickFactory;
 use MWarCZ\Segami\ImageLogger\ImageLoggerFS;
@@ -104,17 +105,6 @@ $a_req_part = explode('/', REQUEST_URL);
 $req_img = urldecode(end($a_req_part));
 $req_type = count($a_req_part) > 2 ? urldecode($a_req_part[count($a_req_part) - 2]) : '';
 // p_debug([$a_req_part, $req_img, $req_type]);
-// $segami = new Segami(
-//   ORG_IMG_PATH,
-//   GEN_IMG_PATH,
-//   new ImageImagickFactory(),
-//   new ImageLoggerFS(),
-//   // new LimiterMix([
-//   //   new LimiterStrict([500, 500], 'webp'),
-//   // ]),
-//   null, // limiter
-//   30, // cache_expires_dais
-// );
 $segami = new Segami([
   'path_to_original_images' => ORG_IMG_PATH,
   'path_to_generated_images' => GEN_IMG_PATH,
@@ -124,16 +114,17 @@ $segami = new Segami([
     'resize' => new ResizePlugin(),
     'quality' => new QualityPlugin(),
   ],
-  'limiter' => new LaxImageLimiter([
-    'core' => [
-      new CorePropsLimiter('jpg', 'jpg'),
-      new CorePropsLimiter('jpg', 'webp'),
-    ],
-    'resize' => [
-      new NullablePropsLimiter(),
-      new ResizePropsLimiter(300, 300, ResizeProps::TYPE_FILL),
-    ],
-  ]),
+  'limiter' => new FreeImageLimiter(),
+  // 'limiter' => new LaxImageLimiter([
+  //   'core' => [
+  //     new CorePropsLimiter('jpg', 'jpg'),
+  //     new CorePropsLimiter('jpg', 'webp'),
+  //   ],
+  //   'resize' => [
+  //     new NullablePropsLimiter(),
+  //     new ResizePropsLimiter(300, 300, ResizeProps::TYPE_FILL),
+  //   ],
+  // ]),
   'image_factory' => new ImageImagickFactory(),
   'image_logger' => new ImageLoggerFS(),
   'cache_expires_dais' => 30,

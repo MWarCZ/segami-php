@@ -4,15 +4,9 @@ namespace MWarCZ\Segami;
 
 use MWarCZ\Segami\Image\ImageFactory;
 use MWarCZ\Segami\ImageLogger\ImageLogger;
-
 use MWarCZ\Segami\Exception\LimiterException;
 use MWarCZ\Segami\Exception\MissingImageLoggerException;
 use MWarCZ\Segami\Exception\SourceImageNotFoundException;
-use MWarCZ\Segami\Exception\UnknownInstanceOfModifierException;
-use MWarCZ\Segami\Exception\UnsupportedImageExtensionException;
-
-use MWarCZ\Segami\Plugin\CorePlugin;
-use MWarCZ\Segami\Props\PropsFactory;
 use MWarCZ\Segami\Limiter\Image\ImageLimiter;
 use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Plugin\PluginManager;
@@ -38,7 +32,7 @@ class Segami {
   /** @var int $cache_expires_dais */
   protected $cache_expires_dais;
 
-  function __construct($opts = []) {
+  function __construct(array $opts = []) {
     $opt = array_merge([
       'path_to_original_images' => '',
       'path_to_generated_images' => '',
@@ -82,7 +76,7 @@ class Segami {
     // TODO Limiter->check
     if ($this->limiter && !$this->limiter->check($plugin_manager->a_all_props)) {
       // KO
-      throw new \Exception('Nenalezeno platné pravidlo v omezovači');
+      throw new LimiterException('Nenalezeno platné pravidlo v omezovači');
     }
 
     $img = ($this->image_factory)->newImage();
@@ -139,66 +133,6 @@ class Segami {
 
     return false;
   }
-
-  function parseImageQuery($full_query) {
-    $a_props = [];
-    // Oddělit základní plugin od ostatních
-    $core_key = '';
-    $core_plugin = null;
-    $a_other_plugin = [];
-    foreach ($this->plugin as $key => $plugin) {
-      if ($plugin instanceof CorePlugin) {
-        $core_key = $key;
-        $core_plugin = $plugin;
-      } else {
-        $a_other_plugin[$key] = $plugin;
-      }
-    }
-    if (!$core_plugin)
-      throw new \Exception('Chybí CorePlugin');
-    // Základní plugin
-    if (!$core_plugin->getFactory()->validQuery($full_query)) {
-      throw new \Exception('Chybí BasicPlugin');
-    }
-    $a_props[$core_key] = $core_plugin->getFactory()->parseQuery($full_query);
-    // Procházení ostatních vlastností a hledán vhodný plugin
-    $a_props_query = $a_props[$core_key]->getProps();
-    foreach ($a_props_query as $props_query) {
-      $next_key = '';
-      $next_plugin = null;
-      foreach ($a_other_plugin as $key => $plugin) {
-        if ($plugin->getFactory()->validQuery($props_query)) {
-          $next_key = $key;
-          $next_plugin = $plugin;
-        }
-      }
-      if (!$next_plugin)
-        throw new \Exception('Nebyl nalezen správný Plugin');
-      $a_props[$next_key] = $next_plugin->getFactory()->parseQuery($props_query);
-    }
-
-    return $a_props;
-  }
-  function toImageQuery($a_props) {
-    // Oddělit základní vlastnosti od ostatních
-    $core_props = null;
-    $a_other_props = [];
-    foreach ($a_props as $key => $props) {
-      if ($props instanceof CoreProps) {
-        $core_props = $props;
-      } else {
-        $a_other_props[$key] = $props;
-      }
-    }
-    // ---
-    $a_props_query = [];
-    foreach ($a_other_props as $key => $props) {
-      $a_props_query[] = $props->toQuery();
-    }
-    $core_props->setProps($a_props_query);
-    return $core_props->toQuery();
-  }
-
   function addExpireHeaders() {
     if ($this->cache_expires_dais <= 0)
       return false;
