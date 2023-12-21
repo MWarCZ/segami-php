@@ -1,6 +1,9 @@
 <?php
 namespace MWarCZ\Segami\Plugin;
 
+use MWarCZ\Segami\Exception\CorePluginInvalidFormatException;
+use MWarCZ\Segami\Exception\CorePluginNotFoundException;
+use MWarCZ\Segami\Exception\PluginPluginNotFoundException;
 use MWarCZ\Segami\Plugin\CorePlugin;
 use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Props\CoreProps;
@@ -29,7 +32,7 @@ class PluginManager {
     $this->a_all_props = $a_all_props;
   }
 
-  public static function parseQuery($map_plugin, $full_query) {
+  public static function parseQuery(array $map_plugin, string $full_query) {
     $core_key = '';
     $core_plugin = null;
     $a_other_plugin = [];
@@ -46,10 +49,10 @@ class PluginManager {
       }
     }
     if (!$core_plugin)
-      throw new \Exception('Chybí CorePlugin');
+      throw new CorePluginNotFoundException('Chybí CorePlugin');
     // Základní plugin
     if (!$core_plugin->getFactory()->validQuery($full_query)) {
-      throw new \Exception('Chybný formát pro CorePlugin');
+      throw new CorePluginInvalidFormatException('Chybný formát pro CorePlugin');
     }
     $core_props = $core_plugin->getFactory()->parseQuery($full_query);
     $a_all_props[$core_key] = $core_props;
@@ -65,7 +68,7 @@ class PluginManager {
         }
       }
       if (!$next_plugin)
-        throw new \Exception('Nebyl nalezen správný Plugin');
+        throw new PluginPluginNotFoundException('Nebyl nalezen správný Plugin');
       $a_other_props[$next_key] = $next_plugin->getFactory()->parseQuery($props_query);
       $a_all_props[$next_key] = $a_other_props[$next_key];
     }

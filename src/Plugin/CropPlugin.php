@@ -14,9 +14,11 @@ class CropPlugin implements Plugin {
    * @param CropProps $props
    */
   public function modifyImage(&$image, &$props) {
-    if (!$props instanceof CropProps) {
-      throw new \Exception('props: Chybný typ vlastností');
-    }
+    if (!$image instanceof Image)
+      throw new \InvalidArgumentException('$image must be Image');
+    if (!$props instanceof CropProps)
+      throw new \InvalidArgumentException('$props must be CropProps');
+
     $image->cropImage($props->getWidth(), $props->getHeight());
   }
 }

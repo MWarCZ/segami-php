@@ -2,7 +2,7 @@
 namespace MWarCZ\Segami\Props;
 
 class QualityPropsFactory implements PropsFactory {
-  public function parseQuery($query): QualityProps {
+  public function parseQuery(string $query): QualityProps {
     // q100, q50, q1
     // Default
     $compression = 0;
@@ -12,7 +12,7 @@ class QualityPropsFactory implements PropsFactory {
     return new QualityProps((int) $compression);
   }
 
-  public function validQuery($query): bool {
+  public function validQuery(string $query): bool {
     $regex = self::validRegex();
     return preg_match('/^' . $regex . '$/i', $query);
   }
@@ -26,6 +26,9 @@ class QualityPropsFactory implements PropsFactory {
    * @param QualityProps $props
    */
   public function createQuery($props): string {
+    if (!$props instanceof QualityProps)
+      throw new \InvalidArgumentException('$props must be QualityProps');
+
     $query = 'q';
     $query .= $props->compression;
     return $query;

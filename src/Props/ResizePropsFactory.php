@@ -49,6 +49,9 @@ class ResizePropsFactory implements PropsFactory {
    * @param ResizeProps $props
    */
   public function createQuery($props): string {
+    if (!$props instanceof ResizeProps)
+      throw new \InvalidArgumentException('$props must be ResizeProps');
+
     $query = 'r';
     // Size
     if ($props->width == $props->height) {

@@ -2,7 +2,7 @@
 namespace MWarCZ\Segami\Props;
 
 class CorePropsFactory implements PropsFactory {
-  public function parseQuery($query): CoreProps {
+  public function parseQuery(string $query): CoreProps {
     // Name
     $a_tmp = explode('@', $query);
     $props1 = array_pop($a_tmp);
@@ -17,7 +17,7 @@ class CorePropsFactory implements PropsFactory {
     return new CoreProps($name, $extension, $props);
   }
 
-  public function validQuery($query): bool {
+  public function validQuery(string $query): bool {
     $regex = self::validRegex();
     return preg_match('/^' . $regex . '$/i', $query);
     // return true;
@@ -31,6 +31,9 @@ class CorePropsFactory implements PropsFactory {
    * @param CoreProps $props
    */
   public function createQuery($props): string {
+    if (!$props instanceof CoreProps)
+      throw new \InvalidArgumentException('$props must be CoreProps');
+
     return $props->getName() . '@' . implode('.', $props->getProps()) . '.' . $props->getExtension();
   }
 }

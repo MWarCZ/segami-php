@@ -19,12 +19,14 @@ class LaxImageLimiter implements ImageLimiter {
    * @param PropsLimiter[][] $map_a_limiter
    */
   function __construct($map_a_limiter = []) {
-    if (!$this->valid_map_a_limiter($map_a_limiter)) {
-      throw new \Exception('LaxImageLimiter chybný parametr konstruktoru.');
-    }
+    if (!$this->valid_map_a_limiter($map_a_limiter))
+      throw new \InvalidArgumentException('$map_a_limiter must be PropsLimiter[][]');
     $this->map_a_limiter = $map_a_limiter;
   }
 
+  /**
+   * @param PropsLimiter[][] $map_a_limiter
+   */
   private function valid_map_a_limiter($map_a_limiter) {
     if (!is_array($map_a_limiter))
       return false;

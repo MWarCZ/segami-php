@@ -14,9 +14,11 @@ class ResizePlugin implements Plugin {
    * @param ResizeProps $props
    */
   public function modifyImage(&$image, &$props) {
-    if (!$props instanceof ResizeProps) {
-      throw new \Exception('props: Chybný typ vlastností');
-    }
+    if (!$image instanceof Image)
+      throw new \InvalidArgumentException('$image must be Image');
+    if (!$props instanceof ResizeProps)
+      throw new \InvalidArgumentException('$props must be ResizeProps');
+
     $type = $props->getType();
     switch ($type) {
       case ResizeProps::TYPE_COVER:

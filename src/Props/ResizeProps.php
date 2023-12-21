@@ -19,7 +19,7 @@ class ResizeProps implements Props {
    * @param int $height
    * @param int $type
    */
-  function __construct($width = self::SIZE_AUTO, $height = self::SIZE_AUTO, $type = self::TYPE_FILL) {
+  function __construct(int $width = self::SIZE_AUTO, int $height = self::SIZE_AUTO, int $type = self::TYPE_FILL) {
     $this->width = $width;
     $this->height = $height;
     $this->type = $type;
@@ -28,7 +28,7 @@ class ResizeProps implements Props {
   /**
    * @param int $v
    */
-  public function setWidth($v) {
+  public function setWidth(int $v) {
     $this->width = $v;
     return $this;
   }
@@ -38,7 +38,7 @@ class ResizeProps implements Props {
   /**
    * @param int $v
    */
-  public function setHeight($v) {
+  public function setHeight(int $v) {
     $this->height = $v;
     return $this;
   }
@@ -48,7 +48,7 @@ class ResizeProps implements Props {
   /**
    * @param int $v
    */
-  public function setType($v) {
+  public function setType(int $v) {
     $this->type = $v;
     return $this;
   }

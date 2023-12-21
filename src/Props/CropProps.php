@@ -18,7 +18,7 @@ class CropProps implements Props {
    * @param int $width
    * @param int $height
    */
-  function __construct($x = 0, $y = 0, $width = self::SIZE_AUTO, $height = self::SIZE_AUTO) {
+  function __construct(int $x = 0, int $y = 0, int $width = self::SIZE_AUTO, int $height = self::SIZE_AUTO) {
     $this->x = $x;
     $this->y = $y;
     $this->width = $width;
@@ -27,7 +27,7 @@ class CropProps implements Props {
   /**
    * @param int $v
    */
-  public function setX($v) {
+  public function setX(int $v) {
     $this->x = $v;
     return $this;
   }
@@ -37,7 +37,7 @@ class CropProps implements Props {
   /**
    * @param int $v
    */
-  public function setY($v) {
+  public function setY(int $v) {
     $this->y = $v;
     return $this;
   }
@@ -47,7 +47,7 @@ class CropProps implements Props {
   /**
    * @param int $v
    */
-  public function setWidth($v) {
+  public function setWidth(int $v) {
     $this->width = $v;
     return $this;
   }
@@ -57,7 +57,7 @@ class CropProps implements Props {
   /**
    * @param int $v
    */
-  public function setHeight($v) {
+  public function setHeight(int $v) {
     $this->height = $v;
     return $this;
   }

@@ -16,7 +16,7 @@ class CoreProps implements Props {
    * @param string $extension
    * @param string[] $props
    */
-  function __construct($name, $extension, $props = []) {
+  function __construct(string $name, string $extension, $props = []) {
     $this->setName($name);
     $this->setExtension($extension);
     $this->setProps($props);
@@ -24,7 +24,7 @@ class CoreProps implements Props {
   /**
    * @param string $v
    */
-  public function setName($v) {
+  public function setName(string $v) {
     $this->name = $v;
     $a_part = explode('.', $v);
     $original_extension = strtolower(end($a_part));
@@ -37,7 +37,7 @@ class CoreProps implements Props {
   /**
    * @param string $v
    */
-  public function setExtension($v) {
+  public function setExtension(string $v) {
     $this->extension = strtolower($v);
     return $this;
   }
@@ -50,7 +50,7 @@ class CoreProps implements Props {
   /**
    * @param string[] $v
    */
-  public function setProps($v) {
+  public function setProps(array $v) {
     $this->props = $v;
     return $this;
   }
