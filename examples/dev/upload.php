@@ -13,13 +13,25 @@ if (isset($_POST['submit_upload'])) {
   }
 }
 if (isset($_POST['submit_delete'])) {
-  $segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH, new ImageImagickFactory(), new ImageLoggerFS());
+  // $segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH, new ImageImagickFactory(), new ImageLoggerFS());
+  $segami = new Segami([
+    'path_to_original_images' => ORG_IMG_PATH,
+    'path_to_generated_images' => GEN_IMG_PATH,
+    'image_factory' => new ImageImagickFactory(),
+    'image_logger' => new ImageLoggerFS(),
+  ]);
   $segami->removeImage($_POST['submit_delete'], true);
   location(ACTUAL_URL);
 }
 // TODO
 if (isset($_POST['submit_delete_unused_1day'])) {
-  $segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH, new ImageImagickFactory(), new ImageLoggerFS());
+  // $segami = new Segami(ORG_IMG_PATH, GEN_IMG_PATH, new ImageImagickFactory(), new ImageLoggerFS());
+  $segami = new Segami([
+    'path_to_original_images' => ORG_IMG_PATH,
+    'path_to_generated_images' => GEN_IMG_PATH,
+    'image_factory' => new ImageImagickFactory(),
+    'image_logger' => new ImageLoggerFS(),
+  ]);
   $segami->removeUnusedImage('-1 day');
   location(ACTUAL_URL);
 }
