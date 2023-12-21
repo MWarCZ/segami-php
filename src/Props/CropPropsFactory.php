@@ -65,6 +65,7 @@ class CropPropsFactory implements PropsFactory {
     }
     // From
     if ($props->x || $props->y) {
+      $query .= 'f';
       if ($props->x == $props->y) {
         $query .= $props->x;
       } else {
