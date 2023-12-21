@@ -86,9 +86,10 @@ class Segami_v1 {
    */
   function createImage($from_img_path, $to_img_path, $plugin_manager) {
     // TODO Limiter->check
-    // if ($this->limiter && !$this->limiter->check($img_props)) {
-    //   // KO
-    // }
+    if ($this->limiter && !$this->limiter->check($plugin_manager->a_all_props)) {
+      // KO
+      throw new \Exception('Nenalezeno platné pravidlo v omezovači');
+    }
 
     $img = ($this->image_factory)->newImage();
     $img->read($from_img_path);

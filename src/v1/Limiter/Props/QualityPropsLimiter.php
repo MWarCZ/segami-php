@@ -26,8 +26,10 @@ class QualityPropsLimiter implements PropsLimiter {
   /**
    * @param QualityProps $props
    */
-  public function check($props): bool {
+  public function check($props = null): bool {
     return
+      $props
+      &&
       $props instanceof QualityProps
       &&
       $this->getCompression() === $props->getCompression()

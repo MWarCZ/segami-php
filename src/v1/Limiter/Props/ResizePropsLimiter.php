@@ -56,8 +56,13 @@ class ResizePropsLimiter implements PropsLimiter {
   /**
    * @param ResizeProps $props
    */
-  public function check($props): bool {
+  public function check($props = null): bool {
+    // p_debug([
+    //   $props, $this,
+    // ]);
     return
+      $props
+      &&
       $props instanceof ResizeProps
       &&
       $this->getWidth() === $props->getWidth()

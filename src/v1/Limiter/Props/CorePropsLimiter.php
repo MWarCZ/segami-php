@@ -42,8 +42,10 @@ class CorePropsLimiter implements PropsLimiter {
   /**
    * @param CoreProps $props
    */
-  public function check($props): bool {
+  public function check($props = null): bool {
     return
+      $props
+      &&
       $props instanceof CoreProps
       &&
       $this->getOriginalExtension() === $props->getOriginalExtension()

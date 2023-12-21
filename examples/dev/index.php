@@ -5,10 +5,13 @@ use MWarCZ\Segami\Image\ImageImagickFactory;
 use MWarCZ\Segami\ImageLogger\ImageLoggerFS;
 use MWarCZ\Segami\v1\Limiter\Image\LaxImageLimiter;
 use MWarCZ\Segami\v1\Limiter\Props\CorePropsLimiter;
+use MWarCZ\Segami\v1\Limiter\Props\ResizePropsLimiter;
+use MWarCZ\Segami\v1\Limiter\Props\NullablePropsLimiter;
 use MWarCZ\Segami\v1\Plugin\CorePlugin;
 use MWarCZ\Segami\v1\Plugin\CropPlugin;
 use MWarCZ\Segami\v1\Plugin\ResizePlugin;
 use MWarCZ\Segami\v1\Plugin\QualityPlugin;
+use MWarCZ\Segami\v1\Props\ResizeProps;
 
 require_once(__DIR__ . '/init.config.php');
 
@@ -125,6 +128,11 @@ $segami = new Segami_v1([
   'limiter' => new LaxImageLimiter([
     'core' => [
       new CorePropsLimiter('jpg', 'jpg'),
+      new CorePropsLimiter('jpg', 'webp'),
+    ],
+    'resize' => [
+      new NullablePropsLimiter(),
+      new ResizePropsLimiter(300, 300, ResizeProps::TYPE_FILL),
     ],
   ]),
   'image_factory' => new ImageImagickFactory(),

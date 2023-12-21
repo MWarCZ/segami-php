@@ -69,8 +69,10 @@ class CropPropsLimiter implements PropsLimiter {
   /**
    * @param CropProps $props
    */
-  public function check($props): bool {
+  public function check($props = null): bool {
     return
+      $props
+      &&
       $props instanceof CropProps
       &&
       $this->getX() === $props->getX()

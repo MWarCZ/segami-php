@@ -17,13 +17,16 @@ class PluginManager {
   public $core_props = null;
   /** @var Props[] */
   public $a_other_props = [];
+  /** @var Props[] */
+  public $a_all_props = [];
 
-  public function __construct($core_key = '', $core_plugin = null, $a_other_plugin = [], $core_props = null, $a_other_props = []) {
+  public function __construct($core_key = '', $core_plugin = null, $a_other_plugin = [], $core_props = null, $a_other_props = [], $a_all_props = []) {
     $this->core_key = $core_key;
     $this->core_plugin = $core_plugin;
     $this->a_other_plugin = $a_other_plugin;
     $this->core_props = $core_props;
     $this->a_other_props = $a_other_props;
+    $this->a_all_props = $a_all_props;
   }
 
   public static function parseQuery($map_plugin, $full_query) {
@@ -32,6 +35,7 @@ class PluginManager {
     $a_other_plugin = [];
     $core_props = null;
     $a_other_props = [];
+    $a_all_props = [];
     // Oddělit základní plugin od ostatních
     foreach ($map_plugin as $key => $plugin) {
       if ($plugin instanceof CorePlugin) {
@@ -48,6 +52,7 @@ class PluginManager {
       throw new \Exception('Chybný formát pro CorePlugin');
     }
     $core_props = $core_plugin->getFactory()->parseQuery($full_query);
+    $a_all_props[$core_key] = $core_props;
     // Procházení ostatních vlastností a hledán vhodný plugin
     $a_props_query = $core_props->getProps();
     foreach ($a_props_query as $props_query) {
@@ -62,9 +67,10 @@ class PluginManager {
       if (!$next_plugin)
         throw new \Exception('Nebyl nalezen správný Plugin');
       $a_other_props[$next_key] = $next_plugin->getFactory()->parseQuery($props_query);
+      $a_all_props[$next_key] = $a_other_props[$next_key];
     }
 
-    return new self($core_key, $core_plugin, $a_other_plugin, $core_props, $a_other_props);
+    return new self($core_key, $core_plugin, $a_other_plugin, $core_props, $a_other_props, $a_all_props);
   }
   public function toQuery() {
     $a_props_query = [];

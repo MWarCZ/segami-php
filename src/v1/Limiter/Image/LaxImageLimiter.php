@@ -44,14 +44,25 @@ class LaxImageLimiter implements ImageLimiter {
     if (!is_array($map_props))
       return false;
 
+    // p_debug([
+    //   $map_props,
+    //   $this->map_a_limiter,
+    //   array_diff_key($map_props, $this->map_a_limiter),
+    //   array_diff_key($this->map_a_limiter, $map_props),
+    // ]);
+
+    // Více vlastností než je nastaveno v omezovači
+    if (!empty(array_diff_key($map_props, $this->map_a_limiter)))
+      return false;
+
     foreach ($this->map_a_limiter as $key => $a_limiter) {
-      if (
-        !isset($map_props[$key])
-        ||
-        !($map_props[$key] instanceof Props)
-      ) {
-        return false;
-      }
+      // if (
+      //   !isset($map_props[$key])
+      //   ||
+      //   !($map_props[$key] instanceof Props)
+      // ) {
+      //   return false;
+      // }
 
       $result = false;
       foreach ($a_limiter as $limiter) {
@@ -59,8 +70,9 @@ class LaxImageLimiter implements ImageLimiter {
         //   $key,
         //   $limiter,
         //   $map_props[$key],
+        //   'res' => $limiter->check(isset($map_props[$key]) ? $map_props[$key] : null),
         // ]);
-        if ($limiter->check($map_props[$key])) {
+        if ($limiter->check(isset($map_props[$key]) ? $map_props[$key] : null)) {
           $result = true;
           break;
         }
