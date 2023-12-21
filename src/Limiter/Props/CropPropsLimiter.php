@@ -4,65 +4,85 @@ namespace MWarCZ\Segami\Limiter\Props;
 use MWarCZ\Segami\Props\CropProps;
 
 class CropPropsLimiter implements PropsLimiter {
-  /** @var int */
+  /** @var int[] */
   public $x;
-  /** @var int */
+  /** @var int[] */
   public $y;
-  /** @var int */
+  /** @var int[] */
   public $width;
-  /** @var int */
+  /** @var int[] */
   public $height;
 
   /**
-   * @param int $x
-   * @param int $y
-   * @param int $width
-   * @param int $height
+   * @param int|int[] $x
+   * @param int|int[] $y
+   * @param int|int[] $width
+   * @param int|int[] $height
    */
   function __construct($x = 0, $y = 0, $width = CropProps::SIZE_AUTO, $height = CropProps::SIZE_AUTO) {
-    $this->x = $x;
-    $this->y = $y;
-    $this->width = $width;
-    $this->height = $height;
+    $this->setX($x);
+    $this->setY($y);
+    $this->setWidth($width);
+    $this->setHeight($height);
   }
   /**
-   * @param int $v
+   * @param int|int[] $v
    */
   public function setX($v) {
-    $this->x = $v;
+    if (!is_array($v))
+      $this->x = [(int) $v];
+    else
+      $this->x = array_map(function ($i) {
+        return (int) $i;
+      }, $v);
     return $this;
   }
-  public function getX(): int {
+  public function getX(): array {
     return $this->x;
   }
   /**
-   * @param int $v
+   * @param int|int[] $v
    */
   public function setY($v) {
-    $this->y = $v;
+    if (!is_array($v))
+      $this->y = [(int) $v];
+    else
+      $this->y = array_map(function ($i) {
+        return (int) $i;
+      }, $v);
     return $this;
   }
-  public function getY(): int {
+  public function getY(): array {
     return $this->y;
   }
   /**
-   * @param int $v
+   * @param int|int[] $v
    */
   public function setWidth($v) {
-    $this->width = $v;
+    if (!is_array($v))
+      $this->width = [(int) $v];
+    else
+      $this->width = array_map(function ($i) {
+        return (int) $i;
+      }, $v);
     return $this;
   }
-  public function getWidth(): int {
+  public function getWidth(): array {
     return $this->width;
   }
   /**
-   * @param int $v
+   * @param int|int[] $v
    */
   public function setHeight($v) {
-    $this->height = $v;
+    if (!is_array($v))
+      $this->height = [(int) $v];
+    else
+      $this->height = array_map(function ($i) {
+        return (int) $i;
+      }, $v);
     return $this;
   }
-  public function getHeight(): int {
+  public function getHeight(): array {
     return $this->height;
   }
 
@@ -75,13 +95,13 @@ class CropPropsLimiter implements PropsLimiter {
       &&
       $props instanceof CropProps
       &&
-      $this->getX() === $props->getX()
+      in_array($props->getX(), $this->getX())
       &&
-      $this->getY() === $props->getY()
+      in_array($props->getY(), $this->getY())
       &&
-      $this->getWidth() === $props->getWidth()
+      in_array($props->getWidth(), $this->getWidth())
       &&
-      $this->getHeight() === $props->getHeight()
+      in_array($props->getHeight(), $this->getHeight())
     ;
   }
 }

@@ -4,52 +4,67 @@ namespace MWarCZ\Segami\Limiter\Props;
 use MWarCZ\Segami\Props\ResizeProps;
 
 class ResizePropsLimiter implements PropsLimiter {
-  /** @var int */
+  /** @var int[] */
   public $width;
-  /** @var int */
+  /** @var int[] */
   public $height;
-  /** @var int */
+  /** @var int[] */
   public $type;
 
   /**
-   * @param int $width
-   * @param int $height
-   * @param int $type
+   * @param int|int[] $width
+   * @param int|int[] $height
+   * @param int|int[] $type
    */
   function __construct($width = ResizeProps::SIZE_AUTO, $height = ResizeProps::SIZE_AUTO, $type = ResizeProps::TYPE_FILL) {
-    $this->width = $width;
-    $this->height = $height;
-    $this->type = $type;
+    $this->setWidth($width);
+    $this->setHeight($height);
+    $this->setType($type);
   }
 
   /**
-   * @param int $v
+   * @param int|int[] $v
    */
   public function setWidth($v) {
-    $this->width = $v;
+    if (!is_array($v))
+      $this->width = [(int) $v];
+    else
+      $this->width = array_map(function ($i) {
+        return (int) $i;
+      }, $v);
     return $this;
   }
-  public function getWidth(): int {
+  public function getWidth(): array {
     return $this->width;
   }
   /**
-   * @param int $v
+   * @param int|int[] $v
    */
   public function setHeight($v) {
-    $this->height = $v;
+    if (!is_array($v))
+      $this->height = [(int) $v];
+    else
+      $this->height = array_map(function ($i) {
+        return (int) $i;
+      }, $v);
     return $this;
   }
-  public function getHeight(): int {
+  public function getHeight(): array {
     return $this->height;
   }
   /**
-   * @param int $v
+   * @param int|int[] $v
    */
   public function setType($v) {
-    $this->type = $v;
+    if (!is_array($v))
+      $this->type = [(int) $v];
+    else
+      $this->type = array_map(function ($i) {
+        return (int) $i;
+      }, $v);
     return $this;
   }
-  public function getType() {
+  public function getType(): array {
     return $this->type;
   }
 
@@ -65,11 +80,11 @@ class ResizePropsLimiter implements PropsLimiter {
       &&
       $props instanceof ResizeProps
       &&
-      $this->getWidth() === $props->getWidth()
+      in_array($props->getWidth(), $this->getWidth())
       &&
-      $this->getHeight() === $props->getHeight()
+      in_array($props->getHeight(), $this->getHeight())
       &&
-      $this->getType() === $props->getType()
+      in_array($props->getType(), $this->getType())
     ;
   }
 }

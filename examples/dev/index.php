@@ -114,17 +114,18 @@ $segami = new Segami([
     'resize' => new ResizePlugin(),
     'quality' => new QualityPlugin(),
   ],
-  'limiter' => new FreeImageLimiter(),
-  // 'limiter' => new LaxImageLimiter([
-  //   'core' => [
-  //     new CorePropsLimiter('jpg', 'jpg'),
-  //     new CorePropsLimiter('jpg', 'webp'),
-  //   ],
-  //   'resize' => [
-  //     new NullablePropsLimiter(),
-  //     new ResizePropsLimiter(300, 300, ResizeProps::TYPE_FILL),
-  //   ],
-  // ]),
+  // 'limiter' => new FreeImageLimiter(),
+  'limiter' => new LaxImageLimiter([
+    'core' => [
+      // new CorePropsLimiter('jpg', ['jpg', 'png', 'webp']),
+      new CorePropsLimiter(['jpg', 'png', 'wepb', 'avif'], ['jpg', 'png', 'webp', 'avif']),
+    ],
+    'resize' => [
+      new NullablePropsLimiter(),
+      new ResizePropsLimiter(300, 300, ResizeProps::TYPE_FILL),
+      new ResizePropsLimiter(400, 300, [ResizeProps::TYPE_FILL, ResizeProps::TYPE_COVER, ResizeProps::TYPE_CONTAIN]),
+    ],
+  ]),
   'image_factory' => new ImageImagickFactory(),
   'image_logger' => new ImageLoggerFS(),
   'cache_expires_dais' => 30,

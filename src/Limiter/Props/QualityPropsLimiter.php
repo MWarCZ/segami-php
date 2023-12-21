@@ -4,23 +4,28 @@ namespace MWarCZ\Segami\Limiter\Props;
 use MWarCZ\Segami\Props\QualityProps;
 
 class QualityPropsLimiter implements PropsLimiter {
-  /** @var int */
+  /** @var int[] */
   public $compression;
 
   /**
-   * @param int $compression
+   * @param int|int[] $compression
    */
   function __construct($compression = 0) {
-    $this->compression = $compression;
+    $this->setCompression($compression);
   }
   /**
-   * @param int $v
+   * @param int|int[] $v
    */
   public function setCompression($v) {
-    $this->compression = $v;
+    if (!is_array($v))
+      $this->compression = [(int) $v];
+    else
+      $this->compression = array_map(function ($i) {
+        return (int) $i;
+      }, $v);
     return $this;
   }
-  public function getCompression(): int {
+  public function getCompression(): array {
     return $this->compression;
   }
   /**
@@ -32,7 +37,7 @@ class QualityPropsLimiter implements PropsLimiter {
       &&
       $props instanceof QualityProps
       &&
-      $this->getCompression() === $props->getCompression()
+      in_array($props->getCompression(), $this->getCompression())
     ;
   }
 }
