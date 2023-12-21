@@ -4,14 +4,14 @@ namespace MWarCZ\Segami\Limiter\Props;
 use MWarCZ\Segami\Props\CoreProps;
 
 class CorePropsLimiter implements PropsLimiter {
-  /** @var string */
+  /** @var string[] */
   protected $extension = '';
-  /** @var string */
+  /** @var string[] */
   protected $original_extension = '';
 
   /**
-   * @param string $original_extension
-   * @param string $extension
+   * @param string|string[] $original_extension
+   * @param string|string[] $extension
    */
   function __construct($original_extension, $extension) {
     $this->setOriginalExtension($original_extension);
@@ -19,23 +19,33 @@ class CorePropsLimiter implements PropsLimiter {
   }
 
   /**
-   * @param string $v
+   * @param string|string[] $v
    */
   public function setExtension($v) {
-    $this->extension = strtolower($v);
+    if (!is_array($v))
+      $this->extension = [strtolower($v)];
+    else
+      $this->extension = array_map(function ($i) {
+        return strtolower($i);
+      }, $v);
     return $this;
   }
-  public function getExtension(): string {
+  public function getExtension(): array {
     return $this->extension;
   }
   /**
-   * @param string $v
+   * @param string|string[] $v
    */
   public function setOriginalExtension($v) {
-    $this->original_extension = strtolower($v);
+    if (!is_array($v))
+      $this->original_extension = [strtolower($v)];
+    else
+      $this->original_extension = array_map(function ($i) {
+        return strtolower($i);
+      }, $v);
     return $this;
   }
-  public function getOriginalExtension(): string {
+  public function getOriginalExtension(): array {
     return $this->original_extension;
   }
 
@@ -48,9 +58,9 @@ class CorePropsLimiter implements PropsLimiter {
       &&
       $props instanceof CoreProps
       &&
-      $this->getOriginalExtension() === $props->getOriginalExtension()
+      in_array($props->getOriginalExtension(), $this->getOriginalExtension())
       &&
-      $this->getExtension() === $props->getExtension()
+      in_array($props->getExtension(), $this->getExtension())
     ;
   }
 }
