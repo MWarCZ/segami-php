@@ -14,9 +14,11 @@ class CorePlugin implements Plugin {
    * @param CoreProps $props
    */
   public function modifyImage(&$image, &$props) {
-    if (!($props instanceof CoreProps)) {
-      throw new \Exception('props: Chybný typ vlastností');
-    }
+    if (!$image instanceof Image)
+      throw new \InvalidArgumentException('$image must be Image');
+    if (!$props instanceof CoreProps)
+      throw new \InvalidArgumentException('$props must be CoreProps');
+
     $image->setFormat($props->getExtension());
   }
 }

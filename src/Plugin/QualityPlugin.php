@@ -14,9 +14,11 @@ class QualityPlugin implements Plugin {
    * @param QualityProps $props
    */
   public function modifyImage(&$image, &$props) {
-    if (!$props instanceof QualityProps) {
-      throw new \Exception('props: Chybný typ vlastností');
-    }
+    if (!$image instanceof Image)
+      throw new \InvalidArgumentException('$image must be Image');
+    if (!$props instanceof QualityProps)
+      throw new \InvalidArgumentException('$props must be QualityProps');
+
     $image->compression($props->getCompression());
   }
 }

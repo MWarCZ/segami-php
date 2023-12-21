@@ -22,12 +22,15 @@ class StrictImageLimiter implements ImageLimiter {
    * @param PropsLimiter[][] $a_map_limiter
    */
   function __construct($a_map_limiter = []) {
-    if (!$this->valid_a_map_limiter($a_map_limiter)) {
-      throw new \Exception('StrictImageLimiter chybný parametr konstruktoru.');
-    }
+    if (!$this->valid_a_map_limiter($a_map_limiter))
+      throw new \InvalidArgumentException('$a_map_limiter must be PropsLimiter[][]');
+
     $this->a_map_limiter = $a_map_limiter;
   }
 
+  /**
+   * @param PropsLimiter[][] $a_map_limiter
+   */
   private function valid_a_map_limiter($a_map_limiter) {
     if (!is_array($a_map_limiter))
       return false;

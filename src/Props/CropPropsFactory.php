@@ -2,7 +2,7 @@
 namespace MWarCZ\Segami\Props;
 
 class CropPropsFactory implements PropsFactory {
-  public function parseQuery($query): CropProps {
+  public function parseQuery(string $query): CropProps {
     // c200
     // c200f20
     // c200f20x30
@@ -37,7 +37,7 @@ class CropPropsFactory implements PropsFactory {
     return new CropProps((int) $x, (int) $y, (int) $width, (int) $height);
   }
 
-  public function validQuery($query): bool {
+  public function validQuery(string $query): bool {
     $regex = self::validRegex();
     return preg_match('/^' . $regex . '$/i', $query);
   }
@@ -53,6 +53,9 @@ class CropPropsFactory implements PropsFactory {
    * @param CropProps $props
    */
   public function createQuery($props): string {
+    if (!$props instanceof CropProps)
+      throw new \InvalidArgumentException('$props must be CropProps');
+
     $query = 'c';
     // Size
     if ($props->width == $props->height) {

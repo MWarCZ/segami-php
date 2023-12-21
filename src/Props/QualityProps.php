@@ -8,13 +8,13 @@ class QualityProps implements Props {
   /**
    * @param int $compression
    */
-  function __construct($compression = 0) {
+  function __construct(int $compression = 0) {
     $this->compression = $compression;
   }
   /**
    * @param int $v
    */
-  public function setCompression($v) {
+  public function setCompression(int $v) {
     $this->compression = $v;
     return $this;
   }
