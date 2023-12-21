@@ -48,7 +48,7 @@ interface Image {
    * @param int|string $s_y
    * @return self
    */
-  function cropImage($width, $height, $s_x, $s_y);
+  function cropImage($width, $height, $s_x = null, $s_y = null);
   /**
    * @param int $quality
    * @return self

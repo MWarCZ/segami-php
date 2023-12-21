@@ -1,7 +1,17 @@
 <?php
+use MWarCZ\Segami\Limiter\Image\FreeImageLimiter;
 use MWarCZ\Segami\Segami;
 use MWarCZ\Segami\Image\ImageImagickFactory;
 use MWarCZ\Segami\ImageLogger\ImageLoggerFS;
+use MWarCZ\Segami\Limiter\Image\LaxImageLimiter;
+use MWarCZ\Segami\Limiter\Props\CorePropsLimiter;
+use MWarCZ\Segami\Limiter\Props\ResizePropsLimiter;
+use MWarCZ\Segami\Limiter\Props\NullablePropsLimiter;
+use MWarCZ\Segami\Plugin\CorePlugin;
+use MWarCZ\Segami\Plugin\CropPlugin;
+use MWarCZ\Segami\Plugin\ResizePlugin;
+use MWarCZ\Segami\Plugin\QualityPlugin;
+use MWarCZ\Segami\Props\ResizeProps;
 
 require_once(__DIR__ . '/init.config.php');
 
@@ -47,25 +57,81 @@ require_once(__DIR__ . '/init.config.php');
 // exit;
 
 
+// use MWarCZ\Segami\v1\Props\CorePropsFactory;
+// use MWarCZ\Segami\v1\Props\QualityPropsFactory;
+// use MWarCZ\Segami\v1\Props\ResizePropsFactory;
+// use MWarCZ\Segami\v1\Props\CropPropsFactory;
+
+// use MWarCZ\Segami\v1\Limiter\Image\StrictImageLimiter;
+// use MWarCZ\Segami\v1\Limiter\Image\LaxImageLimiter;
+// use MWarCZ\Segami\v1\Limiter\Props\QualityPropsLimiter;
+
+// $s01 = (new StrictImageLimiter([
+//   ['q' => new QualityPropsLimiter(0)],
+//   ['q' => new QualityPropsLimiter(10)],
+// ]))
+//   ->check([
+//     'q' => (new QualityPropsFactory())->parseQuery('q10'),
+//   ]);
+// $l01 = (new LaxImageLimiter([
+//   'q' => [
+//     new QualityPropsLimiter(0),
+//     new QualityPropsLimiter(10),
+//   ],
+// ]))
+//   ->check([
+//     'q' => (new QualityPropsFactory())->parseQuery('q0'),
+//   ]);
+
+// p_debug([
+//   's01' => $s01,
+//   'l01' => $l01,
+//   'b01' => (new CorePropsFactory())->parseQuery('image.jpg@.webp'),
+//   'b02' => (new CorePropsFactory())->parseQuery('image.png@q50.webp'),
+//   'r01' => (new ResizePropsFactory())->parseQuery('r100x200'),
+//   'r02' => (new ResizePropsFactory())->parseQuery('r100_r'),
+//   'c01' => (new CropPropsFactory())->parseQuery('c100x200'),
+//   'c02' => (new CropPropsFactory())->parseQuery('c100'),
+//   'q01' => (new QualityPropsFactory())->parseQuery('q50'),
+//   'q02' => (new QualityPropsFactory())->parseQuery('q10'),
+// ]);
+
+// exit;
+
+
 ///////////////////////////////////////////////
 // Získání názvu obrázku z URL
 $a_req_part = explode('/', REQUEST_URL);
 $req_img = urldecode(end($a_req_part));
 $req_type = count($a_req_part) > 2 ? urldecode($a_req_part[count($a_req_part) - 2]) : '';
 // p_debug([$a_req_part, $req_img, $req_type]);
-$segami = new Segami(
-  ORG_IMG_PATH,
-  GEN_IMG_PATH,
-  new ImageImagickFactory(),
-  new ImageLoggerFS(),
-  // new LimiterMix([
-  //   new LimiterStrict([500, 500], 'webp'),
+$segami = new Segami([
+  'path_to_original_images' => ORG_IMG_PATH,
+  'path_to_generated_images' => GEN_IMG_PATH,
+  'plugin' => [
+    'core' => new CorePlugin(),
+    'crop' => new CropPlugin(),
+    'resize' => new ResizePlugin(),
+    'quality' => new QualityPlugin(),
+  ],
+  'limiter' => new FreeImageLimiter(),
+  // 'limiter' => new LaxImageLimiter([
+  //   'core' => [
+  //     // new CorePropsLimiter('jpg', ['jpg', 'png', 'webp']),
+  //     new CorePropsLimiter(['jpg', 'png', 'webp', 'avif'], ['jpg', 'png', 'webp', 'avif']),
+  //   ],
+  //   'resize' => [
+  //     new NullablePropsLimiter(),
+  //     new ResizePropsLimiter(300, 300, ResizeProps::TYPE_FILL),
+  //     new ResizePropsLimiter(400, 300, [ResizeProps::TYPE_FILL, ResizeProps::TYPE_COVER, ResizeProps::TYPE_CONTAIN]),
+  //   ],
   // ]),
-  null, // limiter
-  30, // cache_expires_dais
-);
+  'image_factory' => new ImageImagickFactory(),
+  'image_logger' => new ImageLoggerFS(),
+  'cache_expires_dais' => 30,
+]);
 try {
-  $segami->returnImage($req_img, $req_type == 'cache');
+  $segami->smartReturnImage($req_img, $req_type == 'cache');
 } catch (Exception $e) {
   // Obrázek neexistuje
   header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');

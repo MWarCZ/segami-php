@@ -4,148 +4,95 @@ namespace MWarCZ\Segami;
 
 use MWarCZ\Segami\Image\ImageFactory;
 use MWarCZ\Segami\ImageLogger\ImageLogger;
-use MWarCZ\Segami\Limiter\Limiter;
-use MWarCZ\Segami\Limiter\LimiterFree;
-use MWarCZ\Segami\ImageProps\ImagePropsManager;
-use MWarCZ\Segami\ImageProps\ImagePropsCrop;
-use MWarCZ\Segami\ImageProps\ImagePropsResize;
-use MWarCZ\Segami\ImageProps\ImagePropsQuality;
-
 use MWarCZ\Segami\Exception\LimiterException;
 use MWarCZ\Segami\Exception\MissingImageLoggerException;
 use MWarCZ\Segami\Exception\SourceImageNotFoundException;
-use MWarCZ\Segami\Exception\UnknownInstanceOfModifierException;
-use MWarCZ\Segami\Exception\UnsupportedImageExtensionException;
+use MWarCZ\Segami\Limiter\Image\ImageLimiter;
+use MWarCZ\Segami\Plugin\Plugin;
+use MWarCZ\Segami\Plugin\PluginManager;
 
 
 class Segami {
 
-  /** @var string $org_img_dir Cesta k adresáři s originálními obrázky. */
-  protected $org_img_dir;
-  /** @var string $gen_img_dir Cesta k adresáři s generovanými obrázky. */
-  protected $gen_img_dir;
-  /** @var array $a_map_extension Mapa koncovek souborů na vlastnosti formátu obrázku. */
-  protected $a_map_extension;
+  /** @var string $path_to_original_images Cesta k adresáři s originálními obrázky. */
+  protected $path_to_original_images;
+  /** @var string $path_to_generated_images Cesta k adresáři s generovanými obrázky. */
+  protected $path_to_generated_images;
+  /** @var string[] $extension2mime Tabulka pro převod koncovky na MIME */
+  protected $extension2mime;
 
+  /** @var Plugin[] $plugin */
+  protected $plugin;
+  /** @var ImageLimiter $limiter */
+  protected $limiter;
   /** @var ImageFactory $image_factory */
   protected $image_factory;
   /** @var ImageLogger $image_logger */
   protected $image_logger;
-  /** @var Limiter $limiter */
-  protected $limiter;
   /** @var int $cache_expires_dais */
   protected $cache_expires_dais;
 
-  function __construct($org_img_dir, $gen_img_dir, $image_factory, $image_logger = null, $limiter = null, $cache_expires_dais = 0) {
-    $this->org_img_dir = realpath($org_img_dir);
-    $this->gen_img_dir = realpath($gen_img_dir);
-    $this->image_factory = $image_factory;
-    $this->image_logger = $image_logger;
-    $this->cache_expires_dais = $cache_expires_dais;
+  function __construct(array $opts = []) {
+    $opt = array_merge([
+      'path_to_original_images' => '',
+      'path_to_generated_images' => '',
+      'plugin' => [],
+      'limiter' => null,
+      'image_logger' => null,
+      'cache_expires_dais' => 0,
+    ], $opts);
+    $this->path_to_original_images = realpath($opt['path_to_original_images']);
+    $this->path_to_generated_images = realpath($opt['path_to_generated_images']);
+    $this->plugin = $opt['plugin'];
+    $this->limiter = $opt['limiter'];
+    $this->image_factory = $opt['image_factory'];
+    $this->image_logger = $opt['image_logger'];
+    $this->cache_expires_dais = $opt['cache_expires_dais'];
 
-    $this->limiter = $limiter instanceof Limiter ? $limiter : new LimiterFree();
-
-    $tmp_supported_targets = ['jpg', 'jpeg', 'jp2', 'png', 'gif', 'webp', 'bmp'];
-    $this->a_map_extension = [
-      'jpg' => [
-        'imagick' => 'JPEG',
-        'mime' => 'image/jpeg',
-        'target' => $tmp_supported_targets,
-        'default_compression' => 100,
-      ],
-      'jpeg' => [
-        'imagick' => 'JPEG',
-        'mime' => 'image/jpeg',
-        'target' => $tmp_supported_targets,
-        'default_compression' => 100,
-      ],
-      'jp2' => [
-        'imagick' => 'JP2',
-        'mime' => 'image/jp2',
-        'target' => $tmp_supported_targets,
-        'default_compression' => 100,
-      ],
-      'png' => [
-        'imagick' => 'PNG',
-        'mime' => 'image/png',
-        'target' => $tmp_supported_targets,
-        'default_compression' => 0,
-      ],
-      'apng' => [
-        'imagick' => 'APNG',
-        'mime' => 'image/apng',
-        'target' => [],
-        'default_compression' => 0,
-      ],
-      'gif' => [
-        'imagick' => 'GIF',
-        'mime' => 'image/gif',
-        'target' => $tmp_supported_targets,
-        'default_compression' => 0,
-      ],
-      'bmp' => [
-        'imagick' => 'BMP',
-        'mime' => 'image/bmp',
-        'target' => $tmp_supported_targets,
-        'default_compression' => 0,
-      ],
-      'webp' => [
-        'imagick' => 'WEBP',
-        'mime' => 'image/webp',
-        'target' => $tmp_supported_targets,
-        'default_compression' => 100,
-      ],
-      'avif' => [
-        'imagick' => 'AVIF',
-        'mime' => 'image/avif',
-        'target' => [],
-        'default_compression' => 100,
-      ],
-      'svg' => [
-        'imagick' => 'SVG',
-        'mime' => 'image/svg+xml',
-        'target' => [],
-        'default_compression' => 0,
-      ],
+    $this->extension2mime = [
+      'jpg' => 'image/jpeg',
+      'jpeg' => 'image/jpeg',
+      'jp2' => 'image/jp2',
+      'png' => 'image/png',
+      'apng' => 'image/apng',
+      'gif' => 'image/gif',
+      'bmp' => 'image/bmp',
+      'webp' => 'image/webp',
+      'avif' => 'image/avif',
+      'svg' => 'image/svg+xml',
     ];
+
   }
 
   /**
    * @param string $from_img_path Celá cesta ke zdrojovému obrázku.
    * @param string $to_img_path Cesta pro uložení vygenerovaného obrázku ('' = Neukládat).
    * @param string $ext_imagick Formát cílového obrázku (imagick).
-   * @param ImagePropsManager $img_props Vlastnosti požadovaného obrázku.
+   * @param PluginManager $plugin_manager Vlastnosti požadovaného obrázku.
    *
    * @return \Imagick Instance Imagick s finálním obrázkem.
    */
-  function createImage($from_img_path, $to_img_path, $img_props) {
-    $ext = $this->a_map_extension[$img_props->basic->getExtension()];
-    $img = ($this->image_factory)::newImage();
-    $img->read($from_img_path);
-    $img->setFormat($ext['imagick']);
-
-    foreach ($img_props->others as $key => $props) {
-      if ($props instanceof ImagePropsCrop) {
-        $img->cropImage($props->getWidth(), $props->getHeight());
-      } elseif ($props instanceof ImagePropsResize) {
-        $type = $props->getType();
-        if ($type == ImagePropsResize::TYPE_COVER) {
-          $img->resizeCover($props->getWidth(), $props->getHeight());
-        } elseif ($type == ImagePropsResize::TYPE_CONTAIN) {
-          $img->resizeContain($props->getWidth(), $props->getHeight());
-        } else {
-          $img->resizeFill($props->getWidth(), $props->getHeight());
-        }
-      } elseif ($props instanceof ImagePropsQuality) {
-        $img->compression($props->getCompression());
-      } else {
-        throw new UnknownInstanceOfModifierException('Neznámí instance ImageProps');
-      }
+  function createImage($from_img_path, $to_img_path, $plugin_manager) {
+    // TODO Limiter->check
+    if ($this->limiter && !$this->limiter->check($plugin_manager->a_all_props)) {
+      // KO
+      throw new LimiterException('Nenalezeno platné pravidlo v omezovači');
     }
 
-    // if ($img_props->quality != $ext['default_compression'])
-    //   $img->compression($img_props->quality);
-    // $img->resizeFilter($img_props->quality);
+    $img = ($this->image_factory)->newImage();
+    $img->read($from_img_path);
+
+    $plugin_manager->core_plugin->modifyImage($img, $plugin_manager->core_props);
+
+    foreach ($plugin_manager->a_other_plugin as $key => $plugin) {
+      if (isset($plugin_manager->a_other_props[$key])) {
+        $plugin->modifyImage($img, $plugin_manager->a_other_props[$key]);
+      }
+    }
+    // else {
+    //     throw new UnknownInstanceOfModifierException('Neznámí instance ImageProps');
+    //   }
+
     $img->strip();
     if ($to_img_path)
       $img->write($to_img_path);
@@ -161,74 +108,99 @@ class Segami {
    *
    * @throws \Exception Něco se nepodařilo.
    */
-  function returnImage($req_img, $b_cache_new_image = true) {
-    if (!is_string($req_img))
-      throw new \InvalidArgumentException('$dir_path must be string');
+  function smartReturnImage($required_image, $b_cache_new_image = true) {
+    if (!is_string($required_image))
+      throw new \InvalidArgumentException('$required_image must be string');
 
-    // START Existující originální obrázek
-    $org_img_path = $this->org_img_dir . DIRECTORY_SEPARATOR . $req_img;
-    if (is_file($org_img_path)) {
-      $ext = explode('.', $req_img);
-      $ext = end($ext);
-      $ext = $this->a_map_extension[$ext];
-      if ($ext) {
-        if ($this->image_logger)
-          $this->image_logger->access($org_img_path, $req_img);
-
-        header('Content-type: ' . $ext['mime']);
-        header('Content-Length: ' . filesize($org_img_path));
-        $this->addExpireHeaders();
-        readfile($org_img_path);
-        return true;
-      }
-    }
-    // END Existující originální obrázek
-    // ***
-    // START Existující vygenerovaný obrázek
-    $img_props = ImagePropsManager::parseQuery($req_img);
-    $ext = $this->a_map_extension[$img_props->basic->getExtension()];
-    if (!$ext)
-      throw new UnsupportedImageExtensionException($img_props->basic->getExtension());
-    $res_img = $img_props->toQuery();
-    $req_img_path = $this->gen_img_dir . DIRECTORY_SEPARATOR . $res_img;
-    if (is_file($req_img_path)) {
-      if ($this->image_logger)
-        $this->image_logger->access($req_img_path, $req_img);
-
-      header('Content-type: ' . $ext['mime']);
-      header('Content-Length: ' . filesize($req_img_path));
-      $this->addExpireHeaders();
-      readfile($req_img_path);
+    // Vrať originální obrázek pokud existuje
+    if ($this->returnOriginalImage($required_image))
       return true;
+
+    // Normalizace názvu generovaného obrázku
+    // $img_props = ImagePropsManager::parseQuery($required_image);
+    // $required_image = $img_props->toQuery();
+    // TODO Oddělit do samostatné třídy PropsManager.php
+    $plugin_manager = PluginManager::parseQuery($this->plugin, $required_image);
+    $required_image = $plugin_manager->toQuery();
+
+    // Vrať generovaný obrázek pokud existuje
+    if ($this->returnGeneratedImage($required_image))
+      return true;
+
+    // Vygeneruj obrázek
+    if ($this->createAndReturnImage($plugin_manager, $b_cache_new_image))
+      return true;
+
+    return false;
+  }
+  function addExpireHeaders() {
+    if ($this->cache_expires_dais <= 0)
+      return false;
+    $cache_expires = 60 * 60 * 24 * $this->cache_expires_dais;
+    header('Cache-Control: public, max-age=' . $cache_expires);
+    header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cache_expires) . ' GMT');
+    return true;
+  }
+  function parseExtension($image_name) {
+    $ext = explode('.', $image_name);
+    $ext = end($ext);
+    return $ext;
+  }
+  function returnOriginalImage($required_image) {
+    // Vytvoření absolutní cesty k obrázku
+    $org_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . $required_image;
+    // Pokus o vrácení obrázku
+    return $this->returnImage($org_img_path, $required_image);
+  }
+  function returnGeneratedImage($required_image) {
+    // Vytvoření absolutní cesty k obrázku
+    $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $required_image;
+    // Pokus o vrácení obrázku
+    return $this->returnImage($req_img_path, $required_image);
+  }
+  function returnImage($path_to_image, $required_image) {
+    if (!is_file($path_to_image))
+      return false;
+
+    if ($this->image_logger && $this->image_logger instanceof ImageLogger)
+      $this->image_logger->access($path_to_image, $required_image);
+
+    $extension = strtolower($this->parseExtension($path_to_image));
+    if (isset($this->extension2mime[$extension])) {
+      $mime = $this->extension2mime[$extension];
+      header('Content-type: ' . $mime);
     }
-    // END Existující vygenerovaný obrázek
-    // ***
-    // START Kontrola povolených vlastností pro obrázky (rozměr, ...)
-    if (!$img_props->checkLimiter($this->limiter))
-      throw new LimiterException();
-    // ...
-    // END Kontrola povolených vlastností pro obrázky (rozměr, ...)
-    // ***
-    // START Vytvořit požadovaný obrázek
-    $from_img_path = $this->org_img_dir . DIRECTORY_SEPARATOR . $img_props->basic->getName();
+
+    header('Content-Length: ' . filesize($path_to_image));
+    $this->addExpireHeaders();
+    readfile($path_to_image);
+    return true;
+  }
+  function createAndReturnImage($plugin_manager, $b_cache_new_image = true) {
+    // Vytvoření absolutní cesty ke zdrojovému obrázku
+    $from_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . $plugin_manager->core_props->getName();
     if (!is_file($from_img_path))
-      throw new SourceImageNotFoundException($img_props->basic->getName());
-    $to_img_path = $b_cache_new_image ? $req_img_path : '';
-    $img = $this->createImage($from_img_path, $to_img_path, $img_props);
-    header('Content-type: ' . $ext['mime']);
+      throw new SourceImageNotFoundException($plugin_manager->core_props->getName());
+
+    // Vytvoření absolutní cesty ke generovanému obrázku (pokud se má uložit)
+    $req_img_path = '';
+    if ($b_cache_new_image)
+      $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $plugin_manager->toQuery();
+
+    $img = $this->createImage($from_img_path, $req_img_path, $plugin_manager);
+
+    $mime = $this->extension2mime[strtolower($this->parseExtension($plugin_manager->core_props->getExtension()))];
+    if ($mime)
+      header('Content-type: ' . $mime);
+
     $this->addExpireHeaders();
     echo $img;
     return true;
-    // END Vytvořit požadovaný obrázek
   }
 
-  function addExpireHeaders($dais = 30) {
-    if ($this->cache_expires_dais > 0) {
-      $cache_expires = 60 * 60 * 24 * $this->cache_expires_dais;
-      header('Cache-Control: public, max-age=' . $cache_expires);
-      header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cache_expires) . ' GMT');
-    }
-  }
+  //! /////////////////////////////////////////////////////////////////////////
+  //! REMOVE
+  //! /////////////////////////////////////////////////////////////////////////
 
   /**
    * Funkce odstraní zadaný obrázek a při správném nastavení
@@ -241,7 +213,7 @@ class Segami {
    */
   function removeImage($req_img, $b_remove_all = false) {
     // START Odstranění originálního obrázku pokud existuje
-    $file = $this->org_img_dir . DIRECTORY_SEPARATOR . $req_img;
+    $file = $this->path_to_original_images . DIRECTORY_SEPARATOR . $req_img;
     if (file_exists($file))
       unlink($file);
     // END Odstranění originálního obrázku pokud existuje
@@ -249,7 +221,7 @@ class Segami {
     // START Odstranění generovaného obrázku
     if ($b_remove_all) {
       $a_file_path = $this->image_logger->getFiles(
-        $this->gen_img_dir,
+        $this->path_to_generated_images,
         $req_img,
         '@'
       );
@@ -257,7 +229,7 @@ class Segami {
         unlink($file_path);
       }
     } else {
-      $file = $this->gen_img_dir . DIRECTORY_SEPARATOR . $req_img;
+      $file = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $req_img;
       if (file_exists($file))
         unlink($file);
     }
@@ -275,7 +247,7 @@ class Segami {
     if (!($this->image_logger instanceof ImageLogger))
       throw new MissingImageLoggerException('Není nastaveno rozpoznávání souborů pro smazání.');
 
-    $a_file_path = $this->image_logger->getUnusedFiles($this->gen_img_dir, $mtime);
+    $a_file_path = $this->image_logger->getUnusedFiles($this->path_to_generated_images, $mtime);
     foreach ($a_file_path as &$file_path) {
       unlink($file_path);
     }

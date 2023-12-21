@@ -5,7 +5,7 @@ class ImageGDFactory implements ImageFactory {
   /**
    * @return ImageGD
    */
-  public static function newImage(): ImageGD {
+  public function newImage(): ImageGD {
     return new ImageGD();
   }
 }

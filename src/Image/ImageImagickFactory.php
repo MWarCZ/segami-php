@@ -5,7 +5,7 @@ class ImageImagickFactory implements ImageFactory {
   /**
    * @return ImageImagick
    */
-  public static function newImage(): ImageImagick {
+  public function newImage(): ImageImagick {
     return new ImageImagick();
   }
 }
