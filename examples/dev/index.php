@@ -1,17 +1,16 @@
 <?php
 use MWarCZ\Segami\Segami;
-use MWarCZ\Segami\Segami_v1;
 use MWarCZ\Segami\Image\ImageImagickFactory;
 use MWarCZ\Segami\ImageLogger\ImageLoggerFS;
-use MWarCZ\Segami\v1\Limiter\Image\LaxImageLimiter;
-use MWarCZ\Segami\v1\Limiter\Props\CorePropsLimiter;
-use MWarCZ\Segami\v1\Limiter\Props\ResizePropsLimiter;
-use MWarCZ\Segami\v1\Limiter\Props\NullablePropsLimiter;
-use MWarCZ\Segami\v1\Plugin\CorePlugin;
-use MWarCZ\Segami\v1\Plugin\CropPlugin;
-use MWarCZ\Segami\v1\Plugin\ResizePlugin;
-use MWarCZ\Segami\v1\Plugin\QualityPlugin;
-use MWarCZ\Segami\v1\Props\ResizeProps;
+use MWarCZ\Segami\Limiter\Image\LaxImageLimiter;
+use MWarCZ\Segami\Limiter\Props\CorePropsLimiter;
+use MWarCZ\Segami\Limiter\Props\ResizePropsLimiter;
+use MWarCZ\Segami\Limiter\Props\NullablePropsLimiter;
+use MWarCZ\Segami\Plugin\CorePlugin;
+use MWarCZ\Segami\Plugin\CropPlugin;
+use MWarCZ\Segami\Plugin\ResizePlugin;
+use MWarCZ\Segami\Plugin\QualityPlugin;
+use MWarCZ\Segami\Props\ResizeProps;
 
 require_once(__DIR__ . '/init.config.php');
 
@@ -116,7 +115,7 @@ $req_type = count($a_req_part) > 2 ? urldecode($a_req_part[count($a_req_part) - 
 //   null, // limiter
 //   30, // cache_expires_dais
 // );
-$segami = new Segami_v1([
+$segami = new Segami([
   'path_to_original_images' => ORG_IMG_PATH,
   'path_to_generated_images' => GEN_IMG_PATH,
   'plugin' => [
