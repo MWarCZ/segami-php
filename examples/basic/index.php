@@ -58,22 +58,52 @@ $image_name = urldecode(end($url_parts));
 $type = count($url_parts) > 2 ? urldecode($url_parts[count($url_parts) - 2]) : '';
 
 ///////////////////////////////////////////////////
+// If image is not required, show examples of use
+///////////////////////////////////////////////////
+if (REQUEST_URL == '' || REQUEST_URL == '/') {
+  $a_example = [
+    ['title' => 'Original image', 'url' => ROOT_MODULE_URL . '/segami.jpg'],
+    ['title' => 'Generated image format WebP', 'url' => ROOT_MODULE_URL . '/segami.jpg@.webp'],
+    ['title' => 'Generated image resize 200x300 format WebP', 'url' => ROOT_MODULE_URL . '/segami.jpg@r200x300.webp'],
+    ['title' => 'Generated image resize 200x300 type cover format WebP', 'url' => ROOT_MODULE_URL . '/segami.jpg@r200x300_r.webp'],
+    ['title' => 'Generated image resize 200x200 type fill format PNG', 'url' => ROOT_MODULE_URL . '/segami.jpg@r200_l.png'],
+    ['title' => 'Generated image resize 200x300 type cover format WebP stored to cache folder', 'url' => ROOT_MODULE_URL . '/cache/segami.jpg@r200x300_r.webp'],
+  ];
+  foreach ($a_example as $item) {
+    echo '
+      <figure>
+        <figcaption>' . $item['title'] . '<br><code>' . $item['url'] . '</code>' . '</figcaption>
+        <img src="' . $item['url'] . '" alt="' . $item['title'] . '">
+      </figure>
+      <hr>
+    ';
+  }
+  exit;
+}
+
+///////////////////////////////////////////////////
 // Initialize segami
 ///////////////////////////////////////////////////
 
-$segami = new \MWarCZ\Segami\Segami(
+$segami = new \MWarCZ\Segami\Segami([
   // Selected path to dir with original images
-  __DIR__ . '/img/original',
+  'path_to_original_images' => __DIR__ . '/img/original',
   // Selected path to dir with generated images
-  __DIR__ . '/img/generated',
-  // Selected image engine
-  new \MWarCZ\Segami\Image\ImageImagickFactory(),
-  // Selected logger for logging access to images
-  new \MWarCZ\Segami\ImageLogger\ImageLoggerNone(),
+  'path_to_generated_images' => __DIR__ . '/img/generated',
+  // Selected plugins for generating images
+  'plugin' => [
+    // CorePlugin is required minimum - enable core name parsing and image format conversion
+    'core' => new \MWarCZ\Segami\Plugin\CorePlugin(),
+    // Optional ResizePlugin - enable/add possibility resize image
+    'resize' => new \MWarCZ\Segami\Plugin\ResizePlugin(),
+  ],
   // Selected limiter with rules for generated images
-  new \MWarCZ\Segami\Limiter\LimiterFree(),
-  30, // cache_expires_dais
-);
+  'limiter' => new \MWarCZ\Segami\Limiter\Image\FreeImageLimiter(),
+  // Selected image engine
+  'image_factory' => new \MWarCZ\Segami\Image\ImageImagickFactory(),
+  // Selected logger for logging access to images
+  'image_logger' => new \MWarCZ\Segami\ImageLogger\ImageLoggerNone(),
+]);
 
 ///////////////////////////////////////////////////
 // Use segami
