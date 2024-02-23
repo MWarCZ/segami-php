@@ -15,7 +15,7 @@ interface ImageLogger {
    * @param bool $b_recursive Rekursivní průchod složkou
    * @return string[] Seznam absolutní cesty k dlouhodobě nepoužitým souborům
    */
-  public function &getUnusedFiles($dir_path, $mtime, $b_recursive);
+  public function &getUnusedFiles($dir_path, $mtime, $b_recursive = false);
 
   /**
    * @param string $dir_path Cesta ke složce se soubory

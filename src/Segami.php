@@ -243,13 +243,14 @@ class Segami {
    *
    * @param string|int $mtime Časová jednotka 1. celočíselná hodnota např. `time()` nebo
    *                          textový řetězec obsahující časový údaj např. `-7 days`,`-4 week`.
+   * @param bool $b_recursive Rekursivní procházení adresáře.
    * @throws \Exception Něco se nepodařilo.
    */
-  function removeUnusedImage($mtime = '-30 days') {
+  function removeUnusedImage($mtime = '-30 days', $b_recursive = false) {
     if (!($this->image_logger instanceof ImageLogger))
       throw new MissingImageLoggerException('Není nastaveno rozpoznávání souborů pro smazání.');
 
-    $a_file_path = $this->image_logger->getUnusedFiles($this->path_to_generated_images, $mtime);
+    $a_file_path = $this->image_logger->getUnusedFiles($this->path_to_generated_images, $mtime, $b_recursive);
     foreach ($a_file_path as &$file_path) {
       unlink($file_path);
     }
