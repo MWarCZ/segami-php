@@ -137,6 +137,7 @@ class Segami {
     if ($this->cache_expires_dais <= 0)
       return false;
     $cache_expires = 60 * 60 * 24 * $this->cache_expires_dais;
+    header('Pragma: cache');
     header('Cache-Control: public, max-age=' . $cache_expires);
     header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cache_expires) . ' GMT');
     return true;
@@ -165,6 +166,8 @@ class Segami {
     if ($this->image_logger && $this->image_logger instanceof ImageLogger)
       $this->image_logger->access($path_to_image, $required_image);
 
+    $this->addExpireHeaders();
+
     $extension = strtolower($this->parseExtension($path_to_image));
     if (isset($this->extension2mime[$extension])) {
       $mime = $this->extension2mime[$extension];
@@ -172,7 +175,6 @@ class Segami {
     }
 
     header('Content-Length: ' . filesize($path_to_image));
-    $this->addExpireHeaders();
     readfile($path_to_image);
     return true;
   }
@@ -181,6 +183,8 @@ class Segami {
     $from_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . $plugin_manager->core_props->getName();
     if (!is_file($from_img_path))
       throw new SourceImageNotFoundException($plugin_manager->core_props->getName());
+
+    $this->addExpireHeaders();
 
     // Vytvoření absolutní cesty ke generovanému obrázku (pokud se má uložit)
     $req_img_path = '';
@@ -193,7 +197,6 @@ class Segami {
     if ($mime)
       header('Content-type: ' . $mime);
 
-    $this->addExpireHeaders();
     echo $img;
     return true;
   }
