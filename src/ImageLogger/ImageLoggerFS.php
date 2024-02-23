@@ -30,7 +30,7 @@ class ImageLoggerFS implements ImageLogger {
     return $files;
   }
 
-  public function &getUnusedFiles($dir_path, $mtime) {
+  public function &getUnusedFiles($dir_path, $mtime, $b_recursive = false) {
     if (!is_string($dir_path))
       throw new \Exception('$dir_path must be string');
     $dir_path = realpath($dir_path);
