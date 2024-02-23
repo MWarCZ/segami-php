@@ -19,6 +19,12 @@ class ImageImagick implements Image {
   }
 
   function write($destFile) {
+    $a_tmp = explode(DIRECTORY_SEPARATOR, $destFile);
+    $name = array_pop($a_tmp);
+    $dir = implode(DIRECTORY_SEPARATOR, $a_tmp);
+    if(!is_dir($dir)) {
+      mkdir($dir, 0777, true);
+    }
     $this->img->writeImage($destFile);
     return $this;
   }
