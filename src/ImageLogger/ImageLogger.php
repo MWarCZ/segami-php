@@ -12,9 +12,10 @@ interface ImageLogger {
   /**
    * @param string $dir_path Cesta ke složce se soubory
    * @param int|string $mtime Čas dělící staré soubory od nových
+   * @param bool $b_recursive Rekursivní průchod složkou
    * @return string[] Seznam absolutní cesty k dlouhodobě nepoužitým souborům
    */
-  public function &getUnusedFiles($dir_path, $mtime);
+  public function &getUnusedFiles($dir_path, $mtime, $b_recursive = false);
 
   /**
    * @param string $dir_path Cesta ke složce se soubory

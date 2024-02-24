@@ -15,13 +15,18 @@ class ImageLoggerFS implements ImageLogger {
     return false;
   }
 
-  private function &getFilesByModifyDate($dir_path, $sort = SORT_ASC) {
+  private function &getFilesByModifyDate($dir_path, $sort = SORT_ASC, $b_recursive = false) {
     $files = [];
-    foreach (new \DirectoryIterator($dir_path) as $file) {
+    $iterator = (
+      $b_recursive
+      ? new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir_path))
+      : new \DirectoryIterator($dir_path)
+    );
+    foreach ($iterator as $file) {
       if (!$file->isFile())
         continue;
       else
-        $files[$file->getFilename()] = $file->getMTime();
+        $files[$file->getPathname()] = $file->getMTime();
     }
     if ($sort == SORT_ASC)
       asort($files);
@@ -30,7 +35,7 @@ class ImageLoggerFS implements ImageLogger {
     return $files;
   }
 
-  public function &getUnusedFiles($dir_path, $mtime) {
+  public function &getUnusedFiles($dir_path, $mtime, $b_recursive = false) {
     if (!is_string($dir_path))
       throw new \Exception('$dir_path must be string');
     $dir_path = realpath($dir_path);
@@ -39,12 +44,12 @@ class ImageLoggerFS implements ImageLogger {
       if (!is_int($mtime))
         throw new \Exception('mtime is not int.');
     }
-    $files = $this->getFilesByModifyDate($dir_path);
+    $files = $this->getFilesByModifyDate($dir_path, SORT_ASC, $b_recursive);
     $a_file_path = [];
     foreach ($files as $file_name => $file_mtime) {
       if ($file_mtime > $mtime)
-        continue;
-      $a_file_path[] = $dir_path . DIRECTORY_SEPARATOR . $file_name;
+        break;
+      $a_file_path[] = $file_name;
     }
     return $a_file_path;
   }

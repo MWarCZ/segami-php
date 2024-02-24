@@ -105,30 +105,28 @@ class Segami {
    *
    * @param string $req_img Název požadovaného obrázku.
    * @param bool $b_cache_new_image Uložit nově vygenerované obrázky.
+   * @param string $subdirectory Název podsložky, která by měla obsahovat obrázek.
    *
    * @throws \Exception Něco se nepodařilo.
    */
-  function smartReturnImage($required_image, $b_cache_new_image = true) {
+  function smartReturnImage($required_image, $b_cache_new_image = true, $subdirectory = '') {
     if (!is_string($required_image))
       throw new \InvalidArgumentException('$required_image must be string');
 
     // Vrať originální obrázek pokud existuje
-    if ($this->returnOriginalImage($required_image))
+    if ($this->returnOriginalImage($required_image, $subdirectory))
       return true;
 
     // Normalizace názvu generovaného obrázku
-    // $img_props = ImagePropsManager::parseQuery($required_image);
-    // $required_image = $img_props->toQuery();
-    // TODO Oddělit do samostatné třídy PropsManager.php
     $plugin_manager = PluginManager::parseQuery($this->plugin, $required_image);
     $required_image = $plugin_manager->toQuery();
 
     // Vrať generovaný obrázek pokud existuje
-    if ($this->returnGeneratedImage($required_image))
+    if ($this->returnGeneratedImage($required_image, $subdirectory))
       return true;
 
     // Vygeneruj obrázek
-    if ($this->createAndReturnImage($plugin_manager, $b_cache_new_image))
+    if ($this->createAndReturnImage($plugin_manager, $b_cache_new_image, $subdirectory))
       return true;
 
     return false;
@@ -147,15 +145,15 @@ class Segami {
     $ext = end($ext);
     return $ext;
   }
-  function returnOriginalImage($required_image) {
+  function returnOriginalImage($required_image, $subdirectory = '') {
     // Vytvoření absolutní cesty k obrázku
-    $org_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . $required_image;
+    $org_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $required_image;
     // Pokus o vrácení obrázku
     return $this->returnImage($org_img_path, $required_image);
   }
-  function returnGeneratedImage($required_image) {
+  function returnGeneratedImage($required_image, $subdirectory = '') {
     // Vytvoření absolutní cesty k obrázku
-    $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $required_image;
+    $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '' ) . $required_image;
     // Pokus o vrácení obrázku
     return $this->returnImage($req_img_path, $required_image);
   }
@@ -178,9 +176,9 @@ class Segami {
     readfile($path_to_image);
     return true;
   }
-  function createAndReturnImage($plugin_manager, $b_cache_new_image = true) {
+  function createAndReturnImage($plugin_manager, $b_cache_new_image = true, $subdirectory = '') {
     // Vytvoření absolutní cesty ke zdrojovému obrázku
-    $from_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . $plugin_manager->core_props->getName();
+    $from_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $plugin_manager->core_props->getName();
     if (!is_file($from_img_path))
       throw new SourceImageNotFoundException($plugin_manager->core_props->getName());
 
@@ -189,7 +187,7 @@ class Segami {
     // Vytvoření absolutní cesty ke generovanému obrázku (pokud se má uložit)
     $req_img_path = '';
     if ($b_cache_new_image)
-      $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $plugin_manager->toQuery();
+      $req_img_path = $this->path_to_generated_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $plugin_manager->toQuery();
 
     $img = $this->createImage($from_img_path, $req_img_path, $plugin_manager);
 
@@ -211,12 +209,13 @@ class Segami {
    *
    * @param string $req_img Název požadovaného obrázku.
    * @param bool $b_remove_all Odstranit zadaný obrázek i všechny z něj vygenerované.
+   * @param string $subdirectory Název podsložky, která by měla obsahovat obrázek.
    *
    * @throws \Exception Něco se nepodařilo.
    */
-  function removeImage($req_img, $b_remove_all = false) {
+  function removeImage($req_img, $b_remove_all = false, $subdirectory = '') {
     // START Odstranění originálního obrázku pokud existuje
-    $file = $this->path_to_original_images . DIRECTORY_SEPARATOR . $req_img;
+    $file = $this->path_to_original_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $req_img;
     if (file_exists($file))
       unlink($file);
     // END Odstranění originálního obrázku pokud existuje
@@ -224,7 +223,7 @@ class Segami {
     // START Odstranění generovaného obrázku
     if ($b_remove_all) {
       $a_file_path = $this->image_logger->getFiles(
-        $this->path_to_generated_images,
+        $this->path_to_generated_images . ($subdirectory ? DIRECTORY_SEPARATOR . $subdirectory : ''),
         $req_img,
         '@'
       );
@@ -232,7 +231,7 @@ class Segami {
         unlink($file_path);
       }
     } else {
-      $file = $this->path_to_generated_images . DIRECTORY_SEPARATOR . $req_img;
+      $file = $this->path_to_generated_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $req_img;
       if (file_exists($file))
         unlink($file);
     }
@@ -244,13 +243,14 @@ class Segami {
    *
    * @param string|int $mtime Časová jednotka 1. celočíselná hodnota např. `time()` nebo
    *                          textový řetězec obsahující časový údaj např. `-7 days`,`-4 week`.
+   * @param bool $b_recursive Rekursivní procházení adresáře.
    * @throws \Exception Něco se nepodařilo.
    */
-  function removeUnusedImage($mtime = '-30 days') {
+  function removeUnusedImage($mtime = '-30 days', $b_recursive = false) {
     if (!($this->image_logger instanceof ImageLogger))
       throw new MissingImageLoggerException('Není nastaveno rozpoznávání souborů pro smazání.');
 
-    $a_file_path = $this->image_logger->getUnusedFiles($this->path_to_generated_images, $mtime);
+    $a_file_path = $this->image_logger->getUnusedFiles($this->path_to_generated_images, $mtime, $b_recursive);
     foreach ($a_file_path as &$file_path) {
       unlink($file_path);
     }

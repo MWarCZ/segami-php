@@ -32,7 +32,7 @@ if (isset($_POST['submit_delete_unused_1day'])) {
     'image_factory' => new ImageImagickFactory(),
     'image_logger' => new ImageLoggerFS(),
   ]);
-  $segami->removeUnusedImage('-1 day');
+  $segami->removeUnusedImage('-1 day', true);
   location(ACTUAL_URL);
 }
 

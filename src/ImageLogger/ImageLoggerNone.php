@@ -11,7 +11,7 @@ class ImageLoggerNone implements ImageLogger {
     return true;
   }
 
-  public function &getUnusedFiles($dir_path, $mtime) {
+  public function &getUnusedFiles($dir_path, $mtime, $b_recursive = false) {
     throw new \Exception('Funkce není implementovaná!');
   }
 
