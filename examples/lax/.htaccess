@@ -1,0 +1,10 @@
+
+<IfModule mod_rewrite.c>
+
+	RewriteEngine On
+
+  # All other URLs point to `index.php`
+	RewriteRule ^(.*)$ index.php [L,QSA]
+
+</IfModule>
+
