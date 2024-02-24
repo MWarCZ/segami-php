@@ -1,13 +1,14 @@
 
 # Projekt Segami
 
-Malá knihovna pro zautomatizování generování obrázků a jejich ukládání.
+Malá knihovna pro zautomatizování generování obrázků na základě jejich jména.
 Knihovna zajišťuje úpravu rozměrů obrázku, převod formátu obrázku, ukládání vygenerovaných obrázků, zaznamenávání posledního přístupu k vygenerovanému obrázku, odstraňování dlouhodobě nevyužitých obrázků a to vše na základě názvu obrázku.
 
 ## Instalace / Installation
 
-Segami je dostupná na [Packagist](https://packagist.org/packages/mwarcz/segami) a instalace přes [Composer](https://getcomposer.org/) je doporučenou sestou k instalaci Segami.
-Stačí spustit:
+Segami je dostupná na [Packagist](https://packagist.org/packages/mwarcz/segami) a instalace přes [Composer](https://getcomposer.org/) je doporučenou cestou k instalaci Segami.
+
+Stačí použít příkaz:
 
 ```bash
 composer require mwarcz/segami
@@ -16,7 +17,7 @@ composer require mwarcz/segami
 Nebo manuálně přidat do souboru `composer.json` řádek:
 
 ```json
-"mwarcz/segami": "^1.0.1"
+"mwarcz/segami": "^1.1.1"
 ```
 
 ## Požadavky / Requirements
@@ -29,6 +30,7 @@ Nebo manuálně přidat do souboru `composer.json` řádek:
 Tento repositář obsahuje konkrétní ukázky kódu:
 
 - [Ukázka základního použití](examples/basic/)
+- [Ukázka použití s laxním omezovačem](examples/lax/)
 - [Testovací ukázka použitá při vývoji](examples/dev/)
 - TODO
 

@@ -16,6 +16,8 @@ URL adresa pro získání vygenerovaného obrázku vždy obsahuje znak `@`, kter
 
 ## Základ = Převod formátu a identifikace modifikátorů
 
+Plugin `CorePlugin` je základní plugin, který 1. umožňuje převod do různých formátů a 2. extrahuje další modifikátory pro další pluginy.
+
 > Formát: `[image_name]@[modifiers].[format]` ; modifiers = `[]`||`[modifier]`||`[modifier].[modifiers]`
 
 - **Příklady:**
@@ -24,6 +26,8 @@ URL adresa pro získání vygenerovaného obrázku vždy obsahuje znak `@`, kter
   - `sample.png@[modifiers].PNG` = Převod na formát PNG
 
 ## Modifikátor - Výřez obrázku
+
+Plugin `CropPlugin` umožňuje vytvářet výřezy z originálního obrázku.
 
 > Formát: modifier = `[crop][?from]`; crop = `c[size]`||`c[width]x[height]`; from = `f[x_y]`||`f[x]x[y]`
 
@@ -36,6 +40,8 @@ URL adresa pro získání vygenerovaného obrázku vždy obsahuje znak `@`, kter
   - `sample.png@c200x300f20x30.webp` = Rozměr 200x300 z bodu 20x30
 
 ## Modifikátor - Změna velikosti obrázku
+
+Plugin `ResizePlugin` umožňuje upravit rozměr originálního obrázku a způsob vytvoření obrázku o požadovaném rozměru.
 
 > Formát: modifier = `[resize][?type]`; resize = `r[size]`||`r[width]x[height]`; type = `_[fill|contain|cover]`
 
@@ -59,6 +65,8 @@ URL adresa pro získání vygenerovaného obrázku vždy obsahuje znak `@`, kter
     - `sample.png@r200x300_cov.webp`
 
 ## Modifikátor - Změna kvality / komprese
+
+Plugin `QualityPlugin` umožňuje upravovat kvalitu výsledného obrázků (Ovlivňuje kompresi obrázku u formátů, které podporují kompresi.).
 
 > Formát: `q[compression]`
 
