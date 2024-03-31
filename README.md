@@ -100,9 +100,9 @@ Podrobnější informace o fungování a použití Segami naleznete v *připravo
 
 Segami je licencováno pod [MIT licencí](LICENSE).
 
-=========================================================
+------------------------------
 
-## TODO
+## TODO roadmap
 
 - [x] Získání originálního obrázku
 - [x] Získání vygenerovaného obrázku z cache
@@ -128,7 +128,7 @@ Segami je licencováno pod [MIT licencí](LICENSE).
     - [ ] GrayscalePlugin - Převod do odstínu šedé
     - [ ] InvertPlugin - Invertování obrázku
     - [ ] OpacityPlugin - Celková průhlednost obrázku
-- Omezovače názvu obrázku
+- [ ] Omezovače názvu obrázku
   - [x] Volný omezovač obrázku neboli Fake omezovač - Vše je povoleno
   - [x] Striktní omezovač obrázku - definice přesných kombinací hodnot a vlastnosti
   - [x] Laxní omezovač - definice povolených hodnot vlastností bez vynucení dodržení přesné kombinace.
@@ -149,46 +149,3 @@ Segami je licencováno pod [MIT licencí](LICENSE).
   - [ ] Ukládání do MySQL/MariaDB databáze
   - [ ] Ukládání do SQLite databáze
   - [ ] Ukládání do MongoDB databáze
-
-=========================================================
-
-## Old roadmap
-
-- [x] Zpracování parametrů obrázku z URL adresy (formát, výška, šířka, komprese)
-- [ ] Převádění obrázků do požadovaných formátů
-  - [x] Převod mezi formáty využívající raster (gif, png, jpg, webp, avif)
-  - [ ] Převod z vektorového obrázku na raster (svg => png, jpg, webp)
-- [ ] Převádění obrázků do požadovaných rozměrů
-  - [x] Změna rozměru obrázku využívajících raster (gif, png, jpg, webp, avif)
-  - [ ] Změna rozměrů vektorových obrázků (svg)
-- [ ] Vytváření výřezů z obrázku
-  - [x] Vytvoření výřezu o zadaných rozměrech
-  - [ ] Vytvořit výřez s vrcholem (ze souřadnic X a Y)
-  - [ ] Vytvořit výřez SVG obrázku
-- [x] Cache - ukládání vygenerovaných obrázků
-  - [x] Možnost vybírat zda bude ukládán či nikoliv
-  - [ ] Vytváření obrázků
-    - [x] Vytváření obrázků za pomocí knihovny Imagick
-    - [ ] Vytváření obrázků za pomocí knihovny GD
-  - [x] Detekce žádosti o existující a neexistující upravený obrázek
-  - [ ] Zaznamenávání poslední žádosti o zobrazení obrázku
-    - [x] Záznam za pomocí souborového systému a mtime parametru u souboru obrázku
-    - [ ] Záznam za pomocí databáze (př. MySQL)
-  - [x] Odebírání vygenerovaných obrázků dle názvu originálního obrázku
-  - [x] Odebírání vygenerovaných obrázků, které nebyly dlouhodobě použity
-    - [x] Využívat záznam o posledním použití/zobrazení obrázku
-  - [ ] ...
-- [ ] Přepracování veškerá ošetření vstupů (rozměr, typy obrázků, kombinace, ...)
-- [ ] ...
-
-> - [ ] Ošetření různých vstupů
->   - [x] Existuje zdrojový obrázek
->   - [x] Nulové rozměry šířky a výšky = automatické dopočítání rozměru
->   - [x] Kontrola podporovaných formátů
->   - [ ] Podpora komprese u daného formátu
->   - [x] Nastavování a kontrola omezení pro tvorbu obrázků
->     - [x] Striktní omezení na generované obrázky => Seznam kombinací parametrů: `[výška, šířka, formát] = obrázek`
->     - [x] Laxní omezení na generování obrázků => Seznam povolených rozměrů a seznam formátů: `[[výška_1, šířka_1], [výška_2, šířka_2], ...] + [formát_1, formát_2, ...] = obrázek`
->     - [x] Laxnější omezení na generování obrázků => Seznam povolených výšek, šířek a formátů: `[výška_1, výška_2, ...] + [šířka_1, šířka_2, ...] + [formát_1, formát_2, ...] = obrázek`
->     - [x] Volné / Bez omezení.
->   - [ ] ...
