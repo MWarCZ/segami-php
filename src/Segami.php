@@ -214,10 +214,11 @@ class Segami {
    * @throws \Exception Něco se nepodařilo.
    */
   function removeImage($req_img, $b_remove_all = false, $subdirectory = '') {
+    $a_res = [];
     // START Odstranění originálního obrázku pokud existuje
     $file = $this->path_to_original_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $req_img;
     if (file_exists($file))
-      unlink($file);
+      $a_res[$file] = unlink($file);
     // END Odstranění originálního obrázku pokud existuje
     // ***
     // START Odstranění generovaného obrázku
@@ -228,14 +229,15 @@ class Segami {
         '@'
       );
       foreach ($a_file_path as &$file_path) {
-        unlink($file_path);
+        $a_res[$file_path] = unlink($file_path);
       }
     } else {
       $file = $this->path_to_generated_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $req_img;
       if (file_exists($file))
-        unlink($file);
+        $a_res[$file] = unlink($file);
     }
     // END Odstranění generovaného obrázku
+    return $a_res;
   }
 
   /**
@@ -251,9 +253,11 @@ class Segami {
       throw new MissingImageLoggerException('Není nastaveno rozpoznávání souborů pro smazání.');
 
     $a_file_path = $this->image_logger->getUnusedFiles($this->path_to_generated_images, $mtime, $b_recursive);
+    $a_res = [];
     foreach ($a_file_path as &$file_path) {
-      unlink($file_path);
+      $a_res[$file_path] = unlink($file_path);
     }
+    return $a_res;
   }
 
 }
