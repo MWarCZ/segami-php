@@ -111,7 +111,7 @@ $segami = new \MWarCZ\Segami\Segami([
 
 try {
   $segami->smartReturnImage($image_name, $type == 'cache');
-} catch (\Exception $e) {
+} catch (\Throwable $e) {
   http_response_code(404);
   echo '<pre>' . print_r($e, true) . '</pre>';
 }
