@@ -3,9 +3,14 @@ namespace MWarCZ\Segami\Props;
 
 class CropProps implements Props {
   public const SIZE_AUTO = 0;
-  /** @var int */
+  public const CENTER = 'center';
+  public const TOP = 'top';
+  public const BOTTOM = 'bottom';
+  public const LEFT = 'left';
+  public const RIGHT = 'right';
+  /** @var int|string */
   public $x;
-  /** @var int */
+  /** @var int|string */
   public $y;
   /** @var int */
   public $width;
@@ -13,35 +18,35 @@ class CropProps implements Props {
   public $height;
 
   /**
-   * @param int $x
-   * @param int $y
+   * @param int|string $x
+   * @param int|string $y
    * @param int $width
    * @param int $height
    */
-  function __construct(int $x = 0, int $y = 0, int $width = self::SIZE_AUTO, int $height = self::SIZE_AUTO) {
+  function __construct($x = self::CENTER, $y = self::CENTER, int $width = self::SIZE_AUTO, int $height = self::SIZE_AUTO) {
     $this->x = $x;
     $this->y = $y;
     $this->width = $width;
     $this->height = $height;
   }
   /**
-   * @param int $v
+   * @param int|string $v
    */
-  public function setX(int $v) {
+  public function setX($v) {
     $this->x = $v;
     return $this;
   }
-  public function getX(): int {
+  public function getX() {
     return $this->x;
   }
   /**
-   * @param int $v
+   * @param int|string $v
    */
-  public function setY(int $v) {
+  public function setY($v) {
     $this->y = $v;
     return $this;
   }
-  public function getY(): int {
+  public function getY() {
     return $this->y;
   }
   /**

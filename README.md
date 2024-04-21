@@ -111,9 +111,9 @@ Segami je licencováno pod [MIT licencí](LICENSE).
     - [x] Z rastrového formátu na rastrový formát
     - [ ] Z vektorového formátu na rastrový formát
     - [ ] Z rastrový formátu na vektorový formát
-  - [ ] CropPlugin - Vytvoření výřezu z originálního obrázku
+  - [x] CropPlugin - Vytvoření výřezu z originálního obrázku
     - [x] Výřez o zadané výšce a šířce
-    - [ ] Výřez začínající na souřadnicích x, y
+    - [x] Výřez začínající na souřadnicích x, y
   - [x] ResizePlugin - Změna velikosti originálního obrázku
     - [x] Změna velikosti na zadanou výšku a šířku
     - [x] Jak se zachovat pokud není zachován poměr stran

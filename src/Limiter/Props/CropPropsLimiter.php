@@ -4,9 +4,9 @@ namespace MWarCZ\Segami\Limiter\Props;
 use MWarCZ\Segami\Props\CropProps;
 
 class CropPropsLimiter implements PropsLimiter {
-  /** @var int[] */
+  /** @var (int|string)[] */
   public $x;
-  /** @var int[] */
+  /** @var (int|string)[] */
   public $y;
   /** @var int[] */
   public $width;
@@ -19,21 +19,21 @@ class CropPropsLimiter implements PropsLimiter {
    * @param int|int[] $width
    * @param int|int[] $height
    */
-  function __construct($x = 0, $y = 0, $width = CropProps::SIZE_AUTO, $height = CropProps::SIZE_AUTO) {
+  function __construct($x = CropProps::CENTER, $y = CropProps::CENTER, $width = CropProps::SIZE_AUTO, $height = CropProps::SIZE_AUTO) {
     $this->setX($x);
     $this->setY($y);
     $this->setWidth($width);
     $this->setHeight($height);
   }
   /**
-   * @param int|int[] $v
+   * @param int|string|(int|string)[] $v
    */
   public function setX($v) {
     if (!is_array($v))
-      $this->x = [(int) $v];
+      $this->x = [$v];
     else
       $this->x = array_map(function ($i) {
-        return (int) $i;
+        return $i;
       }, $v);
     return $this;
   }
@@ -41,14 +41,14 @@ class CropPropsLimiter implements PropsLimiter {
     return $this->x;
   }
   /**
-   * @param int|int[] $v
+   * @param int|string|(int|string)[] $v
    */
   public function setY($v) {
     if (!is_array($v))
-      $this->y = [(int) $v];
+      $this->y = [$v];
     else
       $this->y = array_map(function ($i) {
-        return (int) $i;
+        return $i;
       }, $v);
     return $this;
   }

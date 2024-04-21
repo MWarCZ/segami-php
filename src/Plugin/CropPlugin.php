@@ -19,6 +19,6 @@ class CropPlugin implements Plugin {
     if (!$props instanceof CropProps)
       throw new \InvalidArgumentException('$props must be CropProps');
 
-    $image->cropImage($props->getWidth(), $props->getHeight());
+    $image->cropImage($props->getWidth(), $props->getHeight(), $props->getX(), $props->getY());
   }
 }

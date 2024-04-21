@@ -9,10 +9,19 @@ class CropPropsFactory implements PropsFactory {
     // c200x300
     // c200x300f20
     // c200x300f20x30
+    // c200x300fCenter
+    // c200x300fTop
+    // c200x300fBottom
+    // c200x300fLeft
+    // c200x300fRight
+    // c200x300fRightxTop
+    // c200x300fRightxBottom
+    // c200x300fLeftxTop
+    // c200x300fLeftxBottom
 
     // Default
     $width = $height = 0;
-    $x = $y = 0;
+    $x = $y = 'center';
 
     // Remove C
     $query = substr($query, 1);
@@ -21,9 +30,11 @@ class CropPropsFactory implements PropsFactory {
     if (count($a_tmp) > 1) {
       $from = end($a_tmp);
       $a_from = explode('x', $from);
-      $x = $y = $a_from[0];
+      $x = $y = strtolower($a_from[0]);
+
       if (count($a_from) > 1) {
         $y = end($a_from);
+        $y = strtolower($y);
       }
     }
     // Size
@@ -34,7 +45,7 @@ class CropPropsFactory implements PropsFactory {
       $height = end($a_tmp);
     }
 
-    return new CropProps((int) $x, (int) $y, (int) $width, (int) $height);
+    return new CropProps($x, $y, (int) $width, (int) $height);
   }
 
   public function validQuery(string $query): bool {
@@ -43,8 +54,18 @@ class CropPropsFactory implements PropsFactory {
   }
   public function validRegex(): string {
     $r_number = '[0-9][0-9]*';
+    $r_string = '('
+      . CropProps::CENTER
+      . '|' . CropProps::TOP
+      . '|' . CropProps::BOTTOM
+      . '|' . CropProps::LEFT
+      . '|' . CropProps::RIGHT
+      . ')'
+    ;
+    $r_numer_or_string = '(' . $r_number . '|' . $r_string . ')';
+    $r_from_size = '(' . $r_numer_or_string . ')|(' . $r_numer_or_string . 'x' . $r_numer_or_string . ')';
+    $r_from = 'f(' . $r_from_size . ')';
     $r_size = '(' . $r_number . ')|(' . $r_number . 'x' . $r_number . ')';
-    $r_from = 'f(' . $r_size . ')';
     $r_full = 'c(' . $r_size . ')(' . $r_from . ')?';
     return $r_full;
   }
