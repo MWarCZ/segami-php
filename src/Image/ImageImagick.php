@@ -114,21 +114,21 @@ class ImageImagick implements Image {
     $h = $this->img->getImageHeight();
     /////////////////////////////////////////////
     // Výpočet X
-    $x = 0;
-    if ($s_x == 'center')
-      $x = ($w - $width) / 2;
+    $x = ($w - $width) / 2; // Default is center
+    if (is_numeric($s_x))
+      $x = intval($s_x);
     elseif ($s_x == 'left')
       $x = 0;
     elseif ($s_x == 'right')
       $x = ($w - $width);
     /////////////////////////////////////////////
     // Výpočet Y
-    $y = 0;
-    if ($s_y == 'center')
-      $y = ($h - $height) / 2;
-    if ($s_y == 'top')
+    $y = ($h - $height) / 2; // Default is center
+    if (is_numeric($s_y))
+      $y = intval($s_y);
+    elseif ($s_y == 'top')
       $y = 0;
-    if ($s_y == 'bottom')
+    elseif ($s_y == 'bottom')
       $y = ($h - $height);
     /////////////////////////////////////////////
     // Provedení ořezu
