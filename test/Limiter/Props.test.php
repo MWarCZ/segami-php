@@ -1,13 +1,13 @@
 <?php
-use MWarCZ\Segami\Props\CoreProps;
-use MWarCZ\Segami\Props\CropProps;
-use MWarCZ\Segami\Props\ResizeProps;
-use MWarCZ\Segami\Props\QualityProps;
-use MWarCZ\Segami\Limiter\Props\CorePropsLimiter;
-use MWarCZ\Segami\Limiter\Props\CropPropsLimiter;
-use MWarCZ\Segami\Limiter\Props\ResizePropsLimiter;
-use MWarCZ\Segami\Limiter\Props\QualityPropsLimiter;
-use MWarCZ\Segami\Limiter\Props\NullablePropsLimiter;
+use MWarCZ\Segami\Plugin\CorePlugin\CoreProps;
+use MWarCZ\Segami\Plugin\CorePlugin\CorePropsLimiter;
+use MWarCZ\Segami\Plugin\CropPlugin\CropProps;
+use MWarCZ\Segami\Plugin\CropPlugin\CropPropsLimiter;
+use MWarCZ\Segami\Plugin\ResizePlugin\ResizeProps;
+use MWarCZ\Segami\Plugin\ResizePlugin\ResizePropsLimiter;
+use MWarCZ\Segami\Plugin\QualityPlugin\QualityProps;
+use MWarCZ\Segami\Plugin\QualityPlugin\QualityPropsLimiter;
+use MWarCZ\Segami\Limiter\NullablePropsLimiter;
 
 Test::group('Test třídy `CorePropsLimiter`', function () {
   $a_data = [

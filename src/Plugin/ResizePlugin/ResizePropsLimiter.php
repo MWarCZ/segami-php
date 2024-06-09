@@ -3,7 +3,7 @@
 //* File: src/Plugin/ResizePlugin/ResizePropsLimiter.php
 namespace MWarCZ\Segami\Plugin\ResizePlugin;
 
-use MWarCZ\Segami\Limiter\Props\PropsLimiter;
+use MWarCZ\Segami\Limiter\PropsLimiter;
 
 class ResizePropsLimiter implements PropsLimiter {
   /** @var int[] */

@@ -3,7 +3,7 @@
 //* File: src/Plugin/QualityPlugin/QualityPropsLimiter.php
 namespace MWarCZ\Segami\Plugin\QualityPlugin;
 
-use MWarCZ\Segami\Limiter\Props\PropsLimiter;
+use MWarCZ\Segami\Limiter\PropsLimiter;
 
 class QualityPropsLimiter implements PropsLimiter {
   /** @var int[] */

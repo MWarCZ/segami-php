@@ -1,12 +1,9 @@
 <?php
 //* Project: segami-php
-//* File: src/Limiter/Image/LaxImageLimiter.php
-namespace MWarCZ\Segami\Limiter\Image;
+//* File: src/Limiter/LaxImageLimiter.php
+namespace MWarCZ\Segami\Limiter;
 
-use MWarCZ\Segami\Props\Props;
-use MWarCZ\Segami\Limiter\Props\PropsLimiter;
-
-// // omezení jednotlivých typů - Kombinace parametrů v každé kategorii musí existovat
+// omezení jednotlivých typů - Kombinace parametrů v každé kategorii musí existovat
 // $xxx = new LaxImageLimiter([
 //   'basic' => [new LimiterBasic(/*...*/), /*...*/],
 //   'crop' => [new LimiterCrop( /*...*/), /*...*/],

@@ -1,5 +1,5 @@
 <?php
-use MWarCZ\Segami\Limiter\Image\FreeImageLimiter;
+use MWarCZ\Segami\Limiter\FreeImageLimiter;
 use MWarCZ\Segami\Segami;
 use MWarCZ\Segami\Image\ImageImagickFactory;
 use MWarCZ\Segami\ImageLogger\ImageLoggerFS;

@@ -3,8 +3,8 @@
 use MWarCZ\Segami\Segami;
 use MWarCZ\Segami\Image\ImageImagickFactory;
 use MWarCZ\Segami\ImageLogger\ImageLoggerFS;
-use MWarCZ\Segami\Limiter\Image\LaxImageLimiter;
-use MWarCZ\Segami\Limiter\Props\NullablePropsLimiter;
+use MWarCZ\Segami\Limiter\LaxImageLimiter;
+use MWarCZ\Segami\Limiter\NullablePropsLimiter;
 use MWarCZ\Segami\Plugin\CorePlugin\CorePlugin;
 use MWarCZ\Segami\Plugin\CorePlugin\CorePropsLimiter;
 use MWarCZ\Segami\Plugin\CropPlugin\CropPlugin;

@@ -98,7 +98,7 @@ $segami = new \MWarCZ\Segami\Segami([
     'resize' => new \MWarCZ\Segami\Plugin\ResizePlugin\ResizePlugin(),
   ],
   // Selected limiter with rules for generated images
-  'limiter' => new \MWarCZ\Segami\Limiter\Image\FreeImageLimiter(),
+  'limiter' => new \MWarCZ\Segami\Limiter\FreeImageLimiter(),
   // Selected image engine
   'image_factory' => new \MWarCZ\Segami\Image\ImageImagickFactory(),
   // Selected logger for logging access to images

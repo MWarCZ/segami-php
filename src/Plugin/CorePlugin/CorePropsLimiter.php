@@ -3,7 +3,7 @@
 //* File: src/Plugin/CorePlugin/CorePropsLimiter.php
 namespace MWarCZ\Segami\Plugin\CorePlugin;
 
-use MWarCZ\Segami\Limiter\Props\PropsLimiter;
+use MWarCZ\Segami\Limiter\PropsLimiter;
 
 class CorePropsLimiter implements PropsLimiter {
   /** @var string[] */
