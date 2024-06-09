@@ -204,39 +204,77 @@ class Segami {
   //! /////////////////////////////////////////////////////////////////////////
 
   /**
-   * Funkce odstraní zadaný obrázek a při správném nastavení
+   * Chytrá funkce pro odstraní zadaného obrázku a při správném nastavení
    * může odstranit i obrázky z něj vygenerované.
    *
-   * @param string $req_img Název požadovaného obrázku.
-   * @param bool $b_remove_all Odstranit zadaný obrázek i všechny z něj vygenerované.
+   * @param string $req_img Název požadovaného obrázku pro odstranění.
+   * @param bool $b_remove_all Odstranit zadaný obrázek i všechny z něj vygenerované obrázky.
    * @param string $subdirectory Název podsložky, která by měla obsahovat obrázek.
    *
    * @throws \Exception Něco se nepodařilo.
    */
-  function removeImage($req_img, $b_remove_all = false, $subdirectory = '') {
+  function smartRemoveImage($req_img, $b_remove_all = false, $subdirectory = '') {
+    $a_res = [];
+    // Pokus o odstranění všech obrázků ze zadaného obrázku
+    if($b_remove_all)
+      $a_res = array_merge($a_res, $this->removeAllGeneratedImages($req_img, $subdirectory));
+    // Pokus o odstranění z generovaných obrázků
+    $a_res = array_merge($a_res, $this->removeGeneratedImage($req_img, $subdirectory));
+    // Pokus o odstranění originálního obrázku
+    $a_res = array_merge($a_res, $this->removeOriginalImage($req_img, $subdirectory));
+    return $a_res;
+  }
+
+  /**
+   * Odstraní zadaný obrázek ze složky s originálními obrázky.
+   *
+   * @param string $req_img Název požadovaného obrázku pro odstranění.
+   * @param string $subdirectory Název podsložky, která by měla obsahovat obrázek.
+   */
+  function removeOriginalImage($req_img, $subdirectory = '') {
     $a_res = [];
     // START Odstranění originálního obrázku pokud existuje
     $file = $this->path_to_original_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $req_img;
     if (file_exists($file))
       $a_res[$file] = unlink($file);
     // END Odstranění originálního obrázku pokud existuje
-    // ***
+    return $a_res;
+  }
+
+  /**
+   * Odstraní zadaný obrázek ze složky s generovanými obrázky.
+   *
+   * @param string $req_img Název požadovaného obrázku pro odstranění.
+   * @param string $subdirectory Název podsložky, která by měla obsahovat obrázek.
+   */
+  function removeGeneratedImage($req_img, $subdirectory = '') {
+    $a_res = [];
     // START Odstranění generovaného obrázku
-    if ($b_remove_all) {
-      $a_file_path = $this->image_logger->getFiles(
-        $this->path_to_generated_images . ($subdirectory ? DIRECTORY_SEPARATOR . $subdirectory : ''),
-        $req_img,
-        '@'
-      );
-      foreach ($a_file_path as &$file_path) {
-        $a_res[$file_path] = unlink($file_path);
-      }
-    } else {
-      $file = $this->path_to_generated_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $req_img;
-      if (file_exists($file))
-        $a_res[$file] = unlink($file);
-    }
+    $file = $this->path_to_generated_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $req_img;
+    if (file_exists($file))
+      $a_res[$file] = unlink($file);
     // END Odstranění generovaného obrázku
+    return $a_res;
+  }
+
+  /**
+   * Odstraní všechny obrázky vygenerované ze zadaného obrázku.
+   *
+   * @param string $req_img Název požadovaného obrázku pro odstranění.
+   * @param string $subdirectory Název podsložky, která by měla obsahovat obrázek.
+   */
+  function removeAllGeneratedImages($req_img, $subdirectory = '') {
+    $a_res = [];
+    // START Odstranění generovaných obrázků
+    $a_file_path = $this->image_logger->getFiles(
+      $this->path_to_generated_images . ($subdirectory ? DIRECTORY_SEPARATOR . $subdirectory : ''),
+      $req_img,
+      '@'
+    );
+    foreach ($a_file_path as &$file_path) {
+      $a_res[$file_path] = unlink($file_path);
+    }
+    // END Odstranění generovaných obrázků
     return $a_res;
   }
 
