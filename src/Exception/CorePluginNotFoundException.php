@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Exception/CorePluginNotFoundException.php
 namespace MWarCZ\Segami\Exception;
 
 // CorePluginNotFoundException

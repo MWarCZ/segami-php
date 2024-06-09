@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Exception/PluginPluginNotFoundException.php
 namespace MWarCZ\Segami\Exception;
 
 // PluginPluginNotFoundException

@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Exception/LimiterException.php
 namespace MWarCZ\Segami\Exception;
 
 // LimiterException

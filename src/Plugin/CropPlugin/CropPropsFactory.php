@@ -1,5 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Props;
+//* Project: segami-php
+//* File: src/Plugin/CropPlugin/CropPropsFactory.php
+namespace MWarCZ\Segami\Plugin\CropPlugin;
+
+use MWarCZ\Segami\Props\PropsFactory;
 
 class CropPropsFactory implements PropsFactory {
   public function parseQuery(string $query): CropProps {
@@ -85,7 +89,7 @@ class CropPropsFactory implements PropsFactory {
       $query .= $props->width . 'x' . $props->height;
     }
     // From
-    if ($props->x || $props->y) {
+    if ($props->x !== CropProps::CENTER || $props->y !== CropProps::CENTER) {
       $query .= 'f';
       if ($props->x == $props->y) {
         $query .= $props->x;

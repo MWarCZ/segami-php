@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Limiter/Image/FreeImageLimiter.php
 namespace MWarCZ\Segami\Limiter\Image;
 
 class FreeImageLimiter implements ImageLimiter {

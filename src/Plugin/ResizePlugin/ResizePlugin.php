@@ -1,9 +1,10 @@
 <?php
-namespace MWarCZ\Segami\Plugin;
+//* Project: segami-php
+//* File: src/Plugin/ResizePlugin/ResizePlugin.php
+namespace MWarCZ\Segami\Plugin\ResizePlugin;
 
+use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Image\Image;
-use MWarCZ\Segami\Props\ResizePropsFactory;
-use MWarCZ\Segami\Props\ResizeProps;
 
 class ResizePlugin implements Plugin {
   public function getFactory(): ResizePropsFactory {

@@ -1,5 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Props;
+//* Project: segami-php
+//* File: src/Plugin/CorePlugin/CoreProps.php
+namespace MWarCZ\Segami\Plugin\CorePlugin;
+
+use MWarCZ\Segami\Props\Props;
 
 class CoreProps implements Props {
   /** @var string */

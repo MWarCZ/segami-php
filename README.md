@@ -1,4 +1,7 @@
-
+<!--
+//* Project: segami-php
+//* File: README.md
+-->
 # Segami
 
 Segami je jednoduchá PHP knihovna pro modifikaci obrázků. Umožňuje snadno převádět formáty, vytvářet výřezy, upravovat rozměry a měnit kvalitu obrázků na základě přípony v jejich názvu.
@@ -46,7 +49,7 @@ composer require mwarcz/segami
 Nebo manuálně přidat do souboru `composer.json` řádek:
 
 ```json
-"mwarcz/segami": "^1.1.2"
+"mwarcz/segami": "^2.0.0"
 ```
 
 ## Použití / Usage

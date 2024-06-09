@@ -1,10 +1,11 @@
 <?php
-use MWarCZ\Segami\Props\CoreProps;
-use MWarCZ\Segami\Props\CorePropsFactory;
-use MWarCZ\Segami\Props\CropPropsFactory;
-use MWarCZ\Segami\Props\ResizeProps;
-use MWarCZ\Segami\Props\ResizePropsFactory;
-use MWarCZ\Segami\Props\QualityPropsFactory;
+use MWarCZ\Segami\Plugin\CorePlugin\CoreProps;
+use MWarCZ\Segami\Plugin\CorePlugin\CorePropsFactory;
+use MWarCZ\Segami\Plugin\CropPlugin\CropProps;
+use MWarCZ\Segami\Plugin\CropPlugin\CropPropsFactory;
+use MWarCZ\Segami\Plugin\ResizePlugin\ResizeProps;
+use MWarCZ\Segami\Plugin\ResizePlugin\ResizePropsFactory;
+use MWarCZ\Segami\Plugin\QualityPlugin\QualityPropsFactory;
 
 Test::group('Test třídy `CorePropsFactory`', function () {
 
@@ -97,8 +98,8 @@ Test::group('Test třídy `CropPropsFactory`', function () {
         'input' => ['q' => 'c200'],
         'output' => [
           'q' => 'c200',
-          'x' => 0,
-          'y' => 0,
+          'x' => CropProps::CENTER,
+          'y' => CropProps::CENTER,
           'w' => 200,
           'h' => 200,
         ],
@@ -107,8 +108,8 @@ Test::group('Test třídy `CropPropsFactory`', function () {
         'input' => ['q' => 'c200x200'],
         'output' => [
           'q' => 'c200',
-          'x' => 0,
-          'y' => 0,
+          'x' => CropProps::CENTER,
+          'y' => CropProps::CENTER,
           'w' => 200,
           'h' => 200,
         ],
@@ -117,8 +118,8 @@ Test::group('Test třídy `CropPropsFactory`', function () {
         'input' => ['q' => 'c100x300'],
         'output' => [
           'q' => 'c100x300',
-          'x' => 0,
-          'y' => 0,
+          'x' => CropProps::CENTER,
+          'y' => CropProps::CENTER,
           'w' => 100,
           'h' => 300,
         ],
@@ -127,8 +128,8 @@ Test::group('Test třídy `CropPropsFactory`', function () {
         'input' => ['q' => 'c300x100'],
         'output' => [
           'q' => 'c300x100',
-          'x' => 0,
-          'y' => 0,
+          'x' => CropProps::CENTER,
+          'y' => CropProps::CENTER,
           'w' => 300,
           'h' => 100,
         ],

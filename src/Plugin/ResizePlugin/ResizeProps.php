@@ -1,5 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Props;
+//* Project: segami-php
+//* File: src/Plugin/ResizePlugin/ResizeProps.php
+namespace MWarCZ\Segami\Plugin\ResizePlugin;
+
+use MWarCZ\Segami\Props\Props;
 
 class ResizeProps implements Props {
   public const TYPE_FILL = 0;

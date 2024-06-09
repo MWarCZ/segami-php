@@ -1,5 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Props;
+//* Project: segami-php
+//* File: src/Plugin/QualityPlugin/QualityPropsFactory.php
+namespace MWarCZ\Segami\Plugin\QualityPlugin;
+
+use MWarCZ\Segami\Props\PropsFactory;
 
 class QualityPropsFactory implements PropsFactory {
   public function parseQuery(string $query): QualityProps {

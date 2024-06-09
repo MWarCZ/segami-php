@@ -1,5 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Props;
+//* Project: segami-php
+//* File: src/Plugin/CropPlugin/CropProps.php
+namespace MWarCZ\Segami\Plugin\CropPlugin;
+
+use MWarCZ\Segami\Props\Props;
 
 class CropProps implements Props {
   public const SIZE_AUTO = 0;

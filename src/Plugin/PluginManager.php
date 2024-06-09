@@ -1,12 +1,14 @@
 <?php
+//* Project: segami-php
+//* File: src/Plugin/PluginManager.php
 namespace MWarCZ\Segami\Plugin;
 
 use MWarCZ\Segami\Exception\CorePluginInvalidFormatException;
 use MWarCZ\Segami\Exception\CorePluginNotFoundException;
 use MWarCZ\Segami\Exception\PluginPluginNotFoundException;
-use MWarCZ\Segami\Plugin\CorePlugin;
 use MWarCZ\Segami\Plugin\Plugin;
-use MWarCZ\Segami\Props\CoreProps;
+use MWarCZ\Segami\Plugin\CorePlugin\CorePlugin;
+use MWarCZ\Segami\Plugin\CorePlugin\CoreProps;
 use MWarCZ\Segami\Props\Props;
 
 class PluginManager {

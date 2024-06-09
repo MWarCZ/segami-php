@@ -1,5 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Props;
+//* Project: segami-php
+//* File: src/Plugin/QualityPlugin/QualityProps.php
+namespace MWarCZ\Segami\Plugin\QualityPlugin;
+
+use MWarCZ\Segami\Props\Props;
 
 class QualityProps implements Props {
   /** @var int */

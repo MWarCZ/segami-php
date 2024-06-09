@@ -4,14 +4,15 @@ use MWarCZ\Segami\Segami;
 use MWarCZ\Segami\Image\ImageImagickFactory;
 use MWarCZ\Segami\ImageLogger\ImageLoggerFS;
 use MWarCZ\Segami\Limiter\Image\LaxImageLimiter;
-use MWarCZ\Segami\Limiter\Props\CorePropsLimiter;
-use MWarCZ\Segami\Limiter\Props\ResizePropsLimiter;
 use MWarCZ\Segami\Limiter\Props\NullablePropsLimiter;
-use MWarCZ\Segami\Plugin\CorePlugin;
-use MWarCZ\Segami\Plugin\CropPlugin;
-use MWarCZ\Segami\Plugin\ResizePlugin;
-use MWarCZ\Segami\Plugin\QualityPlugin;
-use MWarCZ\Segami\Props\ResizeProps;
+use MWarCZ\Segami\Plugin\CorePlugin\CorePlugin;
+use MWarCZ\Segami\Plugin\CorePlugin\CorePropsLimiter;
+use MWarCZ\Segami\Plugin\CropPlugin\CropPlugin;
+use MWarCZ\Segami\Plugin\CropPlugin\CropPropsLimiter;
+use MWarCZ\Segami\Plugin\ResizePlugin\ResizePlugin;
+use MWarCZ\Segami\Plugin\ResizePlugin\ResizePropsLimiter;
+use MWarCZ\Segami\Plugin\QualityPlugin\QualityPlugin;
+use MWarCZ\Segami\Plugin\QualityPlugin\QualityPropsLimiter;
 
 require_once(__DIR__ . '/init.config.php');
 

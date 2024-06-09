@@ -1,9 +1,10 @@
 <?php
-namespace MWarCZ\Segami\Plugin;
+//* Project: segami-php
+//* File: src/Plugin/CorePlugin/CorePlugin.php
+namespace MWarCZ\Segami\Plugin\CorePlugin;
 
+use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Image\Image;
-use MWarCZ\Segami\Props\CorePropsFactory;
-use MWarCZ\Segami\Props\CoreProps;
 
 class CorePlugin implements Plugin {
   public function getFactory(): CorePropsFactory {

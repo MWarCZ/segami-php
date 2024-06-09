@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Limiter/Props/NullablePropsLimiter.php
 namespace MWarCZ\Segami\Limiter\Props;
 
 use MWarCZ\Segami\Props\Props;

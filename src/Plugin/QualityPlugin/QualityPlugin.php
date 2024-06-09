@@ -1,9 +1,10 @@
 <?php
-namespace MWarCZ\Segami\Plugin;
+//* Project: segami-php
+//* File: src/Plugin/QualityPlugin/QualityPlugin.php
+namespace MWarCZ\Segami\Plugin\QualityPlugin;
 
+use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Image\Image;
-use MWarCZ\Segami\Props\QualityPropsFactory;
-use MWarCZ\Segami\Props\QualityProps;
 
 class QualityPlugin implements Plugin {
   public function getFactory(): QualityPropsFactory {

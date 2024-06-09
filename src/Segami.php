@@ -1,5 +1,6 @@
 <?php
-
+//* Project: segami-php
+//* File: src/Segami.php
 namespace MWarCZ\Segami;
 
 use MWarCZ\Segami\Image\ImageFactory;

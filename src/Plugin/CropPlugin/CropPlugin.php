@@ -1,9 +1,10 @@
 <?php
-namespace MWarCZ\Segami\Plugin;
+//* Project: segami-php
+//* File: src/Plugin/CropPlugin/CropPlugin.php
+namespace MWarCZ\Segami\Plugin\CropPlugin;
 
+use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Image\Image;
-use MWarCZ\Segami\Props\CropPropsFactory;
-use MWarCZ\Segami\Props\CropProps;
 
 class CropPlugin implements Plugin {
   public function getFactory(): CropPropsFactory {

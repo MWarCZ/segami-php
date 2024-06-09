@@ -1,7 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Limiter\Props;
+//* Project: segami-php
+//* File: src/Plugin/QualityPlugin/QualityPropsLimiter.php
+namespace MWarCZ\Segami\Plugin\QualityPlugin;
 
-use MWarCZ\Segami\Props\QualityProps;
+use MWarCZ\Segami\Limiter\Props\PropsLimiter;
 
 class QualityPropsLimiter implements PropsLimiter {
   /** @var int[] */
