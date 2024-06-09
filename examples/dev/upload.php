@@ -20,7 +20,11 @@ if (isset($_POST['submit_delete'])) {
     'image_factory' => new ImageImagickFactory(),
     'image_logger' => new ImageLoggerFS(),
   ]);
-  $segami->removeImage($_POST['submit_delete'], true);
+  $a_res = $segami->smartRemoveImage($_POST['submit_delete'], true);
+  p_debug([
+    'post_submit_delete' => $_POST['submit_delete'],
+    'a_res' => $a_res,
+  ]);
   location(ACTUAL_URL);
 }
 // TODO
