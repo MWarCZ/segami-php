@@ -1,7 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Limiter\Props;
+//* Project: segami-php
+//* File: src/Plugin/CorePlugin/CorePropsLimiter.php
+namespace MWarCZ\Segami\Plugin\CorePlugin;
 
-use MWarCZ\Segami\Props\CoreProps;
+use MWarCZ\Segami\Limiter\PropsLimiter;
 
 class CorePropsLimiter implements PropsLimiter {
   /** @var string[] */

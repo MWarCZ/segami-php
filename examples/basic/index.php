@@ -93,12 +93,12 @@ $segami = new \MWarCZ\Segami\Segami([
   // Selected plugins for generating images
   'plugin' => [
     // CorePlugin is required minimum - enable core name parsing and image format conversion
-    'core' => new \MWarCZ\Segami\Plugin\CorePlugin(),
+    'core' => new \MWarCZ\Segami\Plugin\CorePlugin\CorePlugin(),
     // Optional ResizePlugin - enable/add possibility resize image
-    'resize' => new \MWarCZ\Segami\Plugin\ResizePlugin(),
+    'resize' => new \MWarCZ\Segami\Plugin\ResizePlugin\ResizePlugin(),
   ],
   // Selected limiter with rules for generated images
-  'limiter' => new \MWarCZ\Segami\Limiter\Image\FreeImageLimiter(),
+  'limiter' => new \MWarCZ\Segami\Limiter\FreeImageLimiter(),
   // Selected image engine
   'image_factory' => new \MWarCZ\Segami\Image\ImageImagickFactory(),
   // Selected logger for logging access to images

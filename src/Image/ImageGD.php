@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Image/ImageGD.php
 namespace MWarCZ\Segami\Image;
 
 class ImageGD implements Image {

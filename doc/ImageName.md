@@ -1,4 +1,7 @@
-
+<!--
+//* Project: segami-php
+//* File: doc/ImageName.md
+-->
 # Formát pro vytváření názvů obrázků
 
 ## Originální obrázek

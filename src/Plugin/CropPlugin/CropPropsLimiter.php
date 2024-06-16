@@ -1,7 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Limiter\Props;
+//* Project: segami-php
+//* File: src/Plugin/CropPlugin/CropPropsLimiter.php
+namespace MWarCZ\Segami\Plugin\CropPlugin;
 
-use MWarCZ\Segami\Props\CropProps;
+use MWarCZ\Segami\Limiter\PropsLimiter;
 
 class CropPropsLimiter implements PropsLimiter {
   /** @var (int|string)[] */

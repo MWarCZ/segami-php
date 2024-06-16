@@ -3,7 +3,7 @@
   "description": "PHP knihovna umožňující úpravu rozměrů obrázku, převod formátu obrázku, ukládání vygenerovaných obrázků, zaznamenávání posledního přístupu k vygenerovanému obrázku, odstraňování dlouhodobě nevyužitých obrázků a to vše na základě názvu obrázku.",
   "type": "library",
   "license": "MIT",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "authors": [
     {
       "name": "MWarCZ"

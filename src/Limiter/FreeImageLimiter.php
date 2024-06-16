@@ -1,5 +1,7 @@
 <?php
-namespace MWarCZ\Segami\Limiter\Image;
+//* Project: segami-php
+//* File: src/Limiter/FreeImageLimiter.php
+namespace MWarCZ\Segami\Limiter;
 
 class FreeImageLimiter implements ImageLimiter {
   public function check($map_props): bool {

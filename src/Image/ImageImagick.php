@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Image/ImageImagick.php
 namespace MWarCZ\Segami\Image;
 
 use MWarCZ\Segami\Exception\UnsupportedImageExtensionException;

@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Exception/UnsupportedImageExtensionException.php
 namespace MWarCZ\Segami\Exception;
 
 // UnsupportedImageExtensionException

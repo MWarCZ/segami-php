@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Exception/PluginInvalidFormatException.php
 namespace MWarCZ\Segami\Exception;
 
 // PluginInvalidFormatException

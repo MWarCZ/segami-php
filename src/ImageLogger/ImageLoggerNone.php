@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/ImageLogger/ImageLoggerNone.php
 namespace MWarCZ\Segami\ImageLogger;
 
 /**

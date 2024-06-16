@@ -1,5 +1,7 @@
 <?php
-namespace MWarCZ\Segami\Limiter\Image;
+//* Project: segami-php
+//* File: src/Limiter/ImageLimiter.php
+namespace MWarCZ\Segami\Limiter;
 
 use MWarCZ\Segami\Props\Props;
 

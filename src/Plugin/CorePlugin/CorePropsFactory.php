@@ -1,5 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Props;
+//* Project: segami-php
+//* File: src/Plugin/CorePlugin/CorePropsFactory.php
+namespace MWarCZ\Segami\Plugin\CorePlugin;
+
+use MWarCZ\Segami\Props\PropsFactory;
 
 class CorePropsFactory implements PropsFactory {
   public function parseQuery(string $query): CoreProps {

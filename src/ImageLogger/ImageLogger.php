@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/ImageLogger/ImageLogger.php
 namespace MWarCZ\Segami\ImageLogger;
 
 interface ImageLogger {

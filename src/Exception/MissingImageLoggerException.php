@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Exception/MissingImageLoggerException.php
 namespace MWarCZ\Segami\Exception;
 
 // MissingImageLoggerException

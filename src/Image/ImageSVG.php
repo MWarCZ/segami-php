@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Image/ImageSVG.php
 namespace MWarCZ\Segami\Image;
 
 class ImageSVG implements Image {

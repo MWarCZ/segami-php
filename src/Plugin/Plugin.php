@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Plugin/Plugin.php
 namespace MWarCZ\Segami\Plugin;
 
 use MWarCZ\Segami\Image\Image;

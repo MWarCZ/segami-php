@@ -1,5 +1,6 @@
 <?php
-
+//* Project: segami-php
+//* File: src/Props/PropsFactory.php
 namespace MWarCZ\Segami\Props;
 
 interface PropsFactory {

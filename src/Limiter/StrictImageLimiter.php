@@ -1,8 +1,9 @@
 <?php
-namespace MWarCZ\Segami\Limiter\Image;
+//* Project: segami-php
+//* File: src/Limiter/StrictImageLimiter.php
+namespace MWarCZ\Segami\Limiter;
 
 use MWarCZ\Segami\Props\Props;
-use MWarCZ\Segami\Limiter\Props\PropsLimiter;
 
 // // Kompletní omezení - Musí existovat přesná kombinace
 // $xxx = new StrictImageLimiter([

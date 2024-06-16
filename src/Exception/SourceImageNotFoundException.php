@@ -1,4 +1,6 @@
 <?php
+//* Project: segami-php
+//* File: src/Exception/SourceImageNotFoundException.php
 namespace MWarCZ\Segami\Exception;
 
 // SourceImageNotFoundException

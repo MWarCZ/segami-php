@@ -1,4 +1,7 @@
-
+<!--
+//* Project: segami-php
+//* File: doc/Limiter.md
+-->
 # Omezovač / Limiter
 
 Je doporučeno používat omezovače pokud plánujete Segami využívat včetně funkce pro ukládání vygenerovaných obrázků (cache).
