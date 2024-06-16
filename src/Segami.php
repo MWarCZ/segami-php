@@ -8,7 +8,7 @@ use MWarCZ\Segami\ImageLogger\ImageLogger;
 use MWarCZ\Segami\Exception\LimiterException;
 use MWarCZ\Segami\Exception\MissingImageLoggerException;
 use MWarCZ\Segami\Exception\SourceImageNotFoundException;
-use MWarCZ\Segami\Limiter\Image\ImageLimiter;
+use MWarCZ\Segami\Limiter\ImageLimiter;
 use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Plugin\PluginManager;
 
@@ -74,9 +74,7 @@ class Segami {
    * @return \Imagick Instance Imagick s finálním obrázkem.
    */
   function createImage($from_img_path, $to_img_path, $plugin_manager) {
-    // TODO Limiter->check
     if ($this->limiter && !$this->limiter->check($plugin_manager->a_all_props)) {
-      // KO
       throw new LimiterException('Nenalezeno platné pravidlo v omezovači');
     }
 
@@ -89,10 +87,8 @@ class Segami {
       if (isset($plugin_manager->a_other_props[$key])) {
         $plugin->modifyImage($img, $plugin_manager->a_other_props[$key]);
       }
+      // Ignorovat neznámé modifikátory (tzn. nevyhazovat chybu)
     }
-    // else {
-    //     throw new UnknownInstanceOfModifierException('Neznámí instance ImageProps');
-    //   }
 
     $img->strip();
     if ($to_img_path)
