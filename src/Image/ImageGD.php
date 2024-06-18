@@ -8,14 +8,15 @@ use MWarCZ\Segami\Exception\UnsupportedImageExtensionException;
 class ImageGD implements Image {
   protected $fn_imagecreatefrom;
   protected $fn_image;
-
+  protected $scale_mode;
   protected $src_extension;
   protected $dst_extension;
   protected $compression = -1;
 
   protected $img = null;
 
-  function __construct() {
+  function __construct($scale_mode = IMG_BICUBIC) {
+    $this->scale_mode = $scale_mode;
     $this->fn_imagecreatefrom = [
       'avif' => 'imagecreatefromavif',
       'bmp' => 'imagecreatefrombmp',
@@ -72,18 +73,59 @@ class ImageGD implements Image {
   }
 
   function resizeFill($width, $height) {
-    $img = imagescale($this->img, $width, $height);
+    // Normalizace automatického rozměru
+    $width = $width > 0 ? $width : -1;
+    $height = $height > 0 ? $height : -1;
+    /////////////////////////////////////////////
+    // Změna velikosti obrázku
+    $img = imagescale($this->img, $width, $height, $this->scale_mode);
     imagedestroy($this->img);
     $this->img = $img;
-    imagedestroy($img);
     return $this;
   }
 
   function resizeContain($width, $height) {
+    // Normalizace automatického rozměru
+    $width = $width > 0 ? $width : -1;
+    $height = $height > 0 ? $height : -1;
+    // Originální rozměry obrázku
+    $w = imagesx($this->img);
+    $h = imagesy($this->img);
+    /////////////////////////////////////////////
+    // Změna velikosti obrázku
+    $img = null;
+    if($width > $height) {
+      $r_wh = $w / $h;
+      $img = imagescale($this->img, (int) ($height * $r_wh), $height, $this->scale_mode);
+    } else {
+      $r_hw = $h / $w;
+      $img = imagescale($this->img, $width, (int) ($width * $r_hw), $this->scale_mode);
+    }
+    imagedestroy($this->img);
+    $this->img = $img;
     return $this;
   }
 
   function resizeCover($width, $height) {
+    // Normalizace automatického rozměru
+    $width = $width > 0 ? $width : -1;
+    $height = $height > 0 ? $height : -1;
+    // Originální rozměry obrázku
+    $w = imagesx($this->img);
+    $h = imagesy($this->img);
+    /////////////////////////////////////////////
+    // Změna velikosti obrázku
+    $img = null;
+    if($width > $height) {
+      $r_hw = $h / $w;
+      $img = imagescale($this->img, $width, (int) ($width * $r_hw), $this->scale_mode);
+    } else {
+      $r_wh = $w / $h;
+      $img = imagescale($this->img, (int) ($height * $r_wh), $height, $this->scale_mode);
+    }
+    imagedestroy($this->img);
+    $this->img = $img;
+    $this->cropImage($width, $height, 'center', 'center');
     return $this;
   }
 
@@ -95,18 +137,18 @@ class ImageGD implements Image {
     $x = ($w - $width) / 2; // Default is center
     if (is_numeric($s_x))
       $x = intval($s_x);
-    elseif ($s_x == 'left')
+    elseif (in_array(strtolower($s_x), ['left', 'l']))
       $x = 0;
-    elseif ($s_x == 'right')
+    elseif (in_array(strtolower($s_x), ['right', 'r']))
       $x = ($w - $width);
     /////////////////////////////////////////////
     // Výpočet Y
     $y = ($h - $height) / 2; // Default is center
     if (is_numeric($s_y))
       $y = intval($s_y);
-    elseif ($s_y == 'top')
+    elseif (in_array(strtolower($s_y), ['top', 't']))
       $y = 0;
-    elseif ($s_y == 'bottom')
+    elseif (in_array(strtolower($s_y), ['bottom', 'b']))
       $y = ($h - $height);
     /////////////////////////////////////////////
     // Provedení ořezu
