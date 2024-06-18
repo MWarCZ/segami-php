@@ -8,10 +8,15 @@ use MWarCZ\Segami\Props\Props;
 class CropProps implements Props {
   public const SIZE_AUTO = 0;
   public const CENTER = 'center';
+  public const A_CENTER = ['center', 'c'];
   public const TOP = 'top';
+  public const A_TOP = ['top', 't'];
   public const BOTTOM = 'bottom';
+  public const A_BOTTOM = ['bottom', 'b'];
   public const LEFT = 'left';
+  public const A_LEFT = ['left', 'l'];
   public const RIGHT = 'right';
+  public const A_RIGHT = ['right', 'r'];
   /** @var int|string */
   public $x;
   /** @var int|string */

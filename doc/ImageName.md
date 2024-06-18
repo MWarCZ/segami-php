@@ -21,7 +21,8 @@ URL adresa pro získání vygenerovaného obrázku vždy obsahuje znak `@`, kter
 
 Plugin `CorePlugin` je základní plugin, který 1. umožňuje převod do různých formátů a 2. extrahuje další modifikátory pro další pluginy.
 
-> Formát: `[image_name]@[modifiers].[format]` ; modifiers = `[]`||`[modifier]`||`[modifier].[modifiers]`
+> Formát: `[image_name]@[modifiers].[format]`;
+> modifiers = `[]`||`[modifier]`||`[modifier].[modifiers]`
 
 - **Příklady:**
   - `sample.png@[modifiers].webp` = Převod na formát WebP
@@ -32,7 +33,12 @@ Plugin `CorePlugin` je základní plugin, který 1. umožňuje převod do různ�
 
 Plugin `CropPlugin` umožňuje vytvářet výřezy z originálního obrázku.
 
-> Formát: modifier = `[crop][?from]`; crop = `c[size]`||`c[width]x[height]`; from = `f[x_y]`||`f[x]x[y]`
+> Formát:
+> modifier = `[crop][?from]`;
+> crop = `c[size]`||`c[width]x[height]`;
+> from = `f[x_y]`||`f[x]x[y]`;
+> x = `[int]`||`center`||`c`||`left`||`l`||`right`||`r`;
+> y = `center`||`c`||`top`||`t`||`bottom`||`b`
 
 - **Příklady:**
   - `sample.png@c200.webp` = Rozměr 200x200 ze středu obrázku
@@ -41,12 +47,20 @@ Plugin `CropPlugin` umožňuje vytvářet výřezy z originálního obrázku.
   - `sample.png@c200x300.webp` = Rozměr 200x300 ze středu obrázku
   - `sample.png@c200x300f20.webp` = Rozměr 200x300 z bodu 20x20
   - `sample.png@c200x300f20x30.webp` = Rozměr 200x300 z bodu 20x30
+  - `sample.png@c200x300fRightxBottom.webp` = Rozměr 200x300 z bodu pravý dolní roh
+  - `sample.png@c200x300fRxB.webp` = Rozměr 200x300 z bodu pravý dolní roh
+  - `sample.png@c200x300frxb.webp` = Rozměr 200x300 z bodu pravý dolní roh
+  - `sample.png@c200x300fCenterxTop.webp` = Rozměr 200x300 z bodu střed na horní hraně
+  - `sample.png@c200x300fcxt.webp` = Rozměr 200x300 z bodu střed na horní hraně
 
 ## Modifikátor - Změna velikosti obrázku
 
 Plugin `ResizePlugin` umožňuje upravit rozměr originálního obrázku a způsob vytvoření obrázku o požadovaném rozměru.
 
-> Formát: modifier = `[resize][?type]`; resize = `r[size]`||`r[width]x[height]`; type = `_[fill|contain|cover]`
+> Formát:
+> modifier = `[resize][?type]`;
+> resize = `r[size]`||`r[width]x[height]`;
+> type = `_[fill|l|contain|n|cover|r]`
 
 - **Příklady:**
   - `sample.png@r200.webp` = Rozměr 200x200 a chování obrázku: fill

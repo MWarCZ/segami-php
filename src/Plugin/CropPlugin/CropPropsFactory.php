@@ -59,11 +59,11 @@ class CropPropsFactory implements PropsFactory {
   public function validRegex(): string {
     $r_number = '[0-9][0-9]*';
     $r_string = '('
-      . CropProps::CENTER
-      . '|' . CropProps::TOP
-      . '|' . CropProps::BOTTOM
-      . '|' . CropProps::LEFT
-      . '|' . CropProps::RIGHT
+      . implode('|', CropProps::A_CENTER)
+      . '|' . implode('|', CropProps::A_TOP)
+      . '|' . implode('|', CropProps::A_BOTTOM)
+      . '|' . implode('|', CropProps::A_LEFT)
+      . '|' . implode('|', CropProps::A_RIGHT)
       . ')'
     ;
     $r_numer_or_string = '(' . $r_number . '|' . $r_string . ')';

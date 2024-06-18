@@ -119,18 +119,18 @@ class ImageImagick implements Image {
     $x = ($w - $width) / 2; // Default is center
     if (is_numeric($s_x))
       $x = intval($s_x);
-    elseif ($s_x == 'left')
+    elseif (in_array(strtolower($s_x), ['left', 'l']))
       $x = 0;
-    elseif ($s_x == 'right')
+    elseif (in_array(strtolower($s_x), ['right', 'r']))
       $x = ($w - $width);
     /////////////////////////////////////////////
     // Výpočet Y
     $y = ($h - $height) / 2; // Default is center
     if (is_numeric($s_y))
       $y = intval($s_y);
-    elseif ($s_y == 'top')
+    elseif (in_array(strtolower($s_y), ['top', 't']))
       $y = 0;
-    elseif ($s_y == 'bottom')
+    elseif (in_array(strtolower($s_y), ['bottom', 'b']))
       $y = ($h - $height);
     /////////////////////////////////////////////
     // Provedení ořezu
