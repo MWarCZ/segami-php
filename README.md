@@ -4,57 +4,77 @@
 -->
 # Segami
 
-Segami je jednoduchá PHP knihovna pro modifikaci obrázků. Umožňuje snadno převádět formáty, vytvářet výřezy, upravovat rozměry a měnit kvalitu obrázků na základě přípony v jejich názvu.
+Segami is simple PHP library that allows edit image dimensions, convert image format, cache generated images, record last access to generated image in cache, remove images from cache that have not been used for long time, all based on image suffix in name.
 
-## Klíčové vlastnosti / Key properties
+[![PHP version][php-badge]][php]
+[![Packagist version][packagist-badge]][packagist]
+[![MIT License][license-badge]](LICENSE)
 
-- **Převod formátu obrázku**
-  - Základní funkcí knihovny je převod obrázku do různých rastrových formátů (PNG, GIF, JPEG, WebP, atd.).
-  - Například: `sample.png@.jpg`, `sample.png@.webp`
-- **Vytvoření výřezu z obrázku**
-  - Volitelná funkce umožňuje vytváření výřezů z obrázku v požadovaných rozměrech.
-  - Například: `sample.png@c200x100.png`, `sample.png@c300.jpg`
-- **Změna rozměru obrázku**
-  - Volitelná funkce umožňující změnu velikosti obrázku v požadovaných rozměrech a stylem vyplnění (fill, contain, cover).
-  - Například: `sample.png@r200x100_cover.png`, `sample.png@r300.jpg`
-- **Změna kvality/komprese obrázku**
-  - Volitelná funkce pro nastavení kvality/komprese obrázku, což ovlivňuje velikost výsledného souboru a kompresi u zvoleného formátu.
-  - Například: `sample.png@q80.jpg`, `sample.png@q50.webp`
-- **Ukládání vygenerovaných obrázků (cache)**
-  - Knihovna umožňuje ukládání vygenerovaných obrázků do cache pro rychlé znovu vrácení vygenerovaného obrázku, neboť název obrázku přesně definuje jeho vlastnosti.
-  - Názvy souborů jsou na pozadí normovány, aby nedocházelo ke zbytečným duplicitám.
-    - př. 1: `sample.png@c200.png` = `sample.png@c200x200.png`
-    - př. 2: `sample.png@r100x100_cover.png` = `sample.png@r100_r.png`
-- **Automatické odstraňování dlouhodobě nevyužitých obrázků z cache**
-  - Knihovna poskytuje funkce pro odstraňování obrázků dříve uložených do cache, které pomáhají čistit disk od dlouhodobě nevyužívaných obrázků.
-- **Omezovače limitující názvy požadovaných obrázků**
-  - Volitelně je možné omezovat názvy obrázků, které modifikují originální obrázek.
-  - Je doporučeno limitovat názvy obrázku při zapnuté funkci cache, aby případný útočník měl ztíženou práci s útokem na vás.
+[php-badge]: https://img.shields.io/packagist/dependency-v/mwarcz/segami/php?logo=php&logoColor=ffffff&label=php&color=8892BF
+[packagist-badge]: https://img.shields.io/packagist/v/mwarcz/segami?logo=packagist&logoColor=ffffff
+[license-badge]: https://img.shields.io/github/license/MWarCZ/segami-php
 
-## Požadavky / Requirements
+[php]: https://www.php.net/supported-versions.php
+[packagist]: https://packagist.org/packages/mwarcz/segami
+
+## Key features
+
+- **Convert image format**
+  - Basic function of library is to convert image into various raster formats (PNG, GIF, JPEG, WebP, etc.).
+  - Example: `sample.png@.jpg`, `sample.png@.webp`
+- **Create image crop**
+  - Optional function allows you to crop image in required dimensions.
+  - Example: `sample.png@c200x100.png`, `sample.png@c300.jpg`
+- **Resize image**
+  - Optional function that allows you to change size of image in the required dimensions and fill type (fill, contain, cover).
+  - Example: `sample.png@r200x100_cover.png`, `sample.png@r300.jpg`
+- **Set image quality/compression**
+  - Optional feature to set image quality/compression, which affects resulting file size and compression for selected format.
+  - Example: `sample.png@q80.jpg`, `sample.png@q50.webp`
+- **Store generated images (cache)**
+  - Library allows storing generated images in cache directory for quick retrieval of generated image, as name of image precisely defines its properties.
+  - Image filenames are normalized in background to avoid unnecessary duplication.
+    - ex. 1: `sample.png@c200.png` = `sample.png@c200x200.png`
+    - ex. 2: `sample.png@r100x100_cover.png` = `sample.png@r100_r.png`
+- **Automatic removal of long-term unused images from cache**
+  - Library provides functions for removing previously stored images to help clear disk space of images that have not been used for long time.
+- **Limiters limiting names of required images**
+  - Optionally, it is possible to restrict image names that modify original image.
+  - It is recommended to limit image names when storing to cache is enabled, so that potential attacker has difficult time attacking you.
+
+## Requirements
 
 - PHP 8.1+
-- imagick
+  - Mandatory optional:
+    - [ext-gd](https://www.php.net/manual/en/book.image)
+    - [ext-imagick](https://www.php.net/manual/en/book.imagick.php) s instalovaným [ImageMagick](https://imagemagick.org/)
 
-## Instalace / Installation
+## Installation
 
-Knihovna Segami je dostupná na [Packagist](https://packagist.org/packages/mwarcz/segami) a instalace přes [Composer](https://getcomposer.org/) je doporučeným způsobem k instalaci.
+Segami library is available on [Packagist](https://packagist.org/packages/mwarcz/segami) and installing via [Composer](https://getcomposer.org/) is recommended way to install it.
 
-Stačí použít příkaz:
+Just use the command in terminal:
 
 ```bash
 composer require mwarcz/segami
 ```
 
-Nebo manuálně přidat do souboru `composer.json` řádek:
+Or manually add to `composer.json` file:
 
 ```json
-"mwarcz/segami": "^2.0.0"
+{
+    "require": {
+        "php": "^8.1",
+        "mwarcz/segami": "dev-master"
+    }
+}
 ```
 
-## Použití / Usage
+> **Note:** Replace `dev-master` with [specific version constraint](https://getcomposer.org/doc/articles/versions.md#writing-version-constraints). See [Packagist](https://packagist.org/packages/mwarcz/segami) for available versions.
 
-Krátká ukázka možného základního použití knihovny.
+## Usage
+
+Short example of possible basic use of library:
 
 ```php
 $segami = new Segami([
@@ -86,69 +106,25 @@ try {
 }
 ```
 
-Repositář obsahuje sadu konkrétních ukázek různého použití:
+Repository contains set of samples of various use case:
 
-- [Ukázka základního použití](examples/basic/)
-- [Ukázka použití s laxním omezovačem](examples/lax/)
-- [Testovací ukázka použitá při vývoji](examples/dev/)
+- [Example of basic use](examples/basic/)
+- [Example of use with LaxImageLimiter](examples/lax/)
+- [Test example used in development](examples/dev/)
 - TODO
 
-Podrobnější informace o fungování a použití Segami naleznete v *připravované* [dokumentaci](doc).
+More detailed information about functions and use case of Segami library can be found in *upcoming* [documentation](doc).
 
-- [Vytváření názvu generovaného obrázků](doc/ImageName.md)
-- [Připravení omezovače pro limitaci generovaných obrázků](doc/Limiter.md)
+- [Creating name for generated images](doc/ImageName.md)
+- [Preparation of limiter for limiting generated images](doc/Limiter.md)
 - TODO
 
-## Licence / License
+## License
 
-Segami je licencováno pod [MIT licencí](LICENSE).
+Segami is licensed under [MIT license](LICENSE).
 
 ------------------------------
 
 ## TODO roadmap
 
-- [x] Získání originálního obrázku
-- [x] Získání vygenerovaného obrázku z cache
-- [ ] Modifikace originálního obrázku přes plugin
-  - [ ] CorePlugin - Základní funkce, převod mezi formáty
-    - [x] Z rastrového formátu na rastrový formát
-    - [ ] Z vektorového formátu na rastrový formát
-    - [ ] Z rastrový formátu na vektorový formát
-  - [x] CropPlugin - Vytvoření výřezu z originálního obrázku
-    - [x] Výřez o zadané výšce a šířce
-    - [x] Výřez začínající na souřadnicích x, y
-  - [x] ResizePlugin - Změna velikosti originálního obrázku
-    - [x] Změna velikosti na zadanou výšku a šířku
-    - [x] Jak se zachovat pokud není zachován poměr stran
-      - [x] fill - Vyplní celou oblast deformovaným obrázkem
-      - [x] contain - Vynutí zachování originálního poměru stran a nastavené rozměry jsou brány jako maximální možné
-      - [x] cover - Vyplní celou oblast obrázkem bez deformace ale s oříznutím
-  - [x] QualityPlugin - Nastavení kvality/komprese obrázku
-  - [ ] Filtry aplikované na obrázek
-    - [ ] BlurPlugin - Rozmazání obrázku
-    - [ ] BrightnessPlugin - Jas obrázku
-    - [ ] ContrastPlugin - Kontrast obrázku
-    - [ ] GrayscalePlugin - Převod do odstínu šedé
-    - [ ] InvertPlugin - Invertování obrázku
-    - [ ] OpacityPlugin - Celková průhlednost obrázku
-- [ ] Omezovače názvu obrázku
-  - [x] Volný omezovač obrázku neboli Fake omezovač - Vše je povoleno
-  - [x] Striktní omezovač obrázku - definice přesných kombinací hodnot a vlastnosti
-  - [x] Laxní omezovač - definice povolených hodnot vlastností bez vynucení dodržení přesné kombinace.
-  - [ ] Jednoduché omezovače pro jednotlivé pluginy
-    - [x] Omezovač pro CorePlugin
-    - [x] Omezovač pro CropPlugin
-    - [x] Omezovač pro ResizePlugin
-    - [x] Omezovač pro QualityPlugin
-    - [ ] Omezovač pro BlurPlugin
-    - [ ] Omezovač pro BrightnessPlugin
-    - [ ] Omezovač pro ContrastPlugin
-    - [ ] Omezovač pro GrayscalePlugin
-    - [ ] Omezovač pro InvertPlugin
-    - [ ] Omezovač pro OpacityPlugin
-- [ ] Logger přístupu k obrázku
-  - [x] Žádné ukládání přístupu
-  - [x] Ukládání pomocí souborového systému jako datum poslední modifikace
-  - [ ] Ukládání do MySQL/MariaDB databáze
-  - [ ] Ukládání do SQLite databáze
-  - [ ] Ukládání do MongoDB databáze
+See [Czech version](README.cs.md).

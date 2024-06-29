@@ -1,9 +1,8 @@
 {
   "name": "mwarcz/segami",
-  "description": "PHP knihovna umožňující úpravu rozměrů obrázku, převod formátu obrázku, ukládání vygenerovaných obrázků, zaznamenávání posledního přístupu k vygenerovanému obrázku, odstraňování dlouhodobě nevyužitých obrázků a to vše na základě názvu obrázku.",
+  "description": "PHP library that allows you to edit image dimensions, convert image format, cache generated images, record last access to generated image in cache, remove images from cache that have not been used for long time, all based on image name.",
   "type": "library",
   "license": "MIT",
-  "version": "2.0.0",
   "authors": [
     {
       "name": "MWarCZ"
@@ -14,6 +13,11 @@
       "MWarCZ\\Segami\\": "src/"
     }
   },
-  "require": {},
-  "require-dev": {}
+  "require": {
+    "php": "^8.1"
+  },
+  "require-dev": {},
+  "extra": {
+    "description_cs": "PHP knihovna umožňující úpravu rozměrů obrázku, převod formátu obrázku, ukládání vygenerovaných obrázků, zaznamenávání posledního přístupu k vygenerovanému obrázku, odstraňování dlouhodobě nevyužitých obrázků a to vše na základě názvu obrázku."
+  }
 }
