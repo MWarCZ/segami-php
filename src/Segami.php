@@ -15,6 +15,8 @@ use MWarCZ\Segami\Plugin\PluginManager;
 
 class Segami {
 
+  /** @var string $url_to_original_images (volitelná) URL cesta k adresáři s originálními obrázky. */
+  protected $url_to_original_images;
   /** @var string $path_to_original_images Cesta k adresáři s originálními obrázky. */
   protected $path_to_original_images;
   /** @var string $path_to_generated_images Cesta k adresáři s generovanými obrázky. */
@@ -35,6 +37,7 @@ class Segami {
 
   function __construct(array $opts = []) {
     $opt = array_merge([
+      'url_to_original_images' => '',
       'path_to_original_images' => '',
       'path_to_generated_images' => '',
       'plugin' => [],
@@ -42,6 +45,7 @@ class Segami {
       'image_logger' => null,
       'cache_expires_dais' => 0,
     ], $opts);
+    $this->url_to_original_images = $opt['url_to_original_images'];
     $this->path_to_original_images = realpath($opt['path_to_original_images']);
     $this->path_to_generated_images = realpath($opt['path_to_generated_images']);
     $this->plugin = $opt['plugin'];
@@ -174,10 +178,37 @@ class Segami {
     return true;
   }
   function createAndReturnImage($plugin_manager, $b_cache_new_image = true, $subdirectory = '') {
-    // Vytvoření absolutní cesty ke zdrojovému obrázku
-    $from_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $plugin_manager->core_props->getName();
-    if (!is_file($from_img_path))
-      throw new SourceImageNotFoundException($plugin_manager->core_props->getName());
+    $from_img_path = '';
+    $tmp_image = null;
+    // 1. Zdroj originálních obrázků je URL adresa
+    if($this->url_to_original_images) {
+      // Stáhnout obrázek z URL do TMP
+      $tmp_image = tmpfile();
+      $ch = curl_init($this->url_to_original_images.$plugin_manager->core_props->getName());
+      curl_setopt($ch, CURLOPT_FILE, $tmp_image);
+      curl_setopt($ch, CURLOPT_HEADER, 0);
+      curl_exec($ch);
+
+      // Kontrola stažení obrázku
+      $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      if($http_code != 200)
+        throw new SourceImageNotFoundException($plugin_manager->core_props->getName());
+      $image_info = getimagesize(stream_get_meta_data($tmp_image)['uri']);
+      if($image_info === false)
+        throw new SourceImageNotFoundException($plugin_manager->core_props->getName());
+
+      curl_close($ch);
+
+      // Uložení cesty k obrazu v TMP
+      $from_img_path = stream_get_meta_data($tmp_image)['uri'];
+    }
+    // 2. Zdroj originálních obrázků je lokální cesta do adřesáře
+    else {
+      // Vytvoření absolutní cesty ke zdrojovému obrázku
+      $from_img_path = $this->path_to_original_images . DIRECTORY_SEPARATOR . ($subdirectory ? $subdirectory . DIRECTORY_SEPARATOR : '') . $plugin_manager->core_props->getName();
+      if (!is_file($from_img_path))
+        throw new SourceImageNotFoundException($plugin_manager->core_props->getName());
+    }
 
     $this->addExpireHeaders();
 
@@ -193,6 +224,10 @@ class Segami {
       header('Content-type: ' . $mime);
 
     echo $img;
+    // Odstranění TMP souboru
+    if($tmp_image !== null) {
+      unlink(stream_get_meta_data($tmp_image)['uri']);
+    }
     return true;
   }
 
