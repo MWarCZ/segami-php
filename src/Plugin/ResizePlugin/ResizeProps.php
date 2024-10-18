@@ -9,6 +9,7 @@ class ResizeProps implements Props {
   public const TYPE_FILL = 0;
   public const TYPE_CONTAIN = 1;
   public const TYPE_COVER = 2;
+  public const TYPE_FIT = 3;
   public const SIZE_AUTO = 0;
 
   /** @var int */

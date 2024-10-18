@@ -106,6 +106,10 @@ class ImageGD implements Image {
     return $this;
   }
 
+  function resizeFit($width, $height, $backgroundColor = null) {
+    return $this;
+  }
+
   function resizeCover($width, $height) {
     // Normalizace automatického rozměru
     $width = $width > 0 ? $width : -1;

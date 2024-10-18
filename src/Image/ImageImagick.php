@@ -111,6 +111,23 @@ class ImageImagick implements Image {
     return $this;
   }
 
+  function resizeFit($width, $height, $backgroundColor = null) {
+    $img = new \Imagick();
+    $bg = $backgroundColor === null ? $this->img->getImagePixelColor(0, 0) : new \ImagickPixel($backgroundColor)
+    ;
+
+    $img->newImage($width, $height, $bg);
+    $img->setImageFormat($this->img->getImageFormat());
+
+    $this->img->resizeImage($width, $height, $this->_resizeFilter, 1, true);
+    $x = ($width - $this->img->getImageWidth()) / 2;
+    $y = ($height - $this->img->getImageHeight()) / 2;
+    $img->compositeImage($this->img, \Imagick::COMPOSITE_OVER, $x, $y);
+    $this->img = $img;
+
+    return $this;
+  }
+
   function cropImage($width, $height, $s_x = 'center', $s_y = 'center') {
     $w = $this->img->getImageWidth();
     $h = $this->img->getImageHeight();

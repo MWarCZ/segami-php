@@ -28,6 +28,9 @@ class ResizePlugin implements Plugin {
       case ResizeProps::TYPE_CONTAIN:
         $image->resizeContain($props->getWidth(), $props->getHeight());
         break;
+      case ResizeProps::TYPE_FIT:
+        $image->resizeFit($props->getWidth(), $props->getHeight());
+        break;
       default:
         $image->resizeFill($props->getWidth(), $props->getHeight());
         break;
