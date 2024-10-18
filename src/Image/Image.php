@@ -46,6 +46,14 @@ interface Image {
   /**
    * @param int $width
    * @param int $height
+   * @param string $backgroundColor
+   * @return self
+   */
+  function resizeFit($width, $height, $backgroundColor = null);
+
+  /**
+   * @param int $width
+   * @param int $height
    * @param int|string $s_x
    * @param int|string $s_y
    * @return self

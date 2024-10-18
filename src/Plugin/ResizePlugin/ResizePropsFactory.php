@@ -9,9 +9,9 @@ class ResizePropsFactory implements PropsFactory {
 
   public function parseQuery(string $query): ResizeProps {
     // r200, r200x300
-    // r200x300_fill, r200x300_contain, r200x300_cover
-    // r200x300_fil, r200x300_con, r200x300_cov
-    // r200x300_l, r200x300_n, r200x300_r
+    // r200x300_fill, r200x300_contain, r200x300_cover, r200x300_fit
+    // r200x300_fil, r200x300_con, r200x300_cov, r200x300_fit
+    // r200x300_l, r200x300_n, r200x300_r, r200x300_t
 
     // default
     $width = $height = 0;
@@ -27,6 +27,8 @@ class ResizePropsFactory implements PropsFactory {
         $type = ResizeProps::TYPE_CONTAIN;
       } elseif (in_array($s, ['r', 'cov', 'cover'])) {
         $type = ResizeProps::TYPE_COVER;
+      } elseif (in_array($s, ['t', 'fit'])) {
+        $type = ResizeProps::TYPE_FIT;
       }
     }
     // size
@@ -45,7 +47,7 @@ class ResizePropsFactory implements PropsFactory {
   public function validRegex(): string {
     $r_number = '[0-9][0-9]*';
     $r_size = '(' . $r_number . ')|(' . $r_number . 'x' . $r_number . ')';
-    $r_type = '(_fill|_fil|_l|_contain|_con|_n|_cover|_cov|_r)?';
+    $r_type = '(_fill|_fil|_l|_contain|_con|_n|_cover|_cov|_r|_fit|_t)?';
     $r_full = 'r(' . $r_size . ')' . $r_type;
     return $r_full;
   }
@@ -58,18 +60,26 @@ class ResizePropsFactory implements PropsFactory {
 
     $query = 'r';
     // Size
-    if ($props->width == $props->height) {
-      $query .= $props->width;
-    } else {
-      $query .= $props->width . 'x' . $props->height;
-    }
+    $query .=
+      $props->width == $props->height
+      ? $props->width
+      : "{$props->width}x{$props->height}"
+    ;
     // Type
-    if ($props->type == ResizeProps::TYPE_FILL) {
-      // $query .= '_l';
-    } elseif ($props->type == ResizeProps::TYPE_CONTAIN) {
-      $query .= '_n';
-    } elseif ($props->type == ResizeProps::TYPE_COVER) {
-      $query .= '_r';
+    switch ($props->type) {
+      case ResizeProps::TYPE_FILL:
+        $query .= '';
+        // $query .= '_l';
+        break;
+      case ResizeProps::TYPE_CONTAIN:
+        $query .= '_n';
+        break;
+      case ResizeProps::TYPE_COVER:
+        $query .= '_r';
+        break;
+      case ResizeProps::TYPE_FIT:
+        $query .= '_t';
+        break;
     }
     return $query;
   }

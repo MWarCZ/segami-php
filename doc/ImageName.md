@@ -60,7 +60,7 @@ Plugin `ResizePlugin` umožňuje upravit rozměr originálního obrázku a způs
 > Formát:
 > modifier = `[resize][?type]`;
 > resize = `r[size]`||`r[width]x[height]`;
-> type = `_[fill|l|contain|n|cover|r]`
+> type = `_[fill|l|contain|n|cover|r|fit|t]`
 
 - **Příklady:**
   - `sample.png@r200.webp` = Rozměr 200x200 a chování obrázku: fill
@@ -80,6 +80,9 @@ Plugin `ResizePlugin` umožňuje upravit rozměr originálního obrázku a způs
     - `sample.png@r200x300_r.webp`
     - `sample.png@r200x300_cover.webp`
     - `sample.png@r200x300_cov.webp`
+  - `sample.png@r200x300_t.webp` = Rozměr 200x300 a obrázek se přizpůsobí rozměru, ale zachová originální poměr stran (fit - Jde o contain, ale výsledný obrázek bude mít přesně požadovaný rozměr)
+    - `sample.png@r200x300_t.webp`
+    - `sample.png@r200x300_fit.webp`
 
 ## Modifikátor - Změna kvality / komprese
 
