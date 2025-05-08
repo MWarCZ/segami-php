@@ -50,7 +50,7 @@ class Test {
   public static function assert_handler($file, $line, $code, $desc = null) {
     Test::$a_tmp_error[] = $file . ' : ' . $line . ' : ' . $code;
   }
-  public static function test($desc, $result) {
+  public static function runTest($desc, $result) {
     Test::$a_tmp_error = [];
     Test::$counter += 1;
     $err = false;

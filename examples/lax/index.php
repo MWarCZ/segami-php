@@ -123,7 +123,7 @@ $segami = new Segami([
         // Allowed input formats
         ['png', 'jpg', 'jpeg', 'webp', 'avif', 'gif'],
         // Allowed output formats
-        ['png', 'jpg', 'jpeg', 'webp', 'avif', 'gif'],
+        ['png', 'jpg', 'jpeg', 'webp', 'avif', 'gif']
       ),
       // Other formats are not allowed
     ],
@@ -144,7 +144,7 @@ $segami = new Segami([
         // Allowed height
         [200, 300, 400, 500],
         // Allowed image fit
-        [ResizeProps::TYPE_FILL, ResizeProps::TYPE_CONTAIN, ResizeProps::TYPE_COVER],
+        [ResizeProps::TYPE_FILL, ResizeProps::TYPE_CONTAIN, ResizeProps::TYPE_COVER]
       ),
       // Other resize properties are not allowed
     ],

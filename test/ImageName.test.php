@@ -24,7 +24,7 @@ Test::group('Test třídy `ImageNameV1`', function () {
     ];
     foreach ($a_data as $data) {
 
-      Test::test('ImageName("' . $data[0] . '") => "' . $data[1] . '"', function () use ($data) {
+      Test::runTest('ImageName("' . $data[0] . '") => "' . $data[1] . '"', function () use ($data) {
         $input = $data[0];
         $i = new ImageNameV1();
         $props = $i->parseName($input);
@@ -50,7 +50,7 @@ Test::group('Test třídy `ImageNameV1`', function () {
     ];
     foreach ($a_data as $data) {
 
-      Test::test('ImageName("' . $data[0] . '") => false', function () use ($data) {
+      Test::runTest('ImageName("' . $data[0] . '") => false', function () use ($data) {
         $input = $data[0];
         $i = new ImageNameV1();
         $props = $i->parseName($input);

@@ -5,7 +5,7 @@ Test::group('Test třídy `ImageLoggerFS`', function () {
 
   /////////////////////////////////////////////////////
 
-  Test::test('access(tested_file,*) => true', function () {
+  Test::runTest('access(tested_file,*) => true', function () {
     $test_dir = __DIR__ . DIRECTORY_SEPARATOR . 'files';
     $tested_file = $test_dir . DIRECTORY_SEPARATOR . 'tested_file';
 
@@ -53,7 +53,7 @@ Test::group('Test třídy `ImageLoggerFS`', function () {
   /////////////////////////////////////////////////////
 
   // INFO: Změnit vlastníka složky `sudo chown -R www-data files/`
-  Test::test('getUnusedFiles(files,-10 days) => 0', function () use ($fn_setup_files) {
+  Test::runTest('getUnusedFiles(files,-10 days) => 0', function () use ($fn_setup_files) {
     $data = $fn_setup_files();
     $l = new ImageLoggerFS();
     $res = $l->getUnusedFiles($data['test_dir'], '-10 day');
@@ -65,7 +65,7 @@ Test::group('Test třídy `ImageLoggerFS`', function () {
     assert(count($res) === 0);
   });
 
-  Test::test('getUnusedFiles(files,-4 days) => 2', function () use ($fn_setup_files) {
+  Test::runTest('getUnusedFiles(files,-4 days) => 2', function () use ($fn_setup_files) {
     $data = $fn_setup_files();
     $l = new ImageLoggerFS();
     $res = $l->getUnusedFiles($data['test_dir'], '-4 day');
@@ -79,7 +79,7 @@ Test::group('Test třídy `ImageLoggerFS`', function () {
     assert(in_array($data['old_file_5day'], $res));
   });
 
-  Test::test('getUnusedFiles(files,-3 days) => 3', function () use ($fn_setup_files) {
+  Test::runTest('getUnusedFiles(files,-3 days) => 3', function () use ($fn_setup_files) {
     $data = $fn_setup_files();
     $l = new ImageLoggerFS();
     $res = $l->getUnusedFiles($data['test_dir'], '-3 day');
@@ -94,7 +94,7 @@ Test::group('Test třídy `ImageLoggerFS`', function () {
     assert(in_array($data['old_file_5day'], $res));
   });
 
-  Test::test('getUnusedFiles(files,-2 days) => 4', function () use ($fn_setup_files) {
+  Test::runTest('getUnusedFiles(files,-2 days) => 4', function () use ($fn_setup_files) {
     $data = $fn_setup_files();
     $l = new ImageLoggerFS();
     $res = $l->getUnusedFiles($data['test_dir'], '-2 day');
@@ -110,7 +110,7 @@ Test::group('Test třídy `ImageLoggerFS`', function () {
     assert(in_array($data['old_file_5day'], $res));
   });
 
-  Test::test('getUnusedFiles(files,-1 days) => 5', function () use ($fn_setup_files) {
+  Test::runTest('getUnusedFiles(files,-1 days) => 5', function () use ($fn_setup_files) {
     $data = $fn_setup_files();
     $l = new ImageLoggerFS();
     $res = $l->getUnusedFiles($data['test_dir'], '-1 day');
@@ -129,7 +129,7 @@ Test::group('Test třídy `ImageLoggerFS`', function () {
 
   /////////////////////////////////////////////////////
 
-  // Test::test('getFiles(*,*,*) => Exception', function() {
+  // Test::runTest('getFiles(*,*,*) => Exception', function() {
   //   $l = new ImageLoggerFS();
   //   try {
   //     $res = $l->getFiles('', '', '');

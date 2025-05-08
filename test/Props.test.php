@@ -58,7 +58,7 @@ Test::group('Test třídy `CorePropsFactory`', function () {
       ],
     ];
     foreach ($a_data as $data) {
-      Test::test('CorePropsFactory("' . $data['input']['q'] . '") => "' . $data['output']['q'] . '"', function () use ($data) {
+      Test::runTest('CorePropsFactory("' . $data['input']['q'] . '") => "' . $data['output']['q'] . '"', function () use ($data) {
         $i = new CorePropsFactory();
         assert($i->validQuery($data['input']['q']) === true);
         $props = $i->parseQuery($data['input']['q']);
@@ -83,7 +83,7 @@ Test::group('Test třídy `CorePropsFactory`', function () {
       '@',
     ];
     foreach ($a_data as $data) {
-      Test::test('CorePropsFactory("' . $data . '") => error', function () use ($data) {
+      Test::runTest('CorePropsFactory("' . $data . '") => error', function () use ($data) {
         $i = new CorePropsFactory();
         assert($i->validQuery($data) === false);
       });
@@ -166,7 +166,7 @@ Test::group('Test třídy `CropPropsFactory`', function () {
       ],
     ];
     foreach ($a_data as $data) {
-      Test::test('CropPropsFactory("' . $data['input']['q'] . '") => "' . $data['output']['q'] . '"', function () use ($data) {
+      Test::runTest('CropPropsFactory("' . $data['input']['q'] . '") => "' . $data['output']['q'] . '"', function () use ($data) {
         $i = new CropPropsFactory();
         assert($i->validQuery($data['input']['q']) === true);
         $props = $i->parseQuery($data['input']['q']);
@@ -191,7 +191,7 @@ Test::group('Test třídy `CropPropsFactory`', function () {
       'c50_x',
     ];
     foreach ($a_data as $data) {
-      Test::test('CropPropsFactory("' . $data . '") => error', function () use ($data) {
+      Test::runTest('CropPropsFactory("' . $data . '") => error', function () use ($data) {
         $i = new CropPropsFactory();
         assert($i->validQuery($data) === false);
       });
@@ -323,7 +323,7 @@ Test::group('Test třídy `ResizePropsFactory`', function () {
       ],
     ];
     foreach ($a_data as $data) {
-      Test::test('ResizePropsFactory("' . $data['input']['q'] . '") => "' . $data['output']['q'] . '"', function () use ($data) {
+      Test::runTest('ResizePropsFactory("' . $data['input']['q'] . '") => "' . $data['output']['q'] . '"', function () use ($data) {
         $i = new ResizePropsFactory();
         assert($i->validQuery($data['input']['q']) === true);
         $props = $i->parseQuery($data['input']['q']);
@@ -347,7 +347,7 @@ Test::group('Test třídy `ResizePropsFactory`', function () {
       'r50x20_x',
     ];
     foreach ($a_data as $data) {
-      Test::test('ResizePropsFactory("' . $data . '") => error', function () use ($data) {
+      Test::runTest('ResizePropsFactory("' . $data . '") => error', function () use ($data) {
         $i = new ResizePropsFactory();
         assert($i->validQuery($data) === false);
       });
@@ -382,7 +382,7 @@ Test::group('Test třídy `CropPropsFactory`', function () {
       ],
     ];
     foreach ($a_data as $data) {
-      Test::test('QualityPropsFactory("' . $data['input']['q'] . '") => "' . $data['output']['q'] . '"', function () use ($data) {
+      Test::runTest('QualityPropsFactory("' . $data['input']['q'] . '") => "' . $data['output']['q'] . '"', function () use ($data) {
         $i = new QualityPropsFactory();
         assert($i->validQuery($data['input']['q']) === true);
         $props = $i->parseQuery($data['input']['q']);
@@ -403,7 +403,7 @@ Test::group('Test třídy `CropPropsFactory`', function () {
       'abc',
     ];
     foreach ($a_data as $data) {
-      Test::test('QualityPropsFactory("' . $data . '") => error', function () use ($data) {
+      Test::runTest('QualityPropsFactory("' . $data . '") => error', function () use ($data) {
         $i = new QualityPropsFactory();
         assert($i->validQuery($data) === false);
       });

@@ -3,6 +3,9 @@ require_once(__DIR__ . '/../../vendor/autoload.php');
 
 require_once(__DIR__ . '/../../test/Test.class.php');
 
+error_reporting(E_ALL & ~E_WARNING);
+ini_set('display_errors', 1);
+
 Test::init();
 
 // require_once(__DIR__ . '/../../test/ImageName.test.php');

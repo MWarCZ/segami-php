@@ -194,7 +194,7 @@ Test::group('Test třídy `CorePropsLimiter`', function () {
     // --------
   ];
   foreach ($a_data as $data) {
-    Test::test('CorePropsLimiter(<code>' . print_r($data['input']['l'], true) . '</code>) => ' . ($data['output']['ch'] ? 'true' : 'false') . '', function () use ($data) {
+    Test::runTest('CorePropsLimiter(<code>' . print_r($data['input']['l'], true) . '</code>) => ' . ($data['output']['ch'] ? 'true' : 'false') . '', function () use ($data) {
       $limiter = new CorePropsLimiter(...$data['input']['l']);
 
       assert(count(array_diff($limiter->getOriginalExtension(), $data['output']['oe'])) == 0);
@@ -253,7 +253,7 @@ Test::group('Test třídy `QualityPropsLimiter`', function () {
     ],
   ];
   foreach ($a_data as $data) {
-    Test::test('QualityPropsLimiter(<code>' . print_r($data['input']['l'], true) . '</code>) => ' . ($data['output']['ch'] ? 'true' : 'false') . '', function () use ($data) {
+    Test::runTest('QualityPropsLimiter(<code>' . print_r($data['input']['l'], true) . '</code>) => ' . ($data['output']['ch'] ? 'true' : 'false') . '', function () use ($data) {
       $limiter = new QualityPropsLimiter(...$data['input']['l']);
 
       assert(count(array_diff($limiter->getCompression(), $data['output']['c'])) == 0);
@@ -266,7 +266,7 @@ Test::group('Test třídy `QualityPropsLimiter`', function () {
 });
 
 Test::group('Test třídy `NullablePropsLimiter`', function () {
-  Test::test('NullablePropsLimiter(*)', function () {
+  Test::runTest('NullablePropsLimiter(*)', function () {
     $limiter = new NullablePropsLimiter();
     assert($limiter->check(null) === true);
     assert($limiter->check(new CoreProps('xxx.jpg', 'webp')) === false);

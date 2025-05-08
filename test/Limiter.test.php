@@ -16,7 +16,7 @@ Test::group('Test třídy `LimiterFree`', function () {
   ];
   foreach ($a_data as $data) {
 
-    Test::test('LimiterFree()->check(' . implode(',', $data['out']) . ') => ' . ($data['expected'] ? 'true' : 'false'), function () use ($data) {
+    Test::runTest('LimiterFree()->check(' . implode(',', $data['out']) . ') => ' . ($data['expected'] ? 'true' : 'false'), function () use ($data) {
       $l = new LimiterFree();
       $res = $l->check($data['out'][0], $data['out'][1], $data['out'][2]);
       assert($res === $data['expected']);
@@ -148,7 +148,7 @@ Test::group('Test třídy `LimiterLaxV1`', function () {
       $a_data = $data_ini['data'];
       foreach ($a_data as $data) {
 
-        Test::test('->check(' . implode(',', $data['out']) . ') => ' . ($data['expected'] ? 'true' : 'false'), function () use ($data_ini, $data) {
+        Test::runTest('->check(' . implode(',', $data['out']) . ') => ' . ($data['expected'] ? 'true' : 'false'), function () use ($data_ini, $data) {
           $l = new LimiterLaxV1($data_ini['limit']['a_o_size'], $data_ini['limit']['a_o_format'], $data_ini['limit']['a_i_format']);
           // echo '<pre>' . print_r([
           //   'l' => $l,
@@ -188,7 +188,7 @@ Test::group('Test třídy `LimiterStrict`', function () {
   ];
   foreach ($a_data as $data) {
 
-    Test::test('LimiterStrict(' . implode(', ', $data['limit']) . ')->check(' . implode(',', $data['out']) . ') => ' . ($data['expected'] ? 'true' : 'false'), function () use ($data) {
+    Test::runTest('LimiterStrict(' . implode(', ', $data['limit']) . ')->check(' . implode(',', $data['out']) . ') => ' . ($data['expected'] ? 'true' : 'false'), function () use ($data) {
       $l = new LimiterStrict([$data['limit'][0], $data['limit'][1]], $data['limit'][2]);
       $res = $l->check($data['out'][0], $data['out'][1], $data['out'][2]);
       assert($res === $data['expected']);

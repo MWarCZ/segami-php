@@ -90,13 +90,13 @@ Test::group('Test třídy `ImageLoggerPDO`', function () {
   /////////////////////////////////////////////////////
 
   // INFO: Změnit vlastníka složky `sudo chown -R www-data files/`
-  Test::test('access(tested_file, tested_file) => true', function () use ($fn_setup_db_1) {
+  Test::runTest('access(tested_file, tested_file) => true', function () use ($fn_setup_db_1) {
     $data = $fn_setup_db_1();
     $l = new ImageLoggerPDO(
       $data['db'],
       $data['db_table'],
       $data['db_column_date'],
-      $data['db_column_file'],
+      $data['db_column_file']
     );
 
     $now = date('Y-m-d H:i:s');
@@ -129,13 +129,13 @@ Test::group('Test třídy `ImageLoggerPDO`', function () {
     assert($a_q[0][$data['db_column_date']] === $now);
   });
 
-  Test::test('access(none, none) => true', function () use ($fn_setup_db_1) {
+  Test::runTest('access(none, none) => true', function () use ($fn_setup_db_1) {
     $data = $fn_setup_db_1();
     $l = new ImageLoggerPDO(
       $data['db'],
       $data['db_table'],
       $data['db_column_date'],
-      $data['db_column_file'],
+      $data['db_column_file']
     );
 
     $now = date('Y-m-d H:i:s');
@@ -164,13 +164,13 @@ Test::group('Test třídy `ImageLoggerPDO`', function () {
     '0 day',
   ];
   foreach ($a_data as $days) {
-    Test::test('getUnusedFiles(files,' . $days . ') => 0', function () use ($fn_setup_db_1, $days) {
+    Test::runTest('getUnusedFiles(files,' . $days . ') => 0', function () use ($fn_setup_db_1, $days) {
       $data = $fn_setup_db_1();
       $l = new ImageLoggerPDO(
         $data['db'],
         $data['db_table'],
         $data['db_column_date'],
-        $data['db_column_file'],
+        $data['db_column_file']
       );
       $res = $l->getUnusedFiles($data['test_dir'], $days);
       assert(is_array($res));
@@ -189,13 +189,13 @@ Test::group('Test třídy `ImageLoggerPDO`', function () {
     '0 day' => 5,
   ];
   foreach ($a_data as $days => $count) {
-    Test::test('getUnusedFiles(files,' . $days . ') => ' . $count . '', function () use ($fn_setup_db_2, $days, $count) {
+    Test::runTest('getUnusedFiles(files,' . $days . ') => ' . $count . '', function () use ($fn_setup_db_2, $days, $count) {
       $data = $fn_setup_db_2();
       $l = new ImageLoggerPDO(
         $data['db'],
         $data['db_table'],
         $data['db_column_date'],
-        $data['db_column_file'],
+        $data['db_column_file']
       );
       $res = $l->getUnusedFiles($data['test_dir'], $days);
       // echo '<pre>'.print_r([

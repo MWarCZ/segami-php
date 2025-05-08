@@ -3,13 +3,13 @@ use MWarCZ\Segami\ImageLogger\ImageLoggerNone;
 
 Test::group('Test třídy `ImageLoggerNone`', function () {
 
-  Test::test('access(*,*) => true', function () {
+  Test::runTest('access(*,*) => true', function () {
     $l = new ImageLoggerNone();
     $res = $l->access('', '');
     assert($res === true);
   });
 
-  Test::test('getUnusedFiles(*,*) => Exception', function () {
+  Test::runTest('getUnusedFiles(*,*) => Exception', function () {
     $l = new ImageLoggerNone();
     try {
       $res = $l->getUnusedFiles('', '');
@@ -20,7 +20,7 @@ Test::group('Test třídy `ImageLoggerNone`', function () {
     }
   });
 
-  Test::test('getFiles(*,*,*) => Exception', function () {
+  Test::runTest('getFiles(*,*,*) => Exception', function () {
     $l = new ImageLoggerNone();
     try {
       $res = $l->getFiles('', '', '');
