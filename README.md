@@ -44,7 +44,7 @@ Segami is simple PHP library that allows edit image dimensions, convert image fo
 
 ## Requirements
 
-- PHP 8.1+
+- PHP 5.6+
   - Mandatory optional:
     - [ext-gd](https://www.php.net/manual/en/book.image)
     - [ext-imagick](https://www.php.net/manual/en/book.imagick.php) s instalovaným [ImageMagick](https://imagemagick.org/)
@@ -64,7 +64,7 @@ Or manually add to `composer.json` file:
 ```json
 {
     "require": {
-        "php": "^8.1",
+        "php": ">=5.6",
         "mwarcz/segami": "dev-master"
     }
 }

@@ -44,7 +44,7 @@ Segami je jednoduchá PHP knihovna pro modifikaci obrázků. Umožňuje snadno p
 
 ## Požadavky / Requirements
 
-- PHP 8.1+
+- PHP 5.6+
   - Povinně volitelné:
     - [ext-gd](https://www.php.net/manual/en/book.image)
     - [ext-imagick](https://www.php.net/manual/en/book.imagick.php) s instalovaným [ImageMagick](https://imagemagick.org/)
@@ -64,7 +64,7 @@ Nebo manuálně přidat do souboru `composer.json`:
 ```json
 {
     "require": {
-        "php": "^8.1",
+        "php": ">=5.6",
         "mwarcz/segami": "dev-master"
     }
 }
