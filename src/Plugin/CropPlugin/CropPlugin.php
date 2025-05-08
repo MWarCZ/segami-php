@@ -7,7 +7,10 @@ use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Image\Image;
 
 class CropPlugin implements Plugin {
-  public function getFactory(): CropPropsFactory {
+  /**
+   * @return CropPropsFactory
+   */
+  public function getFactory() {
     return new CropPropsFactory();
   }
   /**

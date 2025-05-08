@@ -6,7 +6,11 @@ namespace MWarCZ\Segami\Plugin\CropPlugin;
 use MWarCZ\Segami\Props\PropsFactory;
 
 class CropPropsFactory implements PropsFactory {
-  public function parseQuery(string $query): CropProps {
+  /**
+   * @param string $query
+   * @return CropProps
+   */
+  public function parseQuery($query) {
     // c200
     // c200f20
     // c200f20x30
@@ -52,11 +56,18 @@ class CropPropsFactory implements PropsFactory {
     return new CropProps($x, $y, (int) $width, (int) $height);
   }
 
-  public function validQuery(string $query): bool {
+  /**
+   * @param string $query
+   * @return bool
+   */
+  public function validQuery($query) {
     $regex = self::validRegex();
     return preg_match('/^' . $regex . '$/i', $query);
   }
-  public function validRegex(): string {
+  /**
+   * @return string
+   */
+  public function validRegex() {
     $r_number = '[0-9][0-9]*';
     $r_string = '('
       . implode('|', CropProps::A_CENTER)
@@ -76,8 +87,9 @@ class CropPropsFactory implements PropsFactory {
 
   /**
    * @param CropProps $props
+   * @return string
    */
-  public function createQuery($props): string {
+  public function createQuery($props) {
     if (!$props instanceof CropProps)
       throw new \InvalidArgumentException('$props must be CropProps');
 

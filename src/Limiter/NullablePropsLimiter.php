@@ -8,8 +8,9 @@ use MWarCZ\Segami\Props\Props;
 class NullablePropsLimiter implements PropsLimiter {
   /**
    * @param Props|null $props
+   * @return bool
    */
-  public function check($props = null): bool {
+  public function check($props = null) {
     // p_debug([
     //   $props, $this,
     // ]);

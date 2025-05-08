@@ -7,7 +7,10 @@ use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Image\Image;
 
 class CorePlugin implements Plugin {
-  public function getFactory(): CorePropsFactory {
+  /**
+   * @return CorePropsFactory
+   */
+  public function getFactory() {
     return new CorePropsFactory();
   }
   /**

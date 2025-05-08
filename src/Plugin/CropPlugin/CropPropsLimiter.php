@@ -39,7 +39,7 @@ class CropPropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getX(): array {
+  public function getX() {
     return $this->x;
   }
   /**
@@ -54,7 +54,7 @@ class CropPropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getY(): array {
+  public function getY() {
     return $this->y;
   }
   /**
@@ -69,7 +69,7 @@ class CropPropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getWidth(): array {
+  public function getWidth() {
     return $this->width;
   }
   /**
@@ -84,14 +84,15 @@ class CropPropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getHeight(): array {
+  public function getHeight() {
     return $this->height;
   }
 
   /**
    * @param CropProps $props
+   * @return bool
    */
-  public function check($props = null): bool {
+  public function check($props = null) {
     return
       $props
       &&

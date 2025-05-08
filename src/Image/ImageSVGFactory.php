@@ -7,7 +7,7 @@ class ImageSVGFactory implements ImageFactory {
   /**
    * @return ImageSVG
    */
-  public static function newImage(): ImageSVG {
+  public static function newImage() {
     return new ImageSVG();
   }
 }

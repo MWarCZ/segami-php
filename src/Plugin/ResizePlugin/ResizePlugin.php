@@ -7,7 +7,10 @@ use MWarCZ\Segami\Plugin\Plugin;
 use MWarCZ\Segami\Image\Image;
 
 class ResizePlugin implements Plugin {
-  public function getFactory(): ResizePropsFactory {
+  /**
+   * @return ResizePropsFactory
+   */
+  public function getFactory() {
     return new ResizePropsFactory();
   }
   /**

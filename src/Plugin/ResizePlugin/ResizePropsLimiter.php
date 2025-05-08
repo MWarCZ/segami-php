@@ -36,7 +36,10 @@ class ResizePropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getWidth(): array {
+  /**
+   * @return array
+   */
+  public function getWidth() {
     return $this->width;
   }
   /**
@@ -51,7 +54,10 @@ class ResizePropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getHeight(): array {
+  /**
+   * @return array
+   */
+  public function getHeight() {
     return $this->height;
   }
   /**
@@ -66,14 +72,18 @@ class ResizePropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getType(): array {
+  /**
+   * @return array
+   */
+  public function getType() {
     return $this->type;
   }
 
   /**
    * @param ResizeProps $props
+   * @return bool
    */
-  public function check($props = null): bool {
+  public function check($props = null) {
     // p_debug([
     //   $props, $this,
     // ]);

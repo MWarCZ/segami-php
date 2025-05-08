@@ -46,7 +46,7 @@ class StrictImageLimiter implements ImageLimiter {
     return true;
   }
 
-  public function check($map_props): bool {
+  public function check($map_props) {
     if (!is_array($map_props))
       return false;
 

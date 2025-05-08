@@ -4,7 +4,10 @@
 namespace MWarCZ\Segami\Limiter;
 
 class FreeImageLimiter implements ImageLimiter {
-  public function check($map_props): bool {
+  /**
+   * @return bool
+   */
+  public function check($map_props) {
     if (!is_array($map_props))
       return false;
     return true;

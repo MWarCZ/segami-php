@@ -7,7 +7,11 @@ use MWarCZ\Segami\Props\PropsFactory;
 
 class ResizePropsFactory implements PropsFactory {
 
-  public function parseQuery(string $query): ResizeProps {
+  /**
+   * @param string $query
+   * @return ResizeProps
+   */
+  public function parseQuery($query) {
     // r200, r200x300
     // r200x300_fill, r200x300_contain, r200x300_cover, r200x300_fit
     // r200x300_fil, r200x300_con, r200x300_cov, r200x300_fit
@@ -40,11 +44,18 @@ class ResizePropsFactory implements PropsFactory {
 
     return new ResizeProps($width, $height, $type);
   }
-  public function validQuery(string $query): bool {
+  /**
+   * @param string $query
+   * @return bool
+   */
+  public function validQuery($query) {
     $regex = self::validRegex();
     return preg_match('/^' . $regex . '$/i', $query);
   }
-  public function validRegex(): string {
+  /**
+   * @return string
+   */
+  public function validRegex() {
     $r_number = '[0-9][0-9]*';
     $r_size = '(' . $r_number . ')|(' . $r_number . 'x' . $r_number . ')';
     $r_type = '(_fill|_fil|_l|_contain|_con|_n|_cover|_cov|_r|_fit|_t)?';
@@ -53,8 +64,9 @@ class ResizePropsFactory implements PropsFactory {
   }
   /**
    * @param ResizeProps $props
+   * @return string
    */
-  public function createQuery($props): string {
+  public function createQuery($props) {
     if (!$props instanceof ResizeProps)
       throw new \InvalidArgumentException('$props must be ResizeProps');
 

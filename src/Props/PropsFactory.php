@@ -6,18 +6,24 @@ namespace MWarCZ\Segami\Props;
 interface PropsFactory {
   /**
    * @param string $query
+   * @return Props
    */
-  public function parseQuery(string $query): Props;
+  public function parseQuery($query);
 
   /**
    * @param string $query
+   * @return bool
    */
-  public function validQuery(string $query): bool;
+  public function validQuery($query);
 
-  public function validRegex(): string;
+  /**
+   * @return string
+   */
+  public function validRegex();
 
   /**
    * @param Props $props
+   * @return string
    */
-  public function createQuery($props): string;
+  public function createQuery($props);
 }

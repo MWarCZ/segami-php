@@ -34,7 +34,11 @@ class PluginManager {
     $this->a_all_props = $a_all_props;
   }
 
-  public static function parseQuery(array $map_plugin, string $full_query) {
+  /**
+   * @param array $map_plugin
+   * @param string $full_query
+   */
+  public static function parseQuery($map_plugin, $full_query) {
     $core_key = '';
     $core_plugin = null;
     $a_other_plugin = [];
@@ -77,6 +81,9 @@ class PluginManager {
 
     return new self($core_key, $core_plugin, $a_other_plugin, $core_props, $a_other_props, $a_all_props);
   }
+  /**
+   * @return string
+   */
   public function toQuery() {
     $a_props_query = [];
     foreach ($this->a_other_props as $key => $props) {

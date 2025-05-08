@@ -8,6 +8,7 @@ use MWarCZ\Segami\Props\Props;
 interface ImageLimiter {
   /**
    * @param Props[] $map_props
+   * @return bool
    */
-  public function check($map_props): bool;
+  public function check($map_props);
 }

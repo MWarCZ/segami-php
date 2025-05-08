@@ -35,7 +35,7 @@ class Segami {
   /** @var int $cache_expires_dais */
   protected $cache_expires_dais;
 
-  function __construct(array $opts = []) {
+  function __construct($opts = []) {
     $opt = array_merge([
       'url_to_original_images' => '',
       'path_to_original_images' => '',
@@ -82,7 +82,7 @@ class Segami {
       throw new LimiterException('Nenalezeno platné pravidlo v omezovači');
     }
 
-    $img = ($this->image_factory)->newImage();
+    $img = $this->image_factory->newImage();
     $img->read($from_img_path);
 
     $plugin_manager->core_plugin->modifyImage($img, $plugin_manager->core_props);

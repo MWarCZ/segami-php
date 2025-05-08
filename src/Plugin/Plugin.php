@@ -8,7 +8,10 @@ use MWarCZ\Segami\Props\Props;
 use MWarCZ\Segami\Props\PropsFactory;
 
 interface Plugin {
-  public function getFactory(): PropsFactory;
+  /**
+   * @return PropsFactory
+   */
+  public function getFactory();
   /**
    * @param Image $image
    * @param Props $props

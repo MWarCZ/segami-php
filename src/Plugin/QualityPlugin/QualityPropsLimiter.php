@@ -27,13 +27,17 @@ class QualityPropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getCompression(): array {
+  /**
+   * @return int[]
+   */
+  public function getCompression() {
     return $this->compression;
   }
   /**
    * @param QualityProps $props
+   * @return bool
    */
-  public function check($props = null): bool {
+  public function check($props = null) {
     return
       $props
       &&

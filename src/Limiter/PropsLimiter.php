@@ -8,6 +8,7 @@ use MWarCZ\Segami\Props\Props;
 interface PropsLimiter {
   /**
    * @param Props $props
+   * @return bool
    */
-  public function check($props): bool;
+  public function check($props);
 }

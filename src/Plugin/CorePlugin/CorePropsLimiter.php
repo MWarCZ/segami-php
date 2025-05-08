@@ -32,7 +32,10 @@ class CorePropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getExtension(): array {
+  /**
+   * @return string[]
+   */
+  public function getExtension() {
     return $this->extension;
   }
   /**
@@ -47,14 +50,18 @@ class CorePropsLimiter implements PropsLimiter {
       }, $v);
     return $this;
   }
-  public function getOriginalExtension(): array {
+  /**
+   * @return string[]
+   */
+  public function getOriginalExtension() {
     return $this->original_extension;
   }
 
   /**
    * @param CoreProps $props
+   * @return bool
    */
-  public function check($props = null): bool {
+  public function check($props = null) {
     return
       $props
       &&

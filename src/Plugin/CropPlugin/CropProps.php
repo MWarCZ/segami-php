@@ -6,17 +6,17 @@ namespace MWarCZ\Segami\Plugin\CropPlugin;
 use MWarCZ\Segami\Props\Props;
 
 class CropProps implements Props {
-  public const SIZE_AUTO = 0;
-  public const CENTER = 'center';
-  public const A_CENTER = ['center', 'c'];
-  public const TOP = 'top';
-  public const A_TOP = ['top', 't'];
-  public const BOTTOM = 'bottom';
-  public const A_BOTTOM = ['bottom', 'b'];
-  public const LEFT = 'left';
-  public const A_LEFT = ['left', 'l'];
-  public const RIGHT = 'right';
-  public const A_RIGHT = ['right', 'r'];
+  const SIZE_AUTO = 0;
+  const CENTER = 'center';
+  const A_CENTER = ['center', 'c'];
+  const TOP = 'top';
+  const A_TOP = ['top', 't'];
+  const BOTTOM = 'bottom';
+  const A_BOTTOM = ['bottom', 'b'];
+  const LEFT = 'left';
+  const A_LEFT = ['left', 'l'];
+  const RIGHT = 'right';
+  const A_RIGHT = ['right', 'r'];
   /** @var int|string */
   public $x;
   /** @var int|string */
@@ -32,7 +32,7 @@ class CropProps implements Props {
    * @param int $width
    * @param int $height
    */
-  function __construct($x = self::CENTER, $y = self::CENTER, int $width = self::SIZE_AUTO, int $height = self::SIZE_AUTO) {
+  function __construct($x = self::CENTER, $y = self::CENTER, $width = self::SIZE_AUTO, $height = self::SIZE_AUTO) {
     $this->x = $x;
     $this->y = $y;
     $this->width = $width;
@@ -45,6 +45,9 @@ class CropProps implements Props {
     $this->x = $v;
     return $this;
   }
+  /**
+   * @return int|string
+   */
   public function getX() {
     return $this->x;
   }
@@ -55,27 +58,36 @@ class CropProps implements Props {
     $this->y = $v;
     return $this;
   }
+  /**
+   * @return int|string
+   */
   public function getY() {
     return $this->y;
   }
   /**
    * @param int $v
    */
-  public function setWidth(int $v) {
+  public function setWidth($v) {
     $this->width = $v;
     return $this;
   }
-  public function getWidth(): int {
+  /**
+   * @return int
+   */
+  public function getWidth() {
     return $this->width;
   }
   /**
    * @param int $v
    */
-  public function setHeight(int $v) {
+  public function setHeight($v) {
     $this->height = $v;
     return $this;
   }
-  public function getHeight(): int {
+  /**
+   * @return int
+   */
+  public function getHeight() {
     return $this->height;
   }
 }
